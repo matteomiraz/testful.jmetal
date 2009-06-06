@@ -160,7 +160,7 @@ public class MOEAD extends Algorithm {
         updateReference(child);
 
         // STEP 2.5. Update of solutions
-        updateProblem(child, type, n);
+        updateProblem(child, n, type);
       } // for 
     //System.exit(0) ;
     } while (evaluations_ < maxEvaluations);
@@ -189,7 +189,6 @@ public class MOEAD extends Algorithm {
             array.addElement(H_ - i - j);
             for (int k = 0; k < array.size(); k++) {
               lambda_[i + j][k] = 1.0 * array.get(k) / H_; // TO REVISE
-            // sub.namda.push_back(1.0 * sub.array[k] / unit);
             } // for
           } // if
         } // for
@@ -208,18 +207,14 @@ public class MOEAD extends Algorithm {
       // calculate the distances based on weight vectors
       for (int j = 0; j < populationSize_; j++) {
         x[j] = Utils.distVector(lambda_[i], lambda_[j]);
-        //x[j] = dist_vector(population[i].namda,population[j].namda);
         idx[j] = j;
-      //System.out.println("x["+j+"]: "+x[j]+ ". idx["+j+"]: "+idx[j]) ;
       } // for
 
       // find 'niche' nearest neighboring subproblems
       Utils.minFastSort(x, idx, populationSize_, T_);
-      //minfastsort(x,idx,population.size(),niche);
 
       for (int k = 0; k < T_; k++) {
         neighborhood_[i][k] = idx[k];
-      //System.out.println("neg["+i+","+k+"]: "+ neighborhood_[i][k]) ;
       }
     } // for
   } // initNeighborhood
@@ -235,11 +230,6 @@ public class MOEAD extends Algorithm {
       problem_.evaluateConstraints(newSolution);
       evaluations_++;
       population_.add(newSolution);
-
-    //population[i].indiv.rnd_init();
-    //population[i].indiv.obj_eval();
-    //update_reference(population[i].indiv);
-    //nfes++;
     } // for
   } // initPopulation
 
@@ -256,11 +246,6 @@ public class MOEAD extends Algorithm {
 
     for (int i = 0; i < populationSize_; i++) {
       updateReference(population_.get(i));
-    //for (int j = 0; j < problem_.getNumberOfObjectives(); j++) {
-    //  if (population_.get(i).getObjective(j) < z_[j]) {
-    //    z_[j] = population_.get(i).getObjective(j);
-    //  } // if
-    //} // for
     } // for
   } // initIdealPoint
 
@@ -283,12 +268,9 @@ public class MOEAD extends Algorithm {
       if (type == 1) {
         r = PseudoRandom.randInt(0, ss - 1);
         p = neighborhood_[cid][r];
-      //p = population[cid].table[r];
       } else {
         p = PseudoRandom.randInt(0, populationSize_ - 1);
-      //p = int(population.size()*rnd_uni(&rnd_uni_init));
       }
-//      System.out.println("   - p: " + p ) ;
       boolean flag = true;
       for (int i = 0; i < list.size(); i++) {
         if (list.get(i) == p) // p is in the list
@@ -298,12 +280,10 @@ public class MOEAD extends Algorithm {
         }
       }
 
-      //if (flag) list.push_back(p);
       if (flag) {
         list.addElement(p);
       }
     }
-//System.exit(9) ;
   } // matingSelection
 
   /**
@@ -355,9 +335,6 @@ public class MOEAD extends Algorithm {
       f1 = fitnessFunction(population_.get(k), lambda_[k]);
       f2 = fitnessFunction(indiv, lambda_[k]);
 
-      //f1 = fitnessunction(population[k].indiv.y_obj, population[k].namda, ind_arr);
-      //f2 = fitnessfunction(indiv.y_obj, population[k].namda, ind_arr);
-
       if (f2 < f1) {
         population_.replace(k, new Solution(indiv));
         //population[k].indiv = indiv;
@@ -368,7 +345,6 @@ public class MOEAD extends Algorithm {
         return;
       }
     }
-  //delete [] perm;
 
   } // updateProblem
 

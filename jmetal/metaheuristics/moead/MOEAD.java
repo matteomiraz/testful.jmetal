@@ -18,10 +18,7 @@ import jmetal.util.PseudoRandom;
 public class MOEAD extends Algorithm {
 
   /**
-   * This class representing the original asynchronous MOCell algorithm
-   * hybridized with Diferential evolutions (GDE3), called CellDE. To 
-   * store non-dominated
-   * solutions it uses an Archive based on spea2 fitness.
+   * Problem to solve
    */
   private Problem problem_;
   /**

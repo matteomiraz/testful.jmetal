@@ -100,6 +100,9 @@ public class SMPSO extends Algorithm {
   /**
    * eta_ value
    */
+
+  int evaluations_ = 0 ;
+
   QualityIndicator indicators_; // QualityIndicator object
   int requiredEvaluations_; // Use in the example of use of the
   double r1Max_;
@@ -427,6 +430,7 @@ public class SMPSO extends Algorithm {
     distance_.crowdingDistanceAssignment(leaders_, problem_.getNumberOfObjectives());
 
     //-> Step 7. Iterations ..        
+    //while (iteration_ < maxIterations_) {
     while (iteration_ < maxIterations_) {
       try {
         //Compute the speed_
@@ -444,8 +448,14 @@ public class SMPSO extends Algorithm {
       //Evaluate the new particles_ in new positions
       for (int i = 0; i < particles_.size(); i++) {
         Solution particle = particles_.get(i);
-        problem_.evaluate(particle);
-        problem_.evaluateConstraints(particle);
+        if (problem_.getNumberOfConstraints() > 0) {
+          problem_.evaluateConstraints(particle);
+          if (particle.getNumberOfViolatedConstraint() == 0)
+            problem_.evaluate(particle);
+        }
+        else {
+          problem_.evaluate(particle);
+        }
       }
 
       //Actualize the archive          

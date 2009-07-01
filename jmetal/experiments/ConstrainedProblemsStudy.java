@@ -59,11 +59,11 @@ public class ConstrainedProblemsStudy extends Experiment {
 
     exp.experimentName_ = "ConstrainedProblemsStudy";
     exp.algorithmNameList_ = new String[]{
-      "NSGAII", "SPEA2", "MOCell", "AbYSS"};
+      "NSGAII", "SPEA2", "MOCell", "AbYSS", "SMPSO"};
     exp.problemList_ = new String[]{
-      "ConstrEx", "Golinski", "Srinivas","Tanaka"};
+      "ConstrEx", "Golinski", "Srinivas","Tanaka", "Osyczka2"};
     exp.paretoFrontFile_ = new String[]{
-      "ConstrEx.pf", "Golinski.pf", "Srinivas.pf", "Tanaka.pf"};
+      "ConstrEx.pf", "Golinski.pf", "Srinivas.pf", "Tanaka.pf", "Osyczka2.pf"};
     
     exp.indicatorList_ = new String[]{"EPSILON", "SPREAD", "HV"};
 

@@ -166,6 +166,8 @@ public abstract class Experiment {
    * @param algorithm Array containing the algorithms to execute
    */
   public abstract void algorithmSettings(Problem problem, int problemId, Algorithm[] algorithm) ;
+  public static void main(String[] args) throws JMException, IOException {} ;
+
 
   public void generateLatexTables() throws FileNotFoundException, IOException {
     latexDirectory_ = experimentBaseDirectory_ + "/" + latexDirectory_;

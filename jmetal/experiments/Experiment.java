@@ -58,6 +58,10 @@ public abstract class Experiment {
 
   HashMap<String, Object> map_; // Map used to send experiment parameters to threads
 
+  HashMap<String, Boolean> indicatorMinimize_ ; // To indicate whether an indicator
+                                                // is to be minimized. Hard-coded
+                                                // in the constructor
+
   /**
    * Constructor
    *
@@ -85,6 +89,13 @@ public abstract class Experiment {
     //algorithm_ = null;
 
     independentRuns_ = 0;
+
+    indicatorMinimize_ = new HashMap<String, Boolean>() ;
+    indicatorMinimize_.put("HV", false) ;
+    indicatorMinimize_.put("EPSILON", true) ;
+    indicatorMinimize_.put("SPREAD", true) ;
+    indicatorMinimize_.put("GD", true) ;
+    indicatorMinimize_.put("IGD", true) ;
   } // Constructor
 
   /**
@@ -228,18 +239,7 @@ public abstract class Experiment {
     min = new double[indicatorList_.length][][];
     max = new double[indicatorList_.length][][];
     numberOfValues = new int[indicatorList_.length][][];
-    /*
-    calculateStatistics(v, statValues);
-
-    System.out.println("Mean: " + statValues.get("mean"));
-    System.out.println("Median : " + statValues.get("median"));
-    System.out.println("Std : " + statValues.get("stdDeviation"));
-    System.out.println("IQR : " + statValues.get("iqr"));
-    System.out.println("Min : " + statValues.get("min"));
-    System.out.println("Max : " + statValues.get("max"));
-     */
-
-
+    
     for (int indicator = 0; indicator < indicatorList_.length; indicator++) {
       // A data vector per problem
       mean[indicator] = new double[problemList_.length][];
@@ -425,6 +425,10 @@ public abstract class Experiment {
     FileWriter os = new FileWriter(fileName, false);
     os.write("\\documentclass{article}" + "\n");
     os.write("\\title{" + experimentName_ + "}" + "\n");
+    os.write("\\usepackage{colortbl}" + "\n");
+    os.write("\\usepackage[table*]{xcolor}" + "\n");
+    os.write("\\xdefinecolor{gray95}{gray}{0.65}" + "\n");
+    os.write("\\xdefinecolor{gray25}{gray}{0.8}" + "\n");
     os.write("\\author{}" + "\n");
     os.write("\\begin{document}" + "\n");
     os.write("\\maketitle" + "\n");
@@ -446,6 +450,7 @@ public abstract class Experiment {
     os.write("\\caption{" + indicatorList_[indicator] + ". Mean and standard deviation}" + "\n");
     os.write("\\label{table:mean." + indicatorList_[indicator] + "}" + "\n");
     os.write("\\centering" + "\n");
+    os.write("\\begin{scriptsize}" + "\n");
     os.write("\\begin{tabular}{l");
 
     // calculate the number of columns
@@ -470,13 +475,46 @@ public abstract class Experiment {
     String m, s;
     // write lines
     for (int i = 0; i < problemList_.length; i++) {
+      // find the best value
+      double bestValue ;
+      double bestValueIQR ;
+      int bestIndex = -1 ;
+      if ((Boolean)indicatorMinimize_.get(indicatorList_[indicator]) == true) {// minimize by default
+        bestValue = Double.MAX_VALUE ;
+        bestValueIQR = Double.MAX_VALUE ;
+        for (int j = 0; j < (algorithmNameList_.length ); j++) {
+          if ((mean[indicator][i][j] < bestValue) ||
+            ((mean[indicator][i][j] == bestValue) && (stdDev[indicator][i][j] < bestValueIQR))) {
+            bestValue = mean[indicator][i][j] ;
+            bestValueIQR = stdDev[indicator][i][j] ;
+            bestIndex = j ;
+          }
+        }
+      } // if
+      else { // indicator to maximize e.g., the HV
+        bestValue = Double.MIN_VALUE ;
+        bestValueIQR = Double.MIN_VALUE ;
+        for (int j = 0; j < (algorithmNameList_.length ); j++) {
+          if ((mean[indicator][i][j] > bestValue) ||
+            ((mean[indicator][i][j] == bestValue) && (stdDev[indicator][i][j] < bestValueIQR))) {
+            bestValue = mean[indicator][i][j] ;
+            bestValueIQR = stdDev[indicator][i][j] ;
+            bestIndex = j ;
+          }
+        }
+      } // else
+
       os.write(problemList_[i] + " & ");
       for (int j = 0; j < (algorithmNameList_.length - 1); j++) {
+        if (j == bestIndex)
+          os.write("\\cellcolor{gray95}") ;
 
         m = String.format(Locale.ENGLISH, "%10.2e", mean[indicator][i][j]);
         s = String.format(Locale.ENGLISH, "%8.1e", stdDev[indicator][i][j]);
         os.write("$" + m + "_{" + s + "}$ & ");
       }
+      if (bestIndex == (algorithmNameList_.length - 1))
+        os.write("\\cellcolor{gray95}") ;
       m = String.format(Locale.ENGLISH, "%10.2e", mean[indicator][i][algorithmNameList_.length - 1]);
       s = String.format(Locale.ENGLISH, "%8.1e", stdDev[indicator][i][algorithmNameList_.length - 1]);
       os.write("$" + m + "_{" + s + "}$ \\\\" + "\n");
@@ -485,6 +523,7 @@ public abstract class Experiment {
 
     os.write("\\hline" + "\n");
     os.write("\\end{tabular}" + "\n");
+    os.write("\\end{scriptsize}" + "\n");
     os.write("\\end{table}" + "\n");
     os.close();
   } // printMeanStdDev
@@ -495,6 +534,7 @@ public abstract class Experiment {
     os.write("\\begin{table}" + "\n");
     os.write("\\caption{" + indicatorList_[indicator] + ". Median and IQR}" + "\n");
     os.write("\\label{table:median." + indicatorList_[indicator] + "}" + "\n");
+    os.write("\\begin{scriptsize}" + "\n");
     os.write("\\centering" + "\n");
     os.write("\\begin{tabular}{l");
 
@@ -520,13 +560,46 @@ public abstract class Experiment {
     String m, s;
     // write lines
     for (int i = 0; i < problemList_.length; i++) {
+      // find the best value
+      double bestValue ;
+      double bestValueIQR ;
+      int bestIndex = -1 ;
+      if ((Boolean)indicatorMinimize_.get(indicatorList_[indicator]) == true) {// minimize by default
+        bestValue = Double.MAX_VALUE ;
+        bestValueIQR = Double.MAX_VALUE ;
+        for (int j = 0; j < (algorithmNameList_.length ); j++) {
+          if ((median[indicator][i][j] < bestValue) ||
+            ((median[indicator][i][j] == bestValue) && (IQR[indicator][i][j] < bestValueIQR))) {
+            bestValue = median[indicator][i][j] ;
+            bestValueIQR = IQR[indicator][i][j] ;
+            bestIndex = j ;
+          }
+        }
+      } // if
+      else { // indicator to maximize e.g., the HV
+        bestValue = Double.MIN_VALUE ;
+        bestValueIQR = Double.MIN_VALUE ;
+        for (int j = 0; j < (algorithmNameList_.length ); j++) {
+          if ((median[indicator][i][j] > bestValue) ||
+            ((median[indicator][i][j] == bestValue) && (IQR[indicator][i][j] < bestValueIQR))) {
+            bestValue = median[indicator][i][j] ;
+            bestValueIQR = IQR[indicator][i][j] ;
+            bestIndex = j ;
+          }
+        }
+      } // else
+
+
       os.write(problemList_[i] + " & ");
       for (int j = 0; j < (algorithmNameList_.length - 1); j++) {
-
+        if (j == bestIndex)
+          os.write("\\cellcolor{gray95}") ;
         m = String.format(Locale.ENGLISH, "%10.2e", median[indicator][i][j]);
         s = String.format(Locale.ENGLISH, "%8.1e", IQR[indicator][i][j]);
         os.write("$" + m + "_{" + s + "}$ & ");
       }
+      if (bestIndex == (algorithmNameList_.length - 1))
+        os.write("\\cellcolor{gray95}") ;
       m = String.format(Locale.ENGLISH, "%10.2e", median[indicator][i][algorithmNameList_.length - 1]);
       s = String.format(Locale.ENGLISH, "%8.1e", IQR[indicator][i][algorithmNameList_.length - 1]);
       os.write("$" + m + "_{" + s + "}$ \\\\" + "\n");
@@ -535,6 +608,7 @@ public abstract class Experiment {
 
     os.write("\\hline" + "\n");
     os.write("\\end{tabular}" + "\n");
+    os.write("\\end{scriptsize}" + "\n");
     os.write("\\end{table}" + "\n");
     os.close();
   } // printMedianIQR
@@ -728,7 +802,7 @@ public abstract class Experiment {
         "    write(\"--\", \"" + texFile + "\", append=TRUE)" + "\n" +
         "  }" + "\n" +
         "  else if (i < j) {" + "\n" +
-        "    if (wilcox.test(data1, data2)$p.value <= 0.05) {" + "\n" +
+        "    if (wilcox.test(data1, data2, paired = FALSE)$p.value <= 0.05) {" + "\n" +
         "      write(\"$\\\\blacktriangle$\", \"" + texFile + "\", append=TRUE)" + "\n" +
         "    }" + "\n" +
         "    else {" + "\n" +

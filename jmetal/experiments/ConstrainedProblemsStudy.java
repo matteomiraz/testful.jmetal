@@ -12,12 +12,11 @@ import java.io.IOException;
 import java.util.Properties;
 import jmetal.base.Algorithm;
 import jmetal.base.Problem;
+import jmetal.experiments.settings.AbYSS_Settings;
 import jmetal.experiments.settings.MOCell_Settings;
 import jmetal.experiments.settings.NSGAII_Settings;
 import jmetal.experiments.settings.SPEA2_Settings;
-import jmetal.experiments.settings.OMOPSO_Settings;
 
-import jmetal.experiments.settings.SMPSO_Settings;
 import jmetal.util.JMException;
 
 /**
@@ -48,7 +47,7 @@ public class ConstrainedProblemsStudy extends Experiment {
         algorithm[0] = new NSGAII_Settings(problem).configure(parameters[0]);
         algorithm[1] = new SPEA2_Settings(problem).configure(parameters[1]);
         algorithm[2] = new MOCell_Settings(problem).configure(parameters[2]);
-        algorithm[3] = new SMPSO_Settings(problem).configure(parameters[3]);
+        algorithm[3] = new AbYSS_Settings(problem).configure(parameters[3]);
       } catch  (JMException ex) {
       Logger.getLogger(ConstrainedProblemsStudy.class.getName()).log(Level.SEVERE, null, ex);
     }
@@ -59,7 +58,7 @@ public class ConstrainedProblemsStudy extends Experiment {
 
     exp.experimentName_ = "ConstrainedProblemsStudy";
     exp.algorithmNameList_ = new String[]{
-      "NSGAII", "SPEA2", "MOCell", "AbYSS", "SMPSO"};
+      "NSGAII", "SPEA2", "MOCell", "AbYSS"};
     exp.problemList_ = new String[]{
       "ConstrEx", "Golinski", "Srinivas","Tanaka", "Osyczka2"};
     exp.paretoFrontFile_ = new String[]{
@@ -77,7 +76,8 @@ public class ConstrainedProblemsStudy extends Experiment {
     exp.independentRuns_ = 100;
 
     // Run the experiments
-    exp.runExperiment() ;
+    int numberOfThreads ;
+    //exp.runExperiment(numberOfThreads = 4) ;
     
     // Generate latex tables
     exp.generateLatexTables() ;
@@ -87,13 +87,16 @@ public class ConstrainedProblemsStudy extends Experiment {
     int columns  ;
     String prefix ;
     String [] problems ;
+    boolean notch ;
+
 
     // Configuring scripts for ZDT
     rows = 2 ;
     columns = 2 ;
     prefix = new String("Constrained");
     problems = new String[]{"ConstrEx", "Golinski", "Srinivas","Tanaka"} ;
-    exp.generateRBoxplotScripts(rows, columns, problems, prefix, true) ;
+    exp.generateRBoxplotScripts(rows, columns, problems, prefix, notch=true) ;
+    exp.generateRWilcoxonScripts(problems, prefix) ;
   }
 } // ConstrainedProblemsStudy
 

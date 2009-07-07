@@ -26,6 +26,7 @@ import jmetal.util.JMException;
 import java.io.IOException;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
+import jmetal.qualityIndicator.QualityIndicator;
 
 public class CellDE_main {
   public static Logger      logger_ ;      // Logger object
@@ -45,22 +46,30 @@ public class CellDE_main {
     Operator  selection ;
     Operator  crossover ;
     
+    QualityIndicator indicators ; // Object to get quality indicators
+
     // Logger object and file to store log messages
     logger_      = Configuration.logger_ ;
-    fileHandler_ = new FileHandler("CellDE.log"); 
+    fileHandler_ = new FileHandler("MOCell_main.log");
     logger_.addHandler(fileHandler_) ;
-    
+
+    indicators = null ;
     if (args.length == 1) {
       Object [] params = {"Real"};
       problem = (new ProblemFactory()).getProblem(args[0],params);
     } // if
+    else if (args.length == 2) {
+      Object [] params = {"Real"};
+      problem = (new ProblemFactory()).getProblem(args[0],params);
+      indicators = new QualityIndicator(problem, args[1]) ;
+    } // if
     else { // Default problem
-      problem = new Kursawe(3, "Real"); 
+      problem = new Kursawe(3, "Real");
+      //problem = new Kursawe(3,"BinaryReal");
       //problem = new Water("Real");
       //problem = new ZDT4("Real");
-      //problem = new ZDT3("Real");
       //problem = new WFG1("Real");
-      //problem = new DTLZ1(7,4,"Real");
+      //problem = new DTLZ1("Real");
       //problem = new OKA2("Real") ;
     } // else
     
@@ -93,6 +102,14 @@ public class CellDE_main {
     logger_.info("Objectives values have been writen to file FUN");
     population.printObjectivesToFile("FUN");
     logger_.info("Variables values have been writen to file VAR");
-    population.printVariablesToFile("VAR");          
+    population.printVariablesToFile("VAR");
+
+    if (indicators != null) {
+      logger_.info("Quality indicators") ;
+      logger_.info("Hypervolume: " + indicators.getHypervolume(population)) ;
+      logger_.info("GD         : " + indicators.getGD(population)) ;
+      logger_.info("IGD        : " + indicators.getIGD(population)) ;
+      logger_.info("Spread     : " + indicators.getSpread(population)) ;
+    } // if
   }//main
 } // CellDE_main

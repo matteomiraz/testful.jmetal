@@ -813,6 +813,7 @@ public abstract class Experiment {
                 "    if (wilcox.test(data1, data2)$p.value <= 0.05) {" + "\n" +
                 "      if (median(data1) <= median(data2)) {" + "\n" +
                 "        write(\"$\\\\blacktriangle$\", \"" + texFile + "\", append=TRUE)" + "\n" +
+                "      }" + "\n" +
                 "      else {" + "\n" +
                 "        write(\"$\\\\triangledown$\", \"" + texFile + "\", append=TRUE) " + "\n" +
                 "      }" + "\n" +
@@ -844,6 +845,7 @@ public abstract class Experiment {
                 "    if (wilcox.test(data1, data2)$p.value <= 0.05) {" + "\n" +
                 "      if (median(data1) >= median(data2)) {" + "\n" +
                 "        write(\"$\\\\blacktriangle$\", \"" + texFile + "\", append=TRUE)" + "\n" +
+                "      }" + "\n" +
                 "      else {" + "\n" +
                 "        write(\"$\\\\triangledown$\", \"" + texFile + "\", append=TRUE) " + "\n" +
                 "      }" + "\n" +

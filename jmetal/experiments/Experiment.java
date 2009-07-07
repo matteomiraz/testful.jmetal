@@ -55,12 +55,10 @@ public abstract class Experiment {
   int independentRuns_; // Number of independent runs per algorithm
   Settings[] algorithmSettings_; // Paremeter settings of each algorithm
   //Algorithm[] algorithm_; // jMetal algorithms to be executed
-
   HashMap<String, Object> map_; // Map used to send experiment parameters to threads
-
-  HashMap<String, Boolean> indicatorMinimize_ ; // To indicate whether an indicator
-                                                // is to be minimized. Hard-coded
-                                                // in the constructor
+  HashMap<String, Boolean> indicatorMinimize_; // To indicate whether an indicator
+  // is to be minimized. Hard-coded
+  // in the constructor
 
   /**
    * Constructor
@@ -90,12 +88,12 @@ public abstract class Experiment {
 
     independentRuns_ = 0;
 
-    indicatorMinimize_ = new HashMap<String, Boolean>() ;
-    indicatorMinimize_.put("HV", false) ;
-    indicatorMinimize_.put("EPSILON", true) ;
-    indicatorMinimize_.put("SPREAD", true) ;
-    indicatorMinimize_.put("GD", true) ;
-    indicatorMinimize_.put("IGD", true) ;
+    indicatorMinimize_ = new HashMap<String, Boolean>();
+    indicatorMinimize_.put("HV", false);
+    indicatorMinimize_.put("EPSILON", true);
+    indicatorMinimize_.put("SPREAD", true);
+    indicatorMinimize_.put("GD", true);
+    indicatorMinimize_.put("IGD", true);
   } // Constructor
 
   /**
@@ -112,7 +110,7 @@ public abstract class Experiment {
     map_.put("paretoFrontDirectory", paretoFrontDirectory_);
     map_.put("paretoFrontFile", paretoFrontFile_);
     map_.put("independentRuns", independentRuns_);
-   // map_.put("algorithm", algorithm_);
+    // map_.put("algorithm", algorithm_);
     map_.put("outputParetoFrontFile", outputParetoFrontFile_);
     map_.put("outputParetoSetFile", outputParetoSetFile_);
 
@@ -121,10 +119,11 @@ public abstract class Experiment {
     if (problemList_.length < numberOfThreads) {
       numberOfThreads = problemList_.length;
       System.out.println("Experiments: list of problems is shorter than the " +
-        "of requested threads. Creating " + numberOfThreads);
+              "of requested threads. Creating " + numberOfThreads);
     } // if
-    else
+    else {
       System.out.println("Experiments: creating " + numberOfThreads + " threads");
+    }
 
     Thread[] p = new runExperiment[numberOfThreads];
     for (int i = 0; i < numberOfThreads; i++) {
@@ -142,7 +141,7 @@ public abstract class Experiment {
     }
   }
 
- /**
+  /**
    * Runs the experiment
    */
   public void runExperiment() throws JMException, IOException {
@@ -167,7 +166,7 @@ public abstract class Experiment {
       System.out.println("Experiment directory does NOT exist. Creating");
       boolean result = new File(experimentBaseDirectory_).mkdirs();
     } // else
-  } // checkDirectories
+    } // checkDirectories
 
   /**
    * Especifies the settings of each algorith. This method is checked in each
@@ -176,9 +175,12 @@ public abstract class Experiment {
    * @param problemId Index of the problem in problemList_
    * @param algorithm Array containing the algorithms to execute
    */
-  public abstract void algorithmSettings(Problem problem, int problemId, Algorithm[] algorithm) ;
-  public static void main(String[] args) throws JMException, IOException {} ;
+  public abstract void algorithmSettings(Problem problem, int problemId, Algorithm[] algorithm);
 
+  public static void main(String[] args) throws JMException, IOException {
+  }
+
+  ;
 
   public void generateLatexTables() throws FileNotFoundException, IOException {
     latexDirectory_ = experimentBaseDirectory_ + "/" + latexDirectory_;
@@ -239,7 +241,7 @@ public abstract class Experiment {
     min = new double[indicatorList_.length][][];
     max = new double[indicatorList_.length][][];
     numberOfValues = new int[indicatorList_.length][][];
-    
+
     for (int indicator = 0; indicator < indicatorList_.length; indicator++) {
       // A data vector per problem
       mean[indicator] = new double[problemList_.length][];
@@ -312,8 +314,8 @@ public abstract class Experiment {
    * @param values
    */
   void calculateStatistics(Vector vector,
-    Map<String, Double> values) {
-    
+          Map<String, Double> values) {
+
     if (vector.size() > 0) {
       double sum, minimum, maximum, sqsum, min, max, median, mean, iqr, stdDeviation;
 
@@ -351,7 +353,7 @@ public abstract class Experiment {
         median = (Double) vector.elementAt(vector.size() / 2);
       } else {
         median = ((Double) vector.elementAt(vector.size() / 2 - 1) +
-        (Double) vector.elementAt(vector.size() / 2)) / 2.0;
+                (Double) vector.elementAt(vector.size() / 2)) / 2.0;
       } // if
 
       values.put("mean", (Double) mean);
@@ -369,7 +371,7 @@ public abstract class Experiment {
       values.put("min", Double.NaN);
       values.put("max", Double.NaN);
     } // else
-  } // calculateStatistics
+    } // calculateStatistics
 
   /**
    * Calculates the median of a vector considering the positions indicated by
@@ -389,7 +391,7 @@ public abstract class Experiment {
       median = (Double) vector.elementAt(first + size / 2);
     } else {
       median = ((Double) vector.elementAt(first + size / 2 - 1) +
-        (Double) vector.elementAt(first + size / 2)) / 2.0;
+              (Double) vector.elementAt(first + size / 2)) / 2.0;
     }
 
     return median;
@@ -408,13 +410,13 @@ public abstract class Experiment {
       if (vector.size() % 2 != 0) {
         q3 = calculateMedian(vector, vector.size() / 2 + 1, vector.size() - 1);
         q1 = calculateMedian(vector, 0, vector.size() / 2 - 1);
-      //System.out.println("Q1: [" + 0 + ", " + (vector.size()/2 - 1) + "] = " + q1) ;
-      //System.out.println("Q3: [" + (vector.size()/2+1) + ", " + (vector.size()-1) + "]= " + q3) ;
+        //System.out.println("Q1: [" + 0 + ", " + (vector.size()/2 - 1) + "] = " + q1) ;
+        //System.out.println("Q3: [" + (vector.size()/2+1) + ", " + (vector.size()-1) + "]= " + q3) ;
       } else {
         q3 = calculateMedian(vector, vector.size() / 2, vector.size() - 1);
         q1 = calculateMedian(vector, 0, vector.size() / 2 - 1);
-      //System.out.println("Q1: [" + 0 + ", " + (vector.size()/2 - 1) + "] = " + q1) ;
-      //System.out.println("Q3: [" + (vector.size()/2) + ", " + (vector.size()-1) + "]= " + q3) ;
+        //System.out.println("Q1: [" + 0 + ", " + (vector.size()/2 - 1) + "] = " + q1) ;
+        //System.out.println("Q3: [" + (vector.size()/2) + ", " + (vector.size()-1) + "]= " + q3) ;
       } // else
     } // if
 
@@ -476,45 +478,47 @@ public abstract class Experiment {
     // write lines
     for (int i = 0; i < problemList_.length; i++) {
       // find the best value
-      double bestValue ;
-      double bestValueIQR ;
-      int bestIndex = -1 ;
-      if ((Boolean)indicatorMinimize_.get(indicatorList_[indicator]) == true) {// minimize by default
-        bestValue = Double.MAX_VALUE ;
-        bestValueIQR = Double.MAX_VALUE ;
-        for (int j = 0; j < (algorithmNameList_.length ); j++) {
+      double bestValue;
+      double bestValueIQR;
+      int bestIndex = -1;
+      if ((Boolean) indicatorMinimize_.get(indicatorList_[indicator]) == true) {// minimize by default
+        bestValue = Double.MAX_VALUE;
+        bestValueIQR = Double.MAX_VALUE;
+        for (int j = 0; j < (algorithmNameList_.length); j++) {
           if ((mean[indicator][i][j] < bestValue) ||
-            ((mean[indicator][i][j] == bestValue) && (stdDev[indicator][i][j] < bestValueIQR))) {
-            bestValue = mean[indicator][i][j] ;
-            bestValueIQR = stdDev[indicator][i][j] ;
-            bestIndex = j ;
+                  ((mean[indicator][i][j] == bestValue) && (stdDev[indicator][i][j] < bestValueIQR))) {
+            bestValue = mean[indicator][i][j];
+            bestValueIQR = stdDev[indicator][i][j];
+            bestIndex = j;
           }
         }
       } // if
       else { // indicator to maximize e.g., the HV
-        bestValue = Double.MIN_VALUE ;
-        bestValueIQR = Double.MIN_VALUE ;
-        for (int j = 0; j < (algorithmNameList_.length ); j++) {
+        bestValue = Double.MIN_VALUE;
+        bestValueIQR = Double.MIN_VALUE;
+        for (int j = 0; j < (algorithmNameList_.length); j++) {
           if ((mean[indicator][i][j] > bestValue) ||
-            ((mean[indicator][i][j] == bestValue) && (stdDev[indicator][i][j] < bestValueIQR))) {
-            bestValue = mean[indicator][i][j] ;
-            bestValueIQR = stdDev[indicator][i][j] ;
-            bestIndex = j ;
+                  ((mean[indicator][i][j] == bestValue) && (stdDev[indicator][i][j] < bestValueIQR))) {
+            bestValue = mean[indicator][i][j];
+            bestValueIQR = stdDev[indicator][i][j];
+            bestIndex = j;
           }
         }
       } // else
 
       os.write(problemList_[i] + " & ");
       for (int j = 0; j < (algorithmNameList_.length - 1); j++) {
-        if (j == bestIndex)
-          os.write("\\cellcolor{gray95}") ;
+        if (j == bestIndex) {
+          os.write("\\cellcolor{gray95}");
+        }
 
         m = String.format(Locale.ENGLISH, "%10.2e", mean[indicator][i][j]);
         s = String.format(Locale.ENGLISH, "%8.1e", stdDev[indicator][i][j]);
         os.write("$" + m + "_{" + s + "}$ & ");
       }
-      if (bestIndex == (algorithmNameList_.length - 1))
-        os.write("\\cellcolor{gray95}") ;
+      if (bestIndex == (algorithmNameList_.length - 1)) {
+        os.write("\\cellcolor{gray95}");
+      }
       m = String.format(Locale.ENGLISH, "%10.2e", mean[indicator][i][algorithmNameList_.length - 1]);
       s = String.format(Locale.ENGLISH, "%8.1e", stdDev[indicator][i][algorithmNameList_.length - 1]);
       os.write("$" + m + "_{" + s + "}$ \\\\" + "\n");
@@ -561,30 +565,30 @@ public abstract class Experiment {
     // write lines
     for (int i = 0; i < problemList_.length; i++) {
       // find the best value
-      double bestValue ;
-      double bestValueIQR ;
-      int bestIndex = -1 ;
-      if ((Boolean)indicatorMinimize_.get(indicatorList_[indicator]) == true) {// minimize by default
-        bestValue = Double.MAX_VALUE ;
-        bestValueIQR = Double.MAX_VALUE ;
-        for (int j = 0; j < (algorithmNameList_.length ); j++) {
+      double bestValue;
+      double bestValueIQR;
+      int bestIndex = -1;
+      if ((Boolean) indicatorMinimize_.get(indicatorList_[indicator]) == true) {// minimize by default
+        bestValue = Double.MAX_VALUE;
+        bestValueIQR = Double.MAX_VALUE;
+        for (int j = 0; j < (algorithmNameList_.length); j++) {
           if ((median[indicator][i][j] < bestValue) ||
-            ((median[indicator][i][j] == bestValue) && (IQR[indicator][i][j] < bestValueIQR))) {
-            bestValue = median[indicator][i][j] ;
-            bestValueIQR = IQR[indicator][i][j] ;
-            bestIndex = j ;
+                  ((median[indicator][i][j] == bestValue) && (IQR[indicator][i][j] < bestValueIQR))) {
+            bestValue = median[indicator][i][j];
+            bestValueIQR = IQR[indicator][i][j];
+            bestIndex = j;
           }
         }
       } // if
       else { // indicator to maximize e.g., the HV
-        bestValue = Double.MIN_VALUE ;
-        bestValueIQR = Double.MIN_VALUE ;
-        for (int j = 0; j < (algorithmNameList_.length ); j++) {
+        bestValue = Double.MIN_VALUE;
+        bestValueIQR = Double.MIN_VALUE;
+        for (int j = 0; j < (algorithmNameList_.length); j++) {
           if ((median[indicator][i][j] > bestValue) ||
-            ((median[indicator][i][j] == bestValue) && (IQR[indicator][i][j] < bestValueIQR))) {
-            bestValue = median[indicator][i][j] ;
-            bestValueIQR = IQR[indicator][i][j] ;
-            bestIndex = j ;
+                  ((median[indicator][i][j] == bestValue) && (IQR[indicator][i][j] < bestValueIQR))) {
+            bestValue = median[indicator][i][j];
+            bestValueIQR = IQR[indicator][i][j];
+            bestIndex = j;
           }
         }
       } // else
@@ -592,14 +596,16 @@ public abstract class Experiment {
 
       os.write(problemList_[i] + " & ");
       for (int j = 0; j < (algorithmNameList_.length - 1); j++) {
-        if (j == bestIndex)
-          os.write("\\cellcolor{gray95}") ;
+        if (j == bestIndex) {
+          os.write("\\cellcolor{gray95}");
+        }
         m = String.format(Locale.ENGLISH, "%10.2e", median[indicator][i][j]);
         s = String.format(Locale.ENGLISH, "%8.1e", IQR[indicator][i][j]);
         os.write("$" + m + "_{" + s + "}$ & ");
       }
-      if (bestIndex == (algorithmNameList_.length - 1))
-        os.write("\\cellcolor{gray95}") ;
+      if (bestIndex == (algorithmNameList_.length - 1)) {
+        os.write("\\cellcolor{gray95}");
+      }
       m = String.format(Locale.ENGLISH, "%10.2e", median[indicator][i][algorithmNameList_.length - 1]);
       s = String.format(Locale.ENGLISH, "%8.1e", IQR[indicator][i][algorithmNameList_.length - 1]);
       os.write("$" + m + "_{" + s + "}$ \\\\" + "\n");
@@ -626,10 +632,10 @@ public abstract class Experiment {
    * @throws java.io.IOException
    */
   public void generateRBoxplotScripts(int rows,
-    int cols,
-    String[] problems,
-    String prefix,
-    boolean notch) throws FileNotFoundException, IOException {
+          int cols,
+          String[] problems,
+          String prefix,
+          boolean notch) throws FileNotFoundException, IOException {
     // STEP 1. Creating R output directory
 
     rDirectory_ = "R";
@@ -648,9 +654,9 @@ public abstract class Experiment {
 
       FileWriter os = new FileWriter(rFile, false);
       os.write("postscript(\"" + prefix + "." +
-        indicatorList_[indicator] +
-        ".Boxplot.eps\", horizontal=FALSE, onefile=FALSE, height=8, width=12, pointsize=10)" +
-        "\n");
+              indicatorList_[indicator] +
+              ".Boxplot.eps\", horizontal=FALSE, onefile=FALSE, height=8, width=12, pointsize=10)" +
+              "\n");
       //os.write("resultDirectory<-\"../data/" + experimentName_ +"\"" + "\n");
       os.write("resultDirectory<-\"../data/" + "\"" + "\n");
       os.write("qIndicator <- function(indicator, problem)" + "\n");
@@ -658,14 +664,14 @@ public abstract class Experiment {
 
       for (int i = 0; i < algorithmNameList_.length; i++) {
         os.write("file" + algorithmNameList_[i] +
-          "<-paste(resultDirectory, \"" +
-          algorithmNameList_[i] + "\", sep=\"/\")" + "\n");
+                "<-paste(resultDirectory, \"" +
+                algorithmNameList_[i] + "\", sep=\"/\")" + "\n");
         os.write("file" + algorithmNameList_[i] +
-          "<-paste(file" + algorithmNameList_[i] + ", " +
-          "problem, sep=\"/\")" + "\n");
+                "<-paste(file" + algorithmNameList_[i] + ", " +
+                "problem, sep=\"/\")" + "\n");
         os.write("file" + algorithmNameList_[i] +
-          "<-paste(file" + algorithmNameList_[i] + ", " +
-          "indicator, sep=\"/\")" + "\n");
+                "<-paste(file" + algorithmNameList_[i] + ", " +
+                "indicator, sep=\"/\")" + "\n");
         os.write(algorithmNameList_[i] + "<-scan(" + "file" + algorithmNameList_[i] + ")" + "\n");
         os.write("\n");
       } // for
@@ -680,10 +686,11 @@ public abstract class Experiment {
       for (int i = 0; i < algorithmNameList_.length; i++) {
         os.write(algorithmNameList_[i] + ",");
       } // for
-      if (notch)
+      if (notch) {
         os.write("names=algs, notch = TRUE)" + "\n");
-      else
+      } else {
         os.write("names=algs, notch = FALSE)" + "\n");
+      }
       os.write("titulo <-paste(indicator, problem, sep=\":\")" + "\n");
       os.write("title(main=titulo)" + "\n");
 
@@ -699,7 +706,7 @@ public abstract class Experiment {
 
       os.close();
     } // for
-  } // generateRBoxplotScripts
+    } // generateRBoxplotScripts
 
   /**
    * Generate R scripts that generate latex tables including the Wilcoxon test
@@ -709,8 +716,8 @@ public abstract class Experiment {
    * @throws java.io.IOException
    */
   public void generateRWilcoxonScripts(
-    String[] problems,
-    String prefix) throws FileNotFoundException, IOException {
+          String[] problems,
+          String prefix) throws FileNotFoundException, IOException {
     // STEP 1. Creating R output directory
 
     rDirectory_ = "R";
@@ -736,14 +743,14 @@ public abstract class Experiment {
       String dataDirectory = experimentBaseDirectory_ + "/data";
       os.write("resultDirectory<-\"" + dataDirectory + "\"" + "\n");
       output = "latexHeader <- function() {" + "\n" +
-        "  write(\"\\\\documentclass{article}\", \"" + texFile + "\", append=TRUE)" + "\n" +
-        "  write(\"\\\\title{StandardStudy}\", \"" + texFile + "\", append=TRUE)" + "\n" +
-        "  write(\"\\\\usepackage{amssymb}\", \"" + texFile + "\", append=TRUE)" + "\n" +
-        "  write(\"\\\\author{A.J.Nebro}\", \"" + texFile + "\", append=TRUE)" + "\n" +
-        "  write(\"\\\\begin{document}\", \"" + texFile + "\", append=TRUE)" + "\n" +
-        "  write(\"\\\\maketitle\", \"" + texFile + "\", append=TRUE)" + "\n" +
-        "  write(\"\\\\section{Tables}\", \"" + texFile + "\", append=TRUE)" + "\n" +
-        "  write(\"\\\\\", \"" + texFile + "\", append=TRUE)" + "\n" + "}" + "\n";
+              "  write(\"\\\\documentclass{article}\", \"" + texFile + "\", append=TRUE)" + "\n" +
+              "  write(\"\\\\title{StandardStudy}\", \"" + texFile + "\", append=TRUE)" + "\n" +
+              "  write(\"\\\\usepackage{amssymb}\", \"" + texFile + "\", append=TRUE)" + "\n" +
+              "  write(\"\\\\author{A.J.Nebro}\", \"" + texFile + "\", append=TRUE)" + "\n" +
+              "  write(\"\\\\begin{document}\", \"" + texFile + "\", append=TRUE)" + "\n" +
+              "  write(\"\\\\maketitle\", \"" + texFile + "\", append=TRUE)" + "\n" +
+              "  write(\"\\\\section{Tables}\", \"" + texFile + "\", append=TRUE)" + "\n" +
+              "  write(\"\\\\\", \"" + texFile + "\", append=TRUE)" + "\n" + "}" + "\n";
       os.write(output + "\n");
 
       // Write function latexTableHeader
@@ -753,11 +760,11 @@ public abstract class Experiment {
       String latexTableCaption = "";
 
       latexTableCaption = "  write(\"\\\\caption{\", \"" + texFile + "\", append=TRUE)" + "\n" +
-        "  write(problem, \"" + texFile + "\", append=TRUE)" + "\n" +
-        "  write(\"." + indicatorList_[indicator] + ".}\", \"" + texFile + "\", append=TRUE)" + "\n";
+              "  write(problem, \"" + texFile + "\", append=TRUE)" + "\n" +
+              "  write(\"." + indicatorList_[indicator] + ".}\", \"" + texFile + "\", append=TRUE)" + "\n";
       latexTableLabel = "  write(\"\\\\label{Table:\", \"" + texFile + "\", append=TRUE)" + "\n" +
-        "  write(problem, \"" + texFile + "\", append=TRUE)" + "\n" +
-        "  write(\"." + indicatorList_[indicator] + ".}\", \"" + texFile + "\", append=TRUE)" + "\n";
+              "  write(problem, \"" + texFile + "\", append=TRUE)" + "\n" +
+              "  write(\"." + indicatorList_[indicator] + ".}\", \"" + texFile + "\", append=TRUE)" + "\n";
       latexTabularAlignment = "l";
       latexTableFirstLine = "  write(\"\\\\hline ";
 
@@ -767,53 +774,89 @@ public abstract class Experiment {
       } // for
       latexTableFirstLine += "\\\\\\\\\",\"" + texFile + "\", append=TRUE)" + "\n";
       output = "latexTableHeader <- function(problem) {" + "\n" +
-        "  write(\"\\\\begin{table}\", \"" + texFile + "\", append=TRUE)" + "\n" +
-        latexTableCaption + "\n" +
-        latexTableLabel + "\n" +
-        "  write(\"\\\\centering\", \"" + texFile + "\", append=TRUE)" + "\n" +
-        "  write(\"\\\\begin{tabular}{" + latexTabularAlignment + "}\", \"" + texFile + "\", append=TRUE)" + "\n" +
-        latexTableFirstLine +
-        "  write(\"\\\\hline \", \"" + texFile + "\", append=TRUE)" + "\n" + "}" + "\n";
+              "  write(\"\\\\begin{table}\", \"" + texFile + "\", append=TRUE)" + "\n" +
+              latexTableCaption + "\n" +
+              latexTableLabel + "\n" +
+              "  write(\"\\\\centering\", \"" + texFile + "\", append=TRUE)" + "\n" +
+              "  write(\"\\\\begin{tabular}{" + latexTabularAlignment + "}\", \"" + texFile + "\", append=TRUE)" + "\n" +
+              latexTableFirstLine +
+              "  write(\"\\\\hline \", \"" + texFile + "\", append=TRUE)" + "\n" + "}" + "\n";
       os.write(output + "\n");
 
       // Generate function latexTableTail()
       output = "latexTableTail <- function() { " + "\n" +
-        "  write(\"\\\\hline\", \"" + texFile + "\", append=TRUE)" + "\n" +
-        "  write(\"\\\\end{tabular}\", \"" + texFile + "\", append=TRUE)" + "\n" +
-        "  write(\"\\\\end{table}\", \"" + texFile + "\", append=TRUE)" + "\n" + "}" + "\n";
+              "  write(\"\\\\hline\", \"" + texFile + "\", append=TRUE)" + "\n" +
+              "  write(\"\\\\end{tabular}\", \"" + texFile + "\", append=TRUE)" + "\n" +
+              "  write(\"\\\\end{table}\", \"" + texFile + "\", append=TRUE)" + "\n" + "}" + "\n";
       os.write(output + "\n");
 
       // Generate function latexTail()
       output = "latexTail <- function() { " + "\n" +
-        "  write(\"\\\\end{document}\", \"" + texFile + "\", append=TRUE)" + "\n" + "}" + "\n";
+              "  write(\"\\\\end{document}\", \"" + texFile + "\", append=TRUE)" + "\n" + "}" + "\n";
       os.write(output + "\n");
 
-      // Generate function printTableLine()
-      output = "printTableLine <- function(indicator, algorithm1, algorithm2, i, j, problem) { " + "\n" +
-        "  file1<-paste(resultDirectory, algorithm1, sep=\"/\")" + "\n" +
-        "  file1<-paste(file1, problem, sep=\"/\")" + "\n" +
-        "  file1<-paste(file1, indicator, sep=\"/\")" + "\n" +
-        "  data1<-scan(file1)" + "\n" +
-        "  file2<-paste(resultDirectory, algorithm2, sep=\"/\")" + "\n" +
-        "  file2<-paste(file2, problem, sep=\"/\")" + "\n" +
-        "  file2<-paste(file2, indicator, sep=\"/\")" + "\n" +
-        "  data2<-scan(file2)" + "\n" +
-        "  if (i == j) {" + "\n" +
-        "    write(\"--\", \"" + texFile + "\", append=TRUE)" + "\n" +
-        "  }" + "\n" +
-        "  else if (i < j) {" + "\n" +
-        "    if (wilcox.test(data1, data2)$p.value <= 0.05) {" + "\n" +
-        "      write(\"$\\\\blacktriangle$\", \"" + texFile + "\", append=TRUE)" + "\n" +
-        "    }" + "\n" +
-        "    else {" + "\n" +
-        "      write(\"$\\\\triangledown$\", \"" + texFile + "\", append=TRUE) " + "\n" +
-        "    }" + "\n" +
-        "  }" + "\n" +
-        "  else {" + "\n" +
-        "    write(\" \", \"" + texFile + "\", append=TRUE)" + "\n" +
-        "  }" + "\n" +
-        "}" + "\n";
-
+      if ((Boolean) indicatorMinimize_.get(indicatorList_[indicator]) == true) {// minimize by default
+        // Generate function printTableLine()
+        output = "printTableLine <- function(indicator, algorithm1, algorithm2, i, j, problem) { " + "\n" +
+                "  file1<-paste(resultDirectory, algorithm1, sep=\"/\")" + "\n" +
+                "  file1<-paste(file1, problem, sep=\"/\")" + "\n" +
+                "  file1<-paste(file1, indicator, sep=\"/\")" + "\n" +
+                "  data1<-scan(file1)" + "\n" +
+                "  file2<-paste(resultDirectory, algorithm2, sep=\"/\")" + "\n" +
+                "  file2<-paste(file2, problem, sep=\"/\")" + "\n" +
+                "  file2<-paste(file2, indicator, sep=\"/\")" + "\n" +
+                "  data2<-scan(file2)" + "\n" +
+                "  if (i == j) {" + "\n" +
+                "    write(\"--\", \"" + texFile + "\", append=TRUE)" + "\n" +
+                "  }" + "\n" +
+                "  else if (i < j) {" + "\n" +
+                "    if (wilcox.test(data1, data2)$p.value <= 0.05) {" + "\n" +
+                "      if (median(data1) <= median(data2)) {" + "\n" +
+                "        write(\"$\\\\blacktriangle$\", \"" + texFile + "\", append=TRUE)" + "\n" +
+                "      else {" + "\n" +
+                "        write(\"$\\\\triangledown$\", \"" + texFile + "\", append=TRUE) " + "\n" +
+                "      }" + "\n" +
+                "    }" + "\n" +
+                "    else {" + "\n" +
+                "      write(\"--\", \"" + texFile + "\", append=TRUE) " + "\n" +
+                "    }" + "\n" +
+                "  }" + "\n" +
+                "  else {" + "\n" +
+                "    write(\" \", \"" + texFile + "\", append=TRUE)" + "\n" +
+                "  }" + "\n" +
+                "}" + "\n";
+      } // if
+      else {
+        // Generate function printTableLine()
+        output = "printTableLine <- function(indicator, algorithm1, algorithm2, i, j, problem) { " + "\n" +
+                "  file1<-paste(resultDirectory, algorithm1, sep=\"/\")" + "\n" +
+                "  file1<-paste(file1, problem, sep=\"/\")" + "\n" +
+                "  file1<-paste(file1, indicator, sep=\"/\")" + "\n" +
+                "  data1<-scan(file1)" + "\n" +
+                "  file2<-paste(resultDirectory, algorithm2, sep=\"/\")" + "\n" +
+                "  file2<-paste(file2, problem, sep=\"/\")" + "\n" +
+                "  file2<-paste(file2, indicator, sep=\"/\")" + "\n" +
+                "  data2<-scan(file2)" + "\n" +
+                "  if (i == j) {" + "\n" +
+                "    write(\"--\", \"" + texFile + "\", append=TRUE)" + "\n" +
+                "  }" + "\n" +
+                "  else if (i < j) {" + "\n" +
+                "    if (wilcox.test(data1, data2)$p.value <= 0.05) {" + "\n" +
+                "      if (median(data1) >= median(data2)) {" + "\n" +
+                "        write(\"$\\\\blacktriangle$\", \"" + texFile + "\", append=TRUE)" + "\n" +
+                "      else {" + "\n" +
+                "        write(\"$\\\\triangledown$\", \"" + texFile + "\", append=TRUE) " + "\n" +
+                "      }" + "\n" +
+                "    }" + "\n" +
+                "    else {" + "\n" +
+                "      write(\"--\", \"" + texFile + "\", append=TRUE) " + "\n" +
+                "    }" + "\n" +
+                "  }" + "\n" +
+                "  else {" + "\n" +
+                "    write(\" \", \"" + texFile + "\", append=TRUE)" + "\n" +
+                "  }" + "\n" +
+                "}" + "\n";
+      }
       os.write(output + "\n");
 
       // Start of the R script
@@ -834,43 +877,43 @@ public abstract class Experiment {
       algorithmList += "\"" + algorithmNameList_[algorithmNameList_.length - 1] + "\") ";
 
       output = "# Constants" + "\n" +
-        problemList + "\n" +
-        algorithmList + "\n" +
-        "indicator<-\"" + indicatorList_[indicator] + "\"";
+              problemList + "\n" +
+              algorithmList + "\n" +
+              "indicator<-\"" + indicatorList_[indicator] + "\"";
       os.write(output + "\n");
 
       output = "\n # Step 1.  Writes the latex header" + "\n" +
-        "latexHeader()";
+              "latexHeader()";
       os.write(output + "\n");
 
       // Generate tables per problem
       output = "# Step 2. Problem loop " + "\n" +
-        "for (problem in problemList) {" + "\n" +
-        "  latexTableHeader(problem)" + "\n\n" +
-        "  indx = 0" + "\n" +
-        "  for (i in algorithmList) {" + "\n" +
-        "    write(i , \"" + texFile + "\", append=TRUE)" + "\n" +
-        "    write(\" & \", \"" + texFile + "\", append=TRUE)" + "\n" +
-        "    jndx = 0 " + "\n" +
-        "    for (j in algorithmList) {" + "\n" +
-        "      if (indx != jndx) {" + "\n" +
-        "        printTableLine(indicator, i, j, indx, jndx, problem)" + "\n" +
-        "      }" + "\n" +
-        "      else {" + "\n" +
-        "        write(\"--\", \"" + texFile + "\", append=TRUE)" + "\n" +
-        "      }" + "\n" +
-        "      if (j != \"" + algorithmNameList_[algorithmNameList_.length - 1] + "\") {" + "\n" +
-        "        write(\" & \", \"" + texFile + "\", append=TRUE)" + "\n" +
-        "      }" + "\n" +
-        "      else {" + "\n" +
-        "        write(\" \\\\\\\\ \", \"" + texFile + "\", append=TRUE)" + "\n" +
-        "      }" + "\n" +
-        "      jndx = jndx + 1" + "\n" +
-        "    }" + "\n" +
-        "    indx = indx + 1" + "\n" +
-        "  }" + "\n" + "\n" +
-        "  latexTableTail()" + "\n" +
-        "} # for problem" + "\n";
+              "for (problem in problemList) {" + "\n" +
+              "  latexTableHeader(problem)" + "\n\n" +
+              "  indx = 0" + "\n" +
+              "  for (i in algorithmList) {" + "\n" +
+              "    write(i , \"" + texFile + "\", append=TRUE)" + "\n" +
+              "    write(\" & \", \"" + texFile + "\", append=TRUE)" + "\n" +
+              "    jndx = 0 " + "\n" +
+              "    for (j in algorithmList) {" + "\n" +
+              "      if (indx != jndx) {" + "\n" +
+              "        printTableLine(indicator, i, j, indx, jndx, problem)" + "\n" +
+              "      }" + "\n" +
+              "      else {" + "\n" +
+              "        write(\"--\", \"" + texFile + "\", append=TRUE)" + "\n" +
+              "      }" + "\n" +
+              "      if (j != \"" + algorithmNameList_[algorithmNameList_.length - 1] + "\") {" + "\n" +
+              "        write(\" & \", \"" + texFile + "\", append=TRUE)" + "\n" +
+              "      }" + "\n" +
+              "      else {" + "\n" +
+              "        write(\" \\\\\\\\ \", \"" + texFile + "\", append=TRUE)" + "\n" +
+              "      }" + "\n" +
+              "      jndx = jndx + 1" + "\n" +
+              "    }" + "\n" +
+              "    indx = indx + 1" + "\n" +
+              "  }" + "\n" + "\n" +
+              "  latexTableTail()" + "\n" +
+              "} # for problem" + "\n";
       os.write(output + "\n");
 
       // Generate full table
@@ -880,40 +923,40 @@ public abstract class Experiment {
       }
 
       output = "# Step 3. Problem loop " + "\n" +
-        "latexTableHeader(\"" + problemList + "\")" + "\n\n" +
-        "indx = 0" + "\n" +
-        "for (i in algorithmList) {" + "\n" +
-        "  write(i , \"" + texFile + "\", append=TRUE)" + "\n" +
-        "  write(\" & \", \"" + texFile + "\", append=TRUE)" + "\n" + "\n" +
-        "  jndx = 0" + "\n" +
-        "  for (j in algorithmList) {" + "\n" +
-        "    for (problem in problemList) {" + "\n" +
-        "      if (i != j) {" + "\n" +
-        "        printTableLine(indicator, i, j, indx, jndx, problem)" + "\n" +
-        "      }" + "\n" +
-        "      else {" + "\n" +
-        "        write(\"--\", \"" + texFile + "\", append=TRUE)" + "\n" +
-        "      } " + "\n" +
-        "      if (problem == \"" + problems[problems.length - 1] + "\") {" + "\n" +
-        "        if (j == \"" + algorithmNameList_[algorithmNameList_.length - 1] + "\") {" + "\n" +
-        "          write(\" \\\\\\\\ \", \"" + texFile + "\", append=TRUE)" + "\n" +
-        "        } " + "\n" +
-        "        else {" + "\n" +
-        "          write(\" & \", \"" + texFile + "\", append=TRUE)" + "\n" +
-        "        }" + "\n" +
-        "      }" + "\n" +
-        "    }" + "\n" +
-        "    jndx = jndx + 1" + "\n" +
-        "  }" + "\n" +
-        "  indx = indx + 1" + "\n" +
-        "} # for algorithm" + "\n" + "\n" +
-        "  latexTableTail()" + "\n";
+              "latexTableHeader(\"" + problemList + "\")" + "\n\n" +
+              "indx = 0" + "\n" +
+              "for (i in algorithmList) {" + "\n" +
+              "  write(i , \"" + texFile + "\", append=TRUE)" + "\n" +
+              "  write(\" & \", \"" + texFile + "\", append=TRUE)" + "\n" + "\n" +
+              "  jndx = 0" + "\n" +
+              "  for (j in algorithmList) {" + "\n" +
+              "    for (problem in problemList) {" + "\n" +
+              "      if (i != j) {" + "\n" +
+              "        printTableLine(indicator, i, j, indx, jndx, problem)" + "\n" +
+              "      }" + "\n" +
+              "      else {" + "\n" +
+              "        write(\"--\", \"" + texFile + "\", append=TRUE)" + "\n" +
+              "      } " + "\n" +
+              "      if (problem == \"" + problems[problems.length - 1] + "\") {" + "\n" +
+              "        if (j == \"" + algorithmNameList_[algorithmNameList_.length - 1] + "\") {" + "\n" +
+              "          write(\" \\\\\\\\ \", \"" + texFile + "\", append=TRUE)" + "\n" +
+              "        } " + "\n" +
+              "        else {" + "\n" +
+              "          write(\" & \", \"" + texFile + "\", append=TRUE)" + "\n" +
+              "        }" + "\n" +
+              "      }" + "\n" +
+              "    }" + "\n" +
+              "    jndx = jndx + 1" + "\n" +
+              "  }" + "\n" +
+              "  indx = indx + 1" + "\n" +
+              "} # for algorithm" + "\n" + "\n" +
+              "  latexTableTail()" + "\n";
 
       os.write(output + "\n");
 
       // Generate end of file
       output = "#Step 3. Writes the end of latex file " + "\n" +
-        "latexTail()" + "\n";
+              "latexTail()" + "\n";
       os.write(output + "\n");
 
 
@@ -921,3 +964,4 @@ public abstract class Experiment {
     } // for
   } // generateRBoxplotScripts
 } // Experiment
+

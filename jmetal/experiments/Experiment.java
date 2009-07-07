@@ -802,7 +802,7 @@ public abstract class Experiment {
         "    write(\"--\", \"" + texFile + "\", append=TRUE)" + "\n" +
         "  }" + "\n" +
         "  else if (i < j) {" + "\n" +
-        "    if (wilcox.test(data1, data2, paired = FALSE)$p.value <= 0.05) {" + "\n" +
+        "    if (wilcox.test(data1, data2)$p.value <= 0.05) {" + "\n" +
         "      write(\"$\\\\blacktriangle$\", \"" + texFile + "\", append=TRUE)" + "\n" +
         "    }" + "\n" +
         "    else {" + "\n" +

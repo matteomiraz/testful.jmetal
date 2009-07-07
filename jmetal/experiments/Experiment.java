@@ -856,7 +856,7 @@ public abstract class Experiment {
                 "    write(\" \", \"" + texFile + "\", append=TRUE)" + "\n" +
                 "  }" + "\n" +
                 "}" + "\n";
-      }
+      } 
       os.write(output + "\n");
 
       // Start of the R script

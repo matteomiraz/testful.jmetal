@@ -212,6 +212,8 @@ public class SMPSO extends Algorithm {
     indicators_ = (QualityIndicator) getInputParameter("indicators");
     requiredEvaluations_ = 0;
 
+    iteration_ = 0 ;
+
     success_ = false;
 
     particles_ = new SolutionSet(particlesSize_);

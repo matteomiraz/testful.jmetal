@@ -481,12 +481,14 @@ public abstract class Experiment {
       double bestValue;
       double bestValueIQR;
       int bestIndex = -1;
+      int secondBestIndex = -1 ;
       if ((Boolean) indicatorMinimize_.get(indicatorList_[indicator]) == true) {// minimize by default
         bestValue = Double.MAX_VALUE;
         bestValueIQR = Double.MAX_VALUE;
         for (int j = 0; j < (algorithmNameList_.length); j++) {
           if ((mean[indicator][i][j] < bestValue) ||
                   ((mean[indicator][i][j] == bestValue) && (stdDev[indicator][i][j] < bestValueIQR))) {
+            secondBestIndex = bestIndex ;
             bestValue = mean[indicator][i][j];
             bestValueIQR = stdDev[indicator][i][j];
             bestIndex = j;
@@ -499,6 +501,7 @@ public abstract class Experiment {
         for (int j = 0; j < (algorithmNameList_.length); j++) {
           if ((mean[indicator][i][j] > bestValue) ||
                   ((mean[indicator][i][j] == bestValue) && (stdDev[indicator][i][j] < bestValueIQR))) {
+            secondBestIndex = bestIndex ;
             bestValue = mean[indicator][i][j];
             bestValueIQR = stdDev[indicator][i][j];
             bestIndex = j;
@@ -510,6 +513,9 @@ public abstract class Experiment {
       for (int j = 0; j < (algorithmNameList_.length - 1); j++) {
         if (j == bestIndex) {
           os.write("\\cellcolor{gray95}");
+        }
+        if (j == secondBestIndex) {
+          os.write("\\cellcolor{gray25}");
         }
 
         m = String.format(Locale.ENGLISH, "%10.2e", mean[indicator][i][j]);
@@ -567,13 +573,15 @@ public abstract class Experiment {
       // find the best value
       double bestValue;
       double bestValueIQR;
-      int bestIndex = -1;
+      int bestIndex = -1 ;
+      int secondBestIndex = -1 ;
       if ((Boolean) indicatorMinimize_.get(indicatorList_[indicator]) == true) {// minimize by default
         bestValue = Double.MAX_VALUE;
         bestValueIQR = Double.MAX_VALUE;
         for (int j = 0; j < (algorithmNameList_.length); j++) {
           if ((median[indicator][i][j] < bestValue) ||
                   ((median[indicator][i][j] == bestValue) && (IQR[indicator][i][j] < bestValueIQR))) {
+            secondBestIndex = bestIndex ;
             bestValue = median[indicator][i][j];
             bestValueIQR = IQR[indicator][i][j];
             bestIndex = j;
@@ -586,6 +594,7 @@ public abstract class Experiment {
         for (int j = 0; j < (algorithmNameList_.length); j++) {
           if ((median[indicator][i][j] > bestValue) ||
                   ((median[indicator][i][j] == bestValue) && (IQR[indicator][i][j] < bestValueIQR))) {
+            secondBestIndex = bestIndex ;
             bestValue = median[indicator][i][j];
             bestValueIQR = IQR[indicator][i][j];
             bestIndex = j;
@@ -598,6 +607,9 @@ public abstract class Experiment {
       for (int j = 0; j < (algorithmNameList_.length - 1); j++) {
         if (j == bestIndex) {
           os.write("\\cellcolor{gray95}");
+        }
+        if (j == secondBestIndex) {
+          os.write("\\cellcolor{gray25}");
         }
         m = String.format(Locale.ENGLISH, "%10.2e", median[indicator][i][j]);
         s = String.format(Locale.ENGLISH, "%8.1e", IQR[indicator][i][j]);

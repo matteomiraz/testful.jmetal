@@ -71,7 +71,7 @@ public class CEC2009_UF7 extends Problem {
     
     double [] x = new double[numberOfVariables_] ;
     for (int i = 0; i < numberOfVariables_; i++)
-      x[i] = decisionVariables.variables_[i].getValue() ;
+      x[i] = decisionVariables.variables_.get(i).getValue() ;
 
   	int count1, count2;
 		double sum1, sum2, yj;

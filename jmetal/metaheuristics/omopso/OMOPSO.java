@@ -194,10 +194,10 @@ public class OMOPSO extends Algorithm {
       for (int var = 0; var < particle.size(); var++){                                     
         //Computing the velocity of this particle
         speed_[i][var] = W  * speed_[i][var] +
-                   C1 * r1 * (bestParticle.variables_[var].getValue() - 
-                              particle.variables_[var].getValue()) +
-                   C2 * r2 * (bestGlobal.variables_[var].getValue() - 
-                              particle.variables_[var].getValue());
+                   C1 * r1 * (bestParticle.variables_.get(var).getValue() - 
+                              particle.variables_.get(var).getValue()) +
+                   C2 * r2 * (bestGlobal.variables_.get(var).getValue() - 
+                              particle.variables_.get(var).getValue());
       }
                 
     }
@@ -212,13 +212,13 @@ public class OMOPSO extends Algorithm {
       DecisionVariables particle = particles_.get(i).getDecisionVariables();
       //particle.move(speed_[i]);
       for (int var = 0; var < particle.size(); var++){
-        particle.variables_[var].setValue(particle.variables_[var].getValue()+ speed_[i][var]);
-        if (particle.variables_[var].getValue() < problem_.getLowerLimit(var)){
-          particle.variables_[var].setValue(problem_.getLowerLimit(var));                    
+        particle.variables_.get(var).setValue(particle.variables_.get(var).getValue()+ speed_[i][var]);
+        if (particle.variables_.get(var).getValue() < problem_.getLowerLimit(var)){
+          particle.variables_.get(var).setValue(problem_.getLowerLimit(var));                    
           speed_[i][var] = speed_[i][var] * -1.0;    
         }
-        if (particle.variables_[var].getValue() > problem_.getUpperLimit(var)){
-          particle.variables_[var].setValue(problem_.getUpperLimit(var));                    
+        if (particle.variables_.get(var).getValue() > problem_.getUpperLimit(var)){
+          particle.variables_.get(var).setValue(problem_.getUpperLimit(var));                    
           speed_[i][var] = speed_[i][var] * -1.0;    
         }                                             
       }

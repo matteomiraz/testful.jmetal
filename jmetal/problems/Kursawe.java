@@ -73,10 +73,10 @@ public class Kursawe extends Problem {
    
     fx[0] = 0.0 ; 
     for (int var = 0; var < numberOfVariables_ - 1; var++) {        
-      xi = decisionVariables.variables_[var].getValue()   * 
-           decisionVariables.variables_[var].getValue();
-      xj = decisionVariables.variables_[var+1].getValue() * 
-           decisionVariables.variables_[var+1].getValue();
+      xi = decisionVariables.variables_.get(var).getValue()   * 
+           decisionVariables.variables_.get(var).getValue();
+      xj = decisionVariables.variables_.get(var+1).getValue() * 
+           decisionVariables.variables_.get(var+1).getValue();
       aux = (-0.2) * Math.sqrt(xi + xj);
       fx[0] += (-10.0) * Math.exp(aux);
     } // for
@@ -84,9 +84,9 @@ public class Kursawe extends Problem {
     fx[1] = 0.0;
         
     for (int var = 0; var < numberOfVariables_ ; var++) {
-      fx[1] += Math.pow(Math.abs(decisionVariables.variables_[var].getValue()),
+      fx[1] += Math.pow(Math.abs(decisionVariables.variables_.get(var).getValue()),
     		                     0.8) + 
-           5.0 * Math.sin(Math.pow(decisionVariables.variables_[var].getValue(),
+           5.0 * Math.sin(Math.pow(decisionVariables.variables_.get(var).getValue(),
         		                 3.0));
     } // for
         

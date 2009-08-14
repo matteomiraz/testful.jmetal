@@ -62,7 +62,7 @@ public class ZDT5 extends Problem{
   */    
   public void evaluate(Solution solution) {        
     double [] f = new double[numberOfObjectives_] ; 
-    f[0]        = 1 + u((Binary)solution.getDecisionVariables().variables_[0]);
+    f[0]        = 1 + u((Binary)solution.getDecisionVariables().variables_.get(0));
     double g    = evalG(solution.getDecisionVariables())                 ;
     double h    = evalH(f[0],g)              ;
     f[1]        = h * g                           ;   
@@ -79,7 +79,7 @@ public class ZDT5 extends Problem{
   public double evalG(DecisionVariables decisionVariables) {
     double res = 0.0;
     for (int var = 1; var < numberOfVariables_; var++) {
-      res += evalV(u((Binary)decisionVariables.variables_[var]));
+      res += evalV(u((Binary)decisionVariables.variables_.get(var)));
     }
     
     return res;

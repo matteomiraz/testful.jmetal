@@ -91,8 +91,8 @@ public class Distance {
     double distance = 0.0;
     //-> Calculate the Euclidean distance
     for (int i = 0; i < decisionVariableI.size(); i++){
-      diff = decisionVariableI.variables_[i].getValue() -
-             decisionVariableJ.variables_[i].getValue();
+      diff = decisionVariableI.variables_.get(i).getValue() -
+             decisionVariableJ.variables_.get(i).getValue();
       distance += Math.pow(diff,2.0);
     } // for    
         

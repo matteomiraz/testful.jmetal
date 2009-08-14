@@ -160,7 +160,7 @@ public class WFG2 extends WFG{
     DecisionVariables dv = solution.getDecisionVariables();
         
     for (int i = 0; i < getNumberOfVariables(); i++) {
-      variables[i] = (float)dv.variables_[i].getValue();    
+      variables[i] = (float)dv.variables_.get(i).getValue();    
     }
         
     float [] sol = evaluate(variables);

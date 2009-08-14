@@ -85,7 +85,7 @@ public class LZ07_F4 extends Problem {
 			int k = numberOfVariables_ - numberOfObjectives_ + 1;
           
       for (int i = 0; i < numberOfVariables_; i++) {
-      	x.addElement(gen.variables_[i].getValue());
+      	x.addElement(gen.variables_.get(i).getValue());
       	y.addElement(0.0) ;
       } // for
         

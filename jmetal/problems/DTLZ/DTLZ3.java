@@ -74,7 +74,7 @@ public class DTLZ3 extends Problem{
     int k = numberOfVariables_ - numberOfObjectives_ + 1;
         
     for (int i = 0; i < numberOfVariables_; i++)
-      x[i] = gen.variables_[i].getValue();
+      x[i] = gen.variables_.get(i).getValue();
         
     double g = 0.0;
     for (int i = numberOfVariables_ - k; i < numberOfVariables_; i++)

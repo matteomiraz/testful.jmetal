@@ -57,9 +57,9 @@ public class ConstrEx extends Problem{
     DecisionVariables decisionVariables  = solution.getDecisionVariables();
        
     double [] f = new double[numberOfObjectives_];
-    f[0] = decisionVariables.variables_[0].getValue();        
-    f[1] = (1.0 + decisionVariables.variables_[1].getValue())/
-                  decisionVariables.variables_[0].getValue();        
+    f[0] = decisionVariables.variables_.get(0).getValue();        
+    f[1] = (1.0 + decisionVariables.variables_.get(1).getValue())/
+                  decisionVariables.variables_.get(0).getValue();        
     
     solution.setObjective(0,f[0]);
     solution.setObjective(1,f[1]);
@@ -73,8 +73,8 @@ public class ConstrEx extends Problem{
   public void evaluateConstraints(Solution solution) throws JMException {
     double [] constraint = new double[this.getNumberOfConstraints()];
 
-    double x1 = solution.getDecisionVariables().variables_[0].getValue();
-    double x2 = solution.getDecisionVariables().variables_[1].getValue();
+    double x1 = solution.getDecisionVariables().variables_.get(0).getValue();
+    double x2 = solution.getDecisionVariables().variables_.get(1).getValue();
         
     constraint[0] =  (x2 + 9*x1 -6.0) ;
     constraint[1] =  (-x2 + 9*x1 -1.0);

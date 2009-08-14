@@ -75,7 +75,7 @@ public class ZZJ07_F8 extends Problem {
 		double h   ;
     double sum ;
     for (int i = 0; i < numberOfVariables_; i++)
-      x[i] = decisionVariables.variables_[i].getValue() ;
+      x[i] = decisionVariables.variables_.get(i).getValue() ;
 
     sum = 0.0 ;
     for(int i=2; i<numberOfVariables_; i++)

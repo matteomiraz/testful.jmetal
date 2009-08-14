@@ -74,7 +74,7 @@ public class DTLZ7 extends Problem{
     int k = numberOfVariables_ - numberOfObjectives_ + 1;
             
     for (int i = 0; i < numberOfVariables_; i++)
-      x[i] = gen.variables_[i].getValue();
+      x[i] = gen.variables_.get(i).getValue();
         
     //Calculate g
     double g = 0.0;

@@ -70,12 +70,12 @@ public class Osyczka2 extends Problem{
     double [] f = new double[numberOfObjectives_];
     
     double x1,x2,x3,x4,x5,x6;
-    x1 = decisionVariables.variables_[0].getValue();
-    x2 = decisionVariables.variables_[1].getValue();
-    x3 = decisionVariables.variables_[2].getValue();
-    x4 = decisionVariables.variables_[3].getValue();
-    x5 = decisionVariables.variables_[4].getValue();
-    x6 = decisionVariables.variables_[5].getValue();                
+    x1 = decisionVariables.variables_.get(0).getValue();
+    x2 = decisionVariables.variables_.get(1).getValue();
+    x3 = decisionVariables.variables_.get(2).getValue();
+    x4 = decisionVariables.variables_.get(3).getValue();
+    x5 = decisionVariables.variables_.get(4).getValue();
+    x6 = decisionVariables.variables_.get(5).getValue();                
     f[0] = - (25.0*(x1-2.0)*(x1-2.0) + 
                   (x2-2.0)*(x2-2.0) + 
                   (x3-1.0)*(x3-1.0) + 
@@ -98,12 +98,12 @@ public class Osyczka2 extends Problem{
     DecisionVariables decisionVariables = solution.getDecisionVariables();
         
     double x1,x2,x3,x4,x5,x6;
-    x1 = decisionVariables.variables_[0].getValue();
-    x2 = decisionVariables.variables_[1].getValue();
-    x3 = decisionVariables.variables_[2].getValue();
-    x4 = decisionVariables.variables_[3].getValue();
-    x5 = decisionVariables.variables_[4].getValue();
-    x6 = decisionVariables.variables_[5].getValue();
+    x1 = decisionVariables.variables_.get(0).getValue();
+    x2 = decisionVariables.variables_.get(1).getValue();
+    x3 = decisionVariables.variables_.get(2).getValue();
+    x4 = decisionVariables.variables_.get(3).getValue();
+    x5 = decisionVariables.variables_.get(4).getValue();
+    x6 = decisionVariables.variables_.get(5).getValue();
         
     constraint[0] = (x1 + x2)/2.0 - 1.0;
     constraint[1] = (6.0 - x1 - x2)/6.0;

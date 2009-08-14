@@ -60,9 +60,9 @@ public class Water extends Problem {
   public void evaluate(Solution solution) throws JMException {         
     double [] x = new double[3] ; // 3 decision variables
     double [] f = new double[5] ; // 5 functions
-    x[0] = solution.getDecisionVariables().variables_[0].getValue();
-    x[1] = solution.getDecisionVariables().variables_[1].getValue();
-    x[2] = solution.getDecisionVariables().variables_[2].getValue();
+    x[0] = solution.getDecisionVariables().variables_.get(0).getValue();
+    x[1] = solution.getDecisionVariables().variables_.get(1).getValue();
+    x[2] = solution.getDecisionVariables().variables_.get(2).getValue();
 
     
     // First function
@@ -92,9 +92,9 @@ public class Water extends Problem {
     double [] constraint = new double[7]; // 7 constraints
     double [] x          = new double[3]; // 3 objectives
         
-    x[0] = solution.getDecisionVariables().variables_[0].getValue();
-    x[1] = solution.getDecisionVariables().variables_[1].getValue();
-    x[2] = solution.getDecisionVariables().variables_[2].getValue();
+    x[0] = solution.getDecisionVariables().variables_.get(0).getValue();
+    x[1] = solution.getDecisionVariables().variables_.get(1).getValue();
+    x[2] = solution.getDecisionVariables().variables_.get(2).getValue();
  
     constraint[0] = 1 - (0.00139/(x[0]*x[1])+4.94*x[2]-0.08)             ;
     constraint[1] = 1 - (0.000306/(x[0]*x[1])+1.082*x[2]-0.0986)         ;

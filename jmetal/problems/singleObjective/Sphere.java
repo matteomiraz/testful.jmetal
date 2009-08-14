@@ -55,7 +55,7 @@ public class Sphere extends Problem {
 
     double sum = 0.0;
     for (int var = 0; var < numberOfVariables_; var++) {
-      sum += StrictMath.pow(decisionVariables.variables_[var].getValue(), 2.0);      
+      sum += StrictMath.pow(decisionVariables.variables_.get(var).getValue(), 2.0);      
     }        
     solution.setObjective(0, sum);
   } // evaluate

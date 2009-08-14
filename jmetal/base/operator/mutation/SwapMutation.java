@@ -37,11 +37,11 @@ public class SwapMutation extends Mutation {
   public void doMutation(double probability, Solution solution) throws JMException {   
     int permutation[] ;
     int permutationLength ;
-    if (solution.getDecisionVariables().variables_[0].getVariableType() ==
+    if (solution.getDecisionVariables().variables_.get(0).getVariableType() ==
       VariableType_.Permutation) {
 
-      permutationLength = ((Permutation)solution.getDecisionVariables().variables_[0]).getLength() ;
-      permutation = ((Permutation)solution.getDecisionVariables().variables_[0]).vector_ ;
+      permutationLength = ((Permutation)solution.getDecisionVariables().variables_.get(0)).getLength() ;
+      permutation = ((Permutation)solution.getDecisionVariables().variables_.get(0)).vector_ ;
 
       if (PseudoRandom.randDouble() < probability) {
         int pos1 ;
@@ -64,7 +64,7 @@ public class SwapMutation extends Mutation {
     } // if
     else  {
       String msg = "SwapMutation.doMutation: invalid type. " +
-          solution.getDecisionVariables().variables_[0].getVariableType();
+          solution.getDecisionVariables().variables_.get(0).getVariableType();
 			Configuration.logger_.severe(msg);
       throw new JMException(msg) ;
     } // catch               

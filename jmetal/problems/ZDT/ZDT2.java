@@ -71,7 +71,7 @@ public class ZDT2 extends Problem{
     DecisionVariables decisionVariables  = solution.getDecisionVariables();
         
     double [] f = new double[numberOfObjectives_] ;
-    f[0]        = decisionVariables.variables_[0].getValue()     ;
+    f[0]        = decisionVariables.variables_.get(0).getValue()     ;
     double g    = this.evalG(decisionVariables)                 ;
     double h    = this.evalH(f[0],g)              ;
     f[1]        = h * g                           ;
@@ -89,7 +89,7 @@ public class ZDT2 extends Problem{
   private double evalG(DecisionVariables decisionVariables) throws JMException {
     double g = 0.0;        
     for (int i = 1; i < decisionVariables.size();i++)
-      g += decisionVariables.variables_[i].getValue();
+      g += decisionVariables.variables_.get(i).getValue();
     double constante = (9.0 / (numberOfVariables_-1));
     g = constante * g;
     g = g + 1.0;

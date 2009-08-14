@@ -67,8 +67,8 @@ public class Poloni extends Problem{
     double [] x = new double[numberOfVariables_] ;
     double [] f = new double[numberOfObjectives_];
     
-    x[0] = decisionVariables.variables_[0].getValue();
-    x[1] = decisionVariables.variables_[1].getValue();        
+    x[0] = decisionVariables.variables_.get(0).getValue();
+    x[1] = decisionVariables.variables_.get(1).getValue();        
     
     double B1 = 0.5 * Math.sin(x[0]) - 2 * Math.cos(x[0]) + Math.sin(x[1]) - 
                 1.5 * Math.cos(x[1]) ;

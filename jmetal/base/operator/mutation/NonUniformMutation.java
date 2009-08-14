@@ -62,26 +62,26 @@ public class NonUniformMutation extends Mutation {
         if (rand <= 0.5)
         {
           tmp = delta(
-                  solution.getDecisionVariables().variables_[var].getUpperBound() -
-                  solution.getDecisionVariables().variables_[var].getValue(),
+                  solution.getDecisionVariables().variables_.get(var).getUpperBound() -
+                  solution.getDecisionVariables().variables_.get(var).getValue(),
                   perturbation_.doubleValue());
-          tmp += solution.getDecisionVariables().variables_[var].getValue();
+          tmp += solution.getDecisionVariables().variables_.get(var).getValue();
         }
         else
         {
           tmp = delta(
-                  solution.getDecisionVariables().variables_[var].getLowerBound() - 
-                  solution.getDecisionVariables().variables_[var].getValue(),
+                  solution.getDecisionVariables().variables_.get(var).getLowerBound() - 
+                  solution.getDecisionVariables().variables_.get(var).getValue(),
                   perturbation_.doubleValue());
-          tmp += solution.getDecisionVariables().variables_[var].getValue();
+          tmp += solution.getDecisionVariables().variables_.get(var).getValue();
         }
                 
-        if (tmp < solution.getDecisionVariables().variables_[var].getLowerBound())
-          tmp = solution.getDecisionVariables().variables_[var].getLowerBound();
-        else if (tmp > solution.getDecisionVariables().variables_[var].getUpperBound())
-          tmp = solution.getDecisionVariables().variables_[var].getUpperBound();
+        if (tmp < solution.getDecisionVariables().variables_.get(var).getLowerBound())
+          tmp = solution.getDecisionVariables().variables_.get(var).getLowerBound();
+        else if (tmp > solution.getDecisionVariables().variables_.get(var).getUpperBound())
+          tmp = solution.getDecisionVariables().variables_.get(var).getUpperBound();
                 
-        solution.getDecisionVariables().variables_[var].setValue(tmp);
+        solution.getDecisionVariables().variables_.get(var).setValue(tmp);
       }
     }
   } // doMutation

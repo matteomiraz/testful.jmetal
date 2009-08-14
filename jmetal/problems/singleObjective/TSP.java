@@ -66,16 +66,16 @@ public class TSP extends Problem {
       int x ; 
       int y ;
       
-      x = ((Permutation)solution.getDecisionVariables().variables_[0]).vector_[i] ;
-      y = ((Permutation)solution.getDecisionVariables().variables_[0]).vector_[i+1] ;
+      x = ((Permutation)solution.getDecisionVariables().variables_.get(0)).vector_[i] ;
+      y = ((Permutation)solution.getDecisionVariables().variables_.get(0)).vector_[i+1] ;
 //  cout << "I : " << i << ", x = " << x << ", y = " << y << endl ;    
       fitness += distanceMatrix_[x][y] ;
     } // for
     int firstCity ;
     int lastCity  ;
     
-    firstCity = ((Permutation)solution.getDecisionVariables().variables_[0]).vector_[0] ;
-    lastCity  = ((Permutation)solution.getDecisionVariables().variables_[0]).vector_[numberOfCities_ - 1] ;
+    firstCity = ((Permutation)solution.getDecisionVariables().variables_.get(0)).vector_[0] ;
+    lastCity  = ((Permutation)solution.getDecisionVariables().variables_.get(0)).vector_[numberOfCities_ - 1] ;
     fitness += distanceMatrix_[firstCity][lastCity] ;
     
     solution.setObjective(0, fitness);            

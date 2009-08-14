@@ -207,7 +207,7 @@ public class AbYSS extends Algorithm {
       double high = low + (problem_.getUpperLimit(i) - 
                    problem_.getLowerLimit(i)) / numberOfSubranges_ ;
       value = PseudoRandom.randDouble(low, high) ;
-      solution.getDecisionVariables().variables_[i].setValue(value);            
+      solution.getDecisionVariables().variables_.get(i).setValue(value);            
     } // for       
     return solution ;
   } // diversificationGeneration

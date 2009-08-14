@@ -479,9 +479,9 @@ public class Solution implements Serializable {
     int bits = 0 ;
     
     for (int i = 0;  i < decisionVariable_.size()  ; i++)
-      if ((decisionVariable_.variables_[i].getVariableType() == VariableType_.BinaryReal) ||
-          (decisionVariable_.variables_[i].getVariableType() == VariableType_.Binary))
-        bits += ((Binary)(decisionVariable_.variables_[i])).getNumberOfBits() ;
+      if ((decisionVariable_.variables_.get(i).getVariableType() == VariableType_.BinaryReal) ||
+          (decisionVariable_.variables_.get(i).getVariableType() == VariableType_.Binary))
+        bits += ((Binary)(decisionVariable_.variables_.get(i))).getNumberOfBits() ;
     
     return bits ;
   } // getNumberOfBits

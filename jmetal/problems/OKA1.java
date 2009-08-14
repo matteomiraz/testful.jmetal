@@ -62,7 +62,7 @@ public class OKA1 extends Problem {
     double [] x  = new double[numberOfVariables_]  ; // 2 variables
    
     for (int i = 0; i < numberOfVariables_; i++)
-      x[i] = decisionVariables.variables_[i].getValue() ;
+      x[i] = decisionVariables.variables_.get(i).getValue() ;
     
     double x0 = Math.cos(Math.PI/12.0)*x[0] - Math.sin(Math.PI/12.0)*x[1] ;
     double x1 = Math.sin(Math.PI/12.0)*x[0] + Math.cos(Math.PI/12.0)*x[1] ;

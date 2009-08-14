@@ -49,7 +49,7 @@ public class OneMax extends Problem {
     Binary variable ;
     int    counter  ;
     
-    variable = ((Binary)solution.getDecisionVariables().variables_[0]) ;
+    variable = ((Binary)solution.getDecisionVariables().variables_.get(0)) ;
     
     counter = 0 ;
 

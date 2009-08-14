@@ -131,8 +131,8 @@ public class RadioNetworkDesign extends Problem {
      covered_points = 0;
 
      // with transmiter locations and calculating ...
-     for(int i=0; i<((Binary)gen.variables_[0]).getNumberOfBits();i++){
-       if (((Binary)gen.variables_[0]).getIth(i) == true){ 
+     for(int i=0; i<((Binary)gen.variables_.get(0)).getNumberOfBits();i++){
+       if (((Binary)gen.variables_.get(0)).getIth(i) == true){ 
          used_trans++;
          x = trans_location[i*2];
          y = trans_location[i*2+1];

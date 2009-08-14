@@ -60,8 +60,8 @@ public class Srinivas extends Problem{
     
     double [] f = new double[numberOfObjectives_];
     
-    double x1 = decisionVariables.variables_[0].getValue();
-    double x2 = decisionVariables.variables_[1].getValue();        
+    double x1 = decisionVariables.variables_.get(0).getValue();
+    double x2 = decisionVariables.variables_.get(1).getValue();        
     f[0] = 2.0 + (x1-2.0)*(x1-2.0) + (x2-1.0)*(x2-1.0);                        
     f[1] = 9.0 * x1 - (x2-1.0)*(x2-1.0);        
         
@@ -78,8 +78,8 @@ public class Srinivas extends Problem{
   public void evaluateConstraints(Solution solution) throws JMException {
     double [] constraint = new double[this.getNumberOfConstraints()];
         
-    double x1 = solution.getDecisionVariables().variables_[0].getValue();
-    double x2 = solution.getDecisionVariables().variables_[1].getValue();
+    double x1 = solution.getDecisionVariables().variables_.get(0).getValue();
+    double x2 = solution.getDecisionVariables().variables_.get(1).getValue();
         
     constraint[0] = 1.0 - (x1*x1 + x2*x2)/225.0;
     constraint[1] = (3.0*x2 - x1)/10.0 - 1.0;

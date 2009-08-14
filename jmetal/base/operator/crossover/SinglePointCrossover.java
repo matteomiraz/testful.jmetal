@@ -53,7 +53,7 @@ public class SinglePointCrossover extends Crossover {
           int totalNumberOfBits = 0;
           for (int i = 0; i < parent1.getDecisionVariables().size(); i++) {
             totalNumberOfBits +=
-                    ((Binary) parent1.getDecisionVariables().variables_[i]).getNumberOfBits();
+                    ((Binary) parent1.getDecisionVariables().variables_.get(i)).getNumberOfBits();
           }
 
           //2. Calcule the point to make the crossover
@@ -62,25 +62,25 @@ public class SinglePointCrossover extends Crossover {
           //3. Compute the variable that containt the crossoverPoint bit
           int variable = 0;
           int acountBits =
-                  ((Binary) parent1.getDecisionVariables().variables_[variable]).getNumberOfBits();
+                  ((Binary) parent1.getDecisionVariables().variables_.get(variable)).getNumberOfBits();
 
           while (acountBits < (crossoverPoint + 1)) {
             variable++;
             acountBits +=
-                    ((Binary) parent1.getDecisionVariables().variables_[variable]).getNumberOfBits();
+                    ((Binary) parent1.getDecisionVariables().variables_.get(variable)).getNumberOfBits();
           }
 
           //4. Compute the bit into the variable selected
           int diff = acountBits - crossoverPoint;
           int intoVariableCrossoverPoint =
-                  ((Binary) parent1.getDecisionVariables().variables_[variable]).getNumberOfBits() - diff;
+                  ((Binary) parent1.getDecisionVariables().variables_.get(variable)).getNumberOfBits() - diff;
 
           //5. Make the crossover into the the gene;
           Binary offSpring1, offSpring2;
           offSpring1 =
-                  (Binary) parent1.getDecisionVariables().variables_[variable].deepCopy();
+                  (Binary) parent1.getDecisionVariables().variables_.get(variable).deepCopy();
           offSpring2 =
-                  (Binary) parent2.getDecisionVariables().variables_[variable].deepCopy();
+                  (Binary) parent2.getDecisionVariables().variables_.get(variable).deepCopy();
 
           for (int i = intoVariableCrossoverPoint;
                   i < offSpring1.getNumberOfBits();
@@ -90,23 +90,23 @@ public class SinglePointCrossover extends Crossover {
             offSpring2.bits_.set(i, swap);
           }
 
-          offSpring[0].getDecisionVariables().variables_[variable] = offSpring1;
-          offSpring[1].getDecisionVariables().variables_[variable] = offSpring2;
+          offSpring[0].getDecisionVariables().variables_.set(variable, offSpring1);
+          offSpring[1].getDecisionVariables().variables_.set(variable, offSpring2);
 
           //6. Apply the crossover to the other variables
           for (int i = 0; i < variable; i++) {
-            offSpring[0].getDecisionVariables().variables_[i] =
-                    parent2.getDecisionVariables().variables_[i].deepCopy();
+            offSpring[0].getDecisionVariables().variables_.set(variable,
+                    parent2.getDecisionVariables().variables_.get(variable).deepCopy());
 
-            offSpring[1].getDecisionVariables().variables_[i] =
-                    parent1.getDecisionVariables().variables_[i].deepCopy();
+            offSpring[1].getDecisionVariables().variables_.set(variable, 
+                    parent1.getDecisionVariables().variables_.get(variable).deepCopy());
 
           }
 
           //7. Decode the results
           for (int i = 0; i < offSpring[0].getDecisionVariables().size(); i++) {
-            ((Binary) offSpring[0].getDecisionVariables().variables_[i]).decode();
-            ((Binary) offSpring[1].getDecisionVariables().variables_[i]).decode();
+            ((Binary) offSpring[0].getDecisionVariables().variables_.get(variable)).decode();
+            ((Binary) offSpring[1].getDecisionVariables().variables_.get(variable)).decode();
           }
         } // Binary or BinaryReal
         else { // Integer representation
@@ -114,10 +114,10 @@ public class SinglePointCrossover extends Crossover {
           int valueX1;
           int valueX2;
           for (int i = crossoverPoint; i < parent1.numberOfVariables(); i++) {
-            valueX1 = (int) parent1.getDecisionVariables().variables_[i].getValue();
-            valueX2 = (int) parent2.getDecisionVariables().variables_[i].getValue();
-            offSpring[0].getDecisionVariables().variables_[i].setValue(valueX2);
-            offSpring[1].getDecisionVariables().variables_[i].setValue(valueX1);
+            valueX1 = (int) parent1.getDecisionVariables().variables_.get(i).getValue();
+            valueX2 = (int) parent2.getDecisionVariables().variables_.get(i).getValue();
+            offSpring[0].getDecisionVariables().variables_.get(i).setValue(valueX2);
+            offSpring[1].getDecisionVariables().variables_.get(i).setValue(valueX1);
           } // for
         } // Int representation
       }

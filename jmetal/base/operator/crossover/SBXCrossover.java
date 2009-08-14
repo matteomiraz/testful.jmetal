@@ -85,8 +85,8 @@ public class SBXCrossover extends Crossover {
     double valueX1,valueX2;
     if (PseudoRandom.randDouble() <= probability){
       for (i=0; i<parent1.getDecisionVariables().size(); i++){
-        valueX1 = parent1.getDecisionVariables().variables_[i].getValue();
-        valueX2 = parent2.getDecisionVariables().variables_[i].getValue();
+        valueX1 = parent1.getDecisionVariables().variables_.get(i).getValue();
+        valueX2 = parent2.getDecisionVariables().variables_.get(i).getValue();
         if (PseudoRandom.randDouble()<=0.5 ){
           
           if (java.lang.Math.abs(valueX1- valueX2) > EPS){
@@ -99,8 +99,8 @@ public class SBXCrossover extends Crossover {
               y2 = valueX1;
             } // if                       
             
-            yL = parent1.getDecisionVariables().variables_[i].getLowerBound();
-            yu = parent1.getDecisionVariables().variables_[i].getUpperBound();
+            yL = parent1.getDecisionVariables().variables_.get(i).getLowerBound();
+            yu = parent1.getDecisionVariables().variables_.get(i).getUpperBound();
             rand = PseudoRandom.randDouble();
             beta = 1.0 + (2.0*(y1-yL)/(y2-y1));
             alpha = 2.0 - java.lang.Math.pow(beta,-(eta_c+1.0));
@@ -136,19 +136,19 @@ public class SBXCrossover extends Crossover {
               c2=yu;                        
               
             if (PseudoRandom.randDouble()<=0.5) {
-              offSpring[0].getDecisionVariables().variables_[i].setValue(c2);
-              offSpring[1].getDecisionVariables().variables_[i].setValue(c1);
+              offSpring[0].getDecisionVariables().variables_.get(i).setValue(c2);
+              offSpring[1].getDecisionVariables().variables_.get(i).setValue(c1);
             } else {
-              offSpring[0].getDecisionVariables().variables_[i].setValue(c1);
-              offSpring[1].getDecisionVariables().variables_[i].setValue(c2);                            
+              offSpring[0].getDecisionVariables().variables_.get(i).setValue(c1);
+              offSpring[1].getDecisionVariables().variables_.get(i).setValue(c2);                            
             } // if
           } else {
-            offSpring[0].getDecisionVariables().variables_[i].setValue(valueX1);
-            offSpring[1].getDecisionVariables().variables_[i].setValue(valueX2);                        
+            offSpring[0].getDecisionVariables().variables_.get(i).setValue(valueX1);
+            offSpring[1].getDecisionVariables().variables_.get(i).setValue(valueX2);                        
           } // if
         } else {
-          offSpring[0].getDecisionVariables().variables_[i].setValue(valueX2);
-          offSpring[1].getDecisionVariables().variables_[i].setValue(valueX1);                    
+          offSpring[0].getDecisionVariables().variables_.get(i).setValue(valueX2);
+          offSpring[1].getDecisionVariables().variables_.get(i).setValue(valueX1);                    
         } // if
       } // if
     } // if

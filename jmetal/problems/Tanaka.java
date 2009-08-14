@@ -59,8 +59,8 @@ public class Tanaka extends Problem{
     DecisionVariables decisionVariables  = solution.getDecisionVariables();
     
     double [] f = new double[numberOfObjectives_];
-    f[0] = decisionVariables.variables_[0].getValue();
-    f[1] = decisionVariables.variables_[1].getValue();
+    f[0] = decisionVariables.variables_.get(0).getValue();
+    f[1] = decisionVariables.variables_.get(1).getValue();
        
     solution.setObjective(0,f[0]);
     solution.setObjective(1,f[1]);
@@ -75,8 +75,8 @@ public class Tanaka extends Problem{
   public void evaluateConstraints(Solution solution) throws JMException {
     double [] constraint = new double[this.getNumberOfConstraints()];
         
-    double x1 = solution.getDecisionVariables().variables_[0].getValue();
-    double x2 = solution.getDecisionVariables().variables_[1].getValue();
+    double x1 = solution.getDecisionVariables().variables_.get(0).getValue();
+    double x2 = solution.getDecisionVariables().variables_.get(1).getValue();
         
     constraint[0] = (x1*x1 + x2*x2 - 1.0 - 0.1*Math.cos(16.0*Math.atan(x1/x2)));
     constraint[1] = - 2.0 * ( (x1-0.5)*(x1-0.5) + (x2-0.5)*(x2-0.5) - 0.5);

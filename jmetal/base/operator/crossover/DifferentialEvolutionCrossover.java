@@ -71,28 +71,28 @@ public class DifferentialEvolutionCrossover extends DifferentialCrossover {
      
      int jrand ;
 
-     int numberOfVariables = parent[0].getDecisionVariables().variables_.length ;
+     int numberOfVariables = parent[0].getDecisionVariables().variables_.size() ;
      jrand = (int)(PseudoRandom.randInt(0, numberOfVariables - 1)) ;
      
      child = new Solution(current) ;
      for (int j=0; j < numberOfVariables; j++) {
         if (PseudoRandom.randDouble(0, 1) < CR_ || j == jrand) {
           double value ;
-          value = parent[2].getDecisionVariables().variables_[j].getValue()  +
-                  F_ * (parent[0].getDecisionVariables().variables_[j].getValue() -
-                       parent[1].getDecisionVariables().variables_[j].getValue()) ;
+          value = parent[2].getDecisionVariables().variables_.get(j).getValue()  +
+                  F_ * (parent[0].getDecisionVariables().variables_.get(j).getValue() -
+                       parent[1].getDecisionVariables().variables_.get(j).getValue()) ;
           
-          if (value < child.getDecisionVariables().variables_[j].getLowerBound())
-            value =  child.getDecisionVariables().variables_[j].getLowerBound() ;
-          if (value > child.getDecisionVariables().variables_[j].getUpperBound())
-            value = child.getDecisionVariables().variables_[j].getUpperBound() ;
+          if (value < child.getDecisionVariables().variables_.get(j).getLowerBound())
+            value =  child.getDecisionVariables().variables_.get(j).getLowerBound() ;
+          if (value > child.getDecisionVariables().variables_.get(j).getUpperBound())
+            value = child.getDecisionVariables().variables_.get(j).getUpperBound() ;
             
-          child.getDecisionVariables().variables_[j].setValue(value) ;
+          child.getDecisionVariables().variables_.get(j).setValue(value) ;
         }
         else {
           double value ;
-          value = current.getDecisionVariables().variables_[j].getValue();
-          child.getDecisionVariables().variables_[j].setValue(value) ;
+          value = current.getDecisionVariables().variables_.get(j).getValue();
+          child.getDecisionVariables().variables_.get(j).setValue(value) ;
         } // else
      }
      

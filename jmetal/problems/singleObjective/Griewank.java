@@ -57,9 +57,9 @@ public class Griewank extends Problem {
     double mult = 0.0    ;
     double d    = 4000.0 ;
     for (int var = 0; var < numberOfVariables_; var++) {
-      sum += decisionVariables.variables_[var].getValue() * 
-             decisionVariables.variables_[var].getValue() / d ;    
-      mult *= Math.cos(decisionVariables.variables_[var].getValue()/Math.sqrt(var)) ;    
+      sum += decisionVariables.variables_.get(var).getValue() * 
+             decisionVariables.variables_.get(var).getValue() / d ;    
+      mult *= Math.cos(decisionVariables.variables_.get(var).getValue()/Math.sqrt(var)) ;    
     }        
 
 

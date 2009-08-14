@@ -40,24 +40,24 @@ public class BitFlipMutation extends Mutation {
       if ((solution.getType() == SolutionType_.Binary) ||
               (solution.getType() == SolutionType_.BinaryReal)) {
         for (int i = 0; i < solution.getDecisionVariables().size(); i++) {
-          for (int j = 0; j < ((Binary) solution.getDecisionVariables().variables_[i]).getNumberOfBits(); j++) {
+          for (int j = 0; j < ((Binary) solution.getDecisionVariables().variables_.get(i)).getNumberOfBits(); j++) {
             if (PseudoRandom.randDouble() < probability) {
-              ((Binary) solution.getDecisionVariables().variables_[i]).bits_.flip(j);
+              ((Binary) solution.getDecisionVariables().variables_.get(i)).bits_.flip(j);
             }
           }
         }
 
         for (int i = 0; i < solution.getDecisionVariables().size(); i++) {
-          ((Binary) solution.getDecisionVariables().variables_[i]).decode();
+          ((Binary) solution.getDecisionVariables().variables_.get(i)).decode();
         }
       } // if
       else { // Integer representation
          for (int i = 0; i < solution.getDecisionVariables().size(); i++)
             if (PseudoRandom.randDouble() < probability) {
               int value = (int) (PseudoRandom.randInt(
-                       (int)solution.getDecisionVariables().variables_[i].getUpperBound(),
-                       (int)solution.getDecisionVariables().variables_[i].getLowerBound()));
-              solution.getDecisionVariables().variables_[i].setValue(value);
+                       (int)solution.getDecisionVariables().variables_.get(i).getUpperBound(),
+                       (int)solution.getDecisionVariables().variables_.get(i).getLowerBound()));
+              solution.getDecisionVariables().variables_.get(i).setValue(value);
             } // if
       } // else
     } catch (ClassCastException e1) {

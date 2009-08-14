@@ -73,7 +73,7 @@ public class ZZJ07_F6 extends Problem {
    double h   ;
    double sum ;
    for (int i = 0; i < numberOfVariables_; i++)
-     x[i] = decisionVariables.variables_[i].getValue() ;
+     x[i] = decisionVariables.variables_.get(i).getValue() ;
    
    fx[0] = Math.sqrt(x[0]) ;
 

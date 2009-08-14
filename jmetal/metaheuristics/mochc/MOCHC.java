@@ -79,8 +79,8 @@ public class MOCHC extends Algorithm {
     int distance = 0;
     for (int i = 0; i < problem_.getNumberOfVariables(); i++) {
       distance += 
-        ((Binary)solutionOne.getDecisionVariables().variables_[i]).
-        hammingDistance((Binary)solutionTwo.getDecisionVariables().variables_[i]);
+        ((Binary)solutionOne.getDecisionVariables().variables_.get(i)).
+        hammingDistance((Binary)solutionTwo.getDecisionVariables().variables_.get(i));
     }
     
     return distance;
@@ -126,7 +126,7 @@ public class MOCHC extends Algorithm {
     Solution aux = new Solution(problem_);
     int size = 0;
     for (int var = 0; var < problem_.getNumberOfVariables(); var++) {
-      size += ((Binary)aux.getDecisionVariables().variables_[var]).getNumberOfBits();
+      size += ((Binary)aux.getDecisionVariables().variables_.get(var)).getNumberOfBits();
     }
     minimumDistance = (int) Math.floor(initialConvergenceCount * size);
 

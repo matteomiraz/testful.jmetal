@@ -51,16 +51,16 @@ public class HUXCrossover extends Crossover{
     try {         
       if (PseudoRandom.randDouble() < probability)
       {
-        for (int var = 0; var < parent1.getDecisionVariables().variables_.length; var++) {
-          Binary p1 = (Binary)parent1.getDecisionVariables().variables_[var];
-          Binary p2 = (Binary)parent2.getDecisionVariables().variables_[var];
+        for (int var = 0; var < parent1.getDecisionVariables().variables_.size(); var++) {
+          Binary p1 = (Binary)parent1.getDecisionVariables().variables_.get(var);
+          Binary p2 = (Binary)parent2.getDecisionVariables().variables_.get(var);
 
           for (int bit = 0; bit < p1.getNumberOfBits(); bit++) {
             if (p1.bits_.get(bit) != p2.bits_.get(bit)) {
               if (PseudoRandom.randDouble() < 0.5) {
-                ((Binary)offSpring[0].getDecisionVariables().variables_[var])
+                ((Binary)offSpring[0].getDecisionVariables().variables_.get(var))
                 .bits_.set(bit,p2.bits_.get(bit));
-                ((Binary)offSpring[1].getDecisionVariables().variables_[var])
+                ((Binary)offSpring[1].getDecisionVariables().variables_.get(var))
                 .bits_.set(bit,p1.bits_.get(bit));
               }
             }
@@ -69,8 +69,8 @@ public class HUXCrossover extends Crossover{
         //7. Decode the results
         for (int i = 0; i < offSpring[0].getDecisionVariables().size(); i++)
         {
-          ((Binary)offSpring[0].getDecisionVariables().variables_[i]).decode();
-          ((Binary)offSpring[1].getDecisionVariables().variables_[i]).decode();
+          ((Binary)offSpring[0].getDecisionVariables().variables_.get(i)).decode();
+          ((Binary)offSpring[1].getDecisionVariables().variables_.get(i)).decode();
         }
       }          
     }catch (ClassCastException e1) {

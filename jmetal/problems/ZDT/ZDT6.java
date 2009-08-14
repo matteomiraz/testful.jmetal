@@ -66,7 +66,7 @@ public class ZDT6 extends Problem {
   public void evaluate(Solution solution) throws JMException {
     DecisionVariables decisionVariables  = solution.getDecisionVariables();
         
-    double x1   = decisionVariables.variables_[0].getValue()       ;
+    double x1   = decisionVariables.variables_.get(0).getValue()       ;
     double [] f = new double[numberOfObjectives_]   ;
     f[0]        = 1.0 - Math.exp((-4.0)*x1) * Math.pow(Math.sin(6.0*Math.PI*x1),6.0);
     double g    = this.evalG(decisionVariables)                   ;
@@ -86,7 +86,7 @@ public class ZDT6 extends Problem {
   public double evalG(DecisionVariables decisionVariables) throws JMException{
     double g = 0.0;
     for (int var = 1; var < this.numberOfVariables_; var++)
-      g += decisionVariables.variables_[var].getValue();
+      g += decisionVariables.variables_.get(var).getValue();
     g = g / (numberOfVariables_ - 1);
     g = java.lang.Math.pow(g,0.25);
     g = 9.0 * g;

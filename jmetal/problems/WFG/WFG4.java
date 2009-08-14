@@ -128,7 +128,7 @@ public class WFG4 extends WFG{
     DecisionVariables dv = solution.getDecisionVariables();
       
     for (int i = 0; i < this.getNumberOfVariables(); i++) {
-      variables[i] = (float)dv.variables_[i].getValue();
+      variables[i] = (float)dv.variables_.get(i).getValue();
     }
       
     float [] sol = evaluate(variables);

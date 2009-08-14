@@ -58,11 +58,11 @@ public class Schaffer extends Problem {
     DecisionVariables decisionVariables  = solution.getDecisionVariables();
     
     double [] f = new double[numberOfObjectives_];
-    f[0] = decisionVariables.variables_[0].getValue() * 
-           decisionVariables.variables_[0].getValue();
+    f[0] = decisionVariables.variables_.get(0).getValue() * 
+           decisionVariables.variables_.get(0).getValue();
     
-    f[1] = (decisionVariables.variables_[0].getValue() - 2.0) * 
-           (decisionVariables.variables_[0].getValue() - 2.0);
+    f[1] = (decisionVariables.variables_.get(0).getValue() - 2.0) * 
+           (decisionVariables.variables_.get(0).getValue() - 2.0);
         
     solution.setObjective(0,f[0]);
     solution.setObjective(1,f[1]);

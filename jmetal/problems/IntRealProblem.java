@@ -87,12 +87,12 @@ public class IntRealProblem extends Problem {
    
     fx[0] = 0.0 ; 
     for (int var = 0; var < intVariables_ ; var++) {        
-      fx[0] += (int)decisionVariables.variables_[var].getValue() ;
+      fx[0] += (int)decisionVariables.variables_.get(var).getValue() ;
     } // for
         
     fx[1] = 0.0 ; 
     for (int var = intVariables_; var < numberOfVariables_ ; var++) {        
-      fx[0] += decisionVariables.variables_[var].getValue() ;
+      fx[0] += decisionVariables.variables_.get(var).getValue() ;
     } // for
         
     solution.setObjective(0, fx[0]);

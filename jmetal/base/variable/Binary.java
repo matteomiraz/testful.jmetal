@@ -52,11 +52,7 @@ public class Binary extends Variable {
 
     bits_ = new BitSet(numberOfBits_);      
     for (int i = 0; i < numberOfBits_; i++){
-      if (PseudoRandom.randDouble() < 0.5) {
-        bits_.set(i,true);
-      } else {
-        bits_.set(i,false);                      
-      }
+    	bits_.set(i, PseudoRandom.randDouble() < 0.5);
     }
   } //Binary
   

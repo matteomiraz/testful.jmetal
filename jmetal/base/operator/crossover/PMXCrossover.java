@@ -46,17 +46,17 @@ import jmetal.util.PseudoRandom;
     offspring[0] = new Solution(parent1);
     offspring[1] = new Solution(parent2);
 
-    if (parent1.getDecisionVariables().variables_[0].getVariableType() ==
+    if (parent1.getDecisionVariables().variables_.get(0).getVariableType() ==
       VariableType_.Permutation) {
 
       int permutationLength ;
 
-      permutationLength = ((Permutation)parent1.getDecisionVariables().variables_[0]).getLength() ;
+      permutationLength = ((Permutation)parent1.getDecisionVariables().variables_.get(0)).getLength() ;
 
-      int parent1Vector[]    = ((Permutation)parent1.getDecisionVariables().variables_[0]).vector_ ;
-      int parent2Vector[]    = ((Permutation)parent2.getDecisionVariables().variables_[0]).vector_ ;    
-      int offspring1Vector[] = ((Permutation)offspring[0].getDecisionVariables().variables_[0]).vector_ ;
-      int offspring2Vector[] = ((Permutation)offspring[1].getDecisionVariables().variables_[0]).vector_ ;
+      int parent1Vector[]    = ((Permutation)parent1.getDecisionVariables().variables_.get(0)).vector_ ;
+      int parent2Vector[]    = ((Permutation)parent2.getDecisionVariables().variables_.get(0)).vector_ ;    
+      int offspring1Vector[] = ((Permutation)offspring[0].getDecisionVariables().variables_.get(0)).vector_ ;
+      int offspring2Vector[] = ((Permutation)offspring[1].getDecisionVariables().variables_.get(0)).vector_ ;
 
       if (PseudoRandom.randDouble() < probability) {
         int cuttingPoint1 ;
@@ -114,7 +114,7 @@ import jmetal.util.PseudoRandom;
       } // if
       else {
         String msg = "PMXCrossover.doCrossover: invalid type+" +
-            parent1.getDecisionVariables().variables_[0].getVariableType();
+            parent1.getDecisionVariables().variables_.get(0).getVariableType();
 				Configuration.logger_.severe(msg);
 	      throw new JMException(msg) ; 
       } // else

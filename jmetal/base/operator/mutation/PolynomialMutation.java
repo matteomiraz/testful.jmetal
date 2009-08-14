@@ -64,9 +64,9 @@ public class PolynomialMutation extends Mutation {
     {
       if (PseudoRandom.randDouble() <= probability)
       {
-        y      = solution.getDecisionVariables().variables_[var].getValue();
-        yl     = solution.getDecisionVariables().variables_[var].getLowerBound();                
-        yu     = solution.getDecisionVariables().variables_[var].getUpperBound();
+        y      = solution.getDecisionVariables().variables_.get(var).getValue();
+        yl     = solution.getDecisionVariables().variables_.get(var).getLowerBound();                
+        yu     = solution.getDecisionVariables().variables_.get(var).getUpperBound();
         delta1 = (y-yl)/(yu-yl);
         delta2 = (yu-y)/(yu-yl);
         rnd = PseudoRandom.randDouble();
@@ -88,7 +88,7 @@ public class PolynomialMutation extends Mutation {
           y = yl;
         if (y>yu)
           y = yu;
-        solution.getDecisionVariables().variables_[var].setValue(y);                           
+        solution.getDecisionVariables().variables_.get(var).setValue(y);                           
       }
     }                
   } // doMutation

@@ -58,13 +58,13 @@ public class Golinski extends Problem{
    */
   public void evaluate(Solution solution) throws JMException {         
     double x1,x2,x3,x4,x5,x6,x7;
-    x1 = solution.getDecisionVariables().variables_[0].getValue();
-    x2 = solution.getDecisionVariables().variables_[1].getValue();
-    x3 = solution.getDecisionVariables().variables_[2].getValue();
-    x4 = solution.getDecisionVariables().variables_[3].getValue();
-    x5 = solution.getDecisionVariables().variables_[4].getValue();
-    x6 = solution.getDecisionVariables().variables_[5].getValue();
-    x7 = solution.getDecisionVariables().variables_[6].getValue();
+    x1 = solution.getDecisionVariables().variables_.get(0).getValue();
+    x2 = solution.getDecisionVariables().variables_.get(1).getValue();
+    x3 = solution.getDecisionVariables().variables_.get(2).getValue();
+    x4 = solution.getDecisionVariables().variables_.get(3).getValue();
+    x5 = solution.getDecisionVariables().variables_.get(4).getValue();
+    x6 = solution.getDecisionVariables().variables_.get(5).getValue();
+    x7 = solution.getDecisionVariables().variables_.get(6).getValue();
         
     double f1 = 0.7854 * x1 *x2 *x2 * ((10*x3*x3)/3.0 + 14.933*x3 - 43.0934) - 
                 1.508*x1*(x6*x6 + x7*x7)+7.477*(x6*x6*x6 + x7*x7*x7) + 
@@ -86,13 +86,13 @@ public class Golinski extends Problem{
     double [] constraint = new double[numberOfConstraints_];
     double x1,x2,x3,x4,x5,x6,x7;
         
-    x1 = solution.getDecisionVariables().variables_[0].getValue();
-    x2 = solution.getDecisionVariables().variables_[1].getValue();
-    x3 = solution.getDecisionVariables().variables_[2].getValue();
-    x4 = solution.getDecisionVariables().variables_[3].getValue();
-    x5 = solution.getDecisionVariables().variables_[4].getValue();
-    x6 = solution.getDecisionVariables().variables_[5].getValue();
-    x7 = solution.getDecisionVariables().variables_[6].getValue();
+    x1 = solution.getDecisionVariables().variables_.get(0).getValue();
+    x2 = solution.getDecisionVariables().variables_.get(1).getValue();
+    x3 = solution.getDecisionVariables().variables_.get(2).getValue();
+    x4 = solution.getDecisionVariables().variables_.get(3).getValue();
+    x5 = solution.getDecisionVariables().variables_.get(4).getValue();
+    x6 = solution.getDecisionVariables().variables_.get(5).getValue();
+    x7 = solution.getDecisionVariables().variables_.get(6).getValue();
         
         
     constraint[0] = -((1.0/(x1*x2*x2*x3)) -(1.0/27.0));

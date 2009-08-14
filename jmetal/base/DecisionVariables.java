@@ -7,6 +7,8 @@
 package jmetal.base;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import jmetal.base.Configuration.SolutionType_;
 import jmetal.base.Configuration.VariableType_;
@@ -25,7 +27,7 @@ public class DecisionVariables implements Serializable {
 	/**
    * Stores the decision variables of a solution
    */
-  public Variable [] variables_;
+  public List<Variable> variables_;
   
   /**
    * The problem to solve
@@ -38,25 +40,25 @@ public class DecisionVariables implements Serializable {
    */
   public DecisionVariables(Problem problem){
     problem_   = problem;
-    variables_ = new Variable[problem_.getNumberOfVariables()];
+    variables_ = new ArrayList<Variable>(problem_.getNumberOfVariables());
 
     if (problem.solutionType_ == SolutionType_.Binary) {
       for (int var = 0; var < problem_.getNumberOfVariables(); var++)
-        variables_[var] = new Binary(problem_.getLength(var));       
+        variables_.set(var, new Binary(problem_.getLength(var)));       
     } 
     else if (problem.solutionType_ == SolutionType_.Real) {
       for (int var = 0; var < problem_.getNumberOfVariables(); var++)
-        variables_[var] = new Real(problem_.getLowerLimit(var),
-                                   problem_.getUpperLimit(var));               
+      	variables_.set(var, new Real(problem_.getLowerLimit(var),
+                                   problem_.getUpperLimit(var)));               
     }
     else if (problem.solutionType_ == SolutionType_.Int) {
       for (int var = 0; var < problem_.getNumberOfVariables(); var++)
-        variables_[var] = new Int((int)problem_.getLowerLimit(var),
-                                  (int)problem_.getUpperLimit(var));    
+      	variables_.set(var, new Int((int)problem_.getLowerLimit(var),
+                                  (int)problem_.getUpperLimit(var)));    
     } 
     else if (problem.solutionType_ == SolutionType_.Permutation) {
       for (int var = 0; var < problem_.getNumberOfVariables(); var++)
-        variables_[var] = new Permutation(problem_.getLength(var)) ;   
+      	variables_.set(var, new Permutation(problem_.getLength(var)));   
     } 
     else if (problem.solutionType_ == SolutionType_.BinaryReal) {
       for (int var = 0; var < problem_.getNumberOfVariables(); var++) {
@@ -66,19 +68,19 @@ public class DecisionVariables implements Serializable {
             precision[i] = jmetal.base.Configuration.DEFAULT_PRECISION ;
           problem.setPrecision(precision) ;
         } // if
-        variables_[var] = new BinaryReal(problem_.getPrecision(var),
+        variables_.set(var, new BinaryReal(problem_.getPrecision(var),
                                          problem_.getLowerLimit(var),
-                                         problem_.getUpperLimit(var));   
+                                         problem_.getUpperLimit(var)));   
       } // for 
     } 
     else if (problem.solutionType_ == SolutionType_.IntReal) {
       for (int var = 0; var < problem_.getNumberOfVariables(); var++)
         if (problem.variableType_[var] == VariableType_.Int)
-          variables_[var] = new Int((int)problem_.getLowerLimit(var),
-                                    (int)problem_.getUpperLimit(var)); 
+        	variables_.set(var, new Int((int)problem_.getLowerLimit(var),
+                                    (int)problem_.getUpperLimit(var))); 
         else if (problem.variableType_[var] == VariableType_.Real)
-          variables_[var] = new Real(problem_.getLowerLimit(var),
-                                     problem_.getUpperLimit(var));  
+        	variables_.set(var, new Real(problem_.getLowerLimit(var),
+                                     problem_.getUpperLimit(var)));  
         else {
           Configuration.logger_.severe("DecisionVariables.DecisionVariables: " +
               "error creating a Solution of type IntReal") ;
@@ -97,9 +99,9 @@ public class DecisionVariables implements Serializable {
    */
   public DecisionVariables(DecisionVariables decisionVariables){
     problem_ = decisionVariables.problem_;
-    variables_ = new Variable[decisionVariables.variables_.length];
-    for (int var = 0; var < decisionVariables.variables_.length; var++) {
-      variables_[var] = decisionVariables.variables_[var].deepCopy();
+    variables_ = new ArrayList<Variable>(decisionVariables.variables_.size());
+    for (int var = 0; var < decisionVariables.variables_.size(); var++) {
+      variables_.set(var, decisionVariables.variables_.get(var).deepCopy());
     }
   } // DecisionVariable
     
@@ -116,10 +118,11 @@ public class DecisionVariables implements Serializable {
    * @return The string.
    */
   public String toString() {
-    String aux = "";
-    for (int i = 0; i < variables_.length; i++) {
-      aux+= " "+variables_[i].toString();
-    }
-    return aux;
+  	StringBuilder sb = new StringBuilder();
+
+  	for(Variable v : variables_)
+  		sb.append(v.toString());
+
+  	return sb.toString();
   } // toString
 } // DecisionVariables

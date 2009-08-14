@@ -61,7 +61,7 @@ public class Viennet4 extends Problem{
     double [] f = new double[numberOfObjectives_];
         
     for (int i = 0; i < numberOfVariables_; i++) {
-      x[i] = solution.getDecisionVariables().variables_[i].getValue();
+      x[i] = solution.getDecisionVariables().variables_.get(i).getValue();
     }
         
     f[0] = (x[0]-2.0)*(x[0]-2.0)/2.0 + 
@@ -88,8 +88,8 @@ public class Viennet4 extends Problem{
   public void evaluateConstraints(Solution solution) throws JMException {
     double [] constraint = new double[numberOfConstraints_];
         
-    double x1 = solution.getDecisionVariables().variables_[0].getValue();
-    double x2 = solution.getDecisionVariables().variables_[1].getValue();
+    double x1 = solution.getDecisionVariables().variables_.get(0).getValue();
+    double x2 = solution.getDecisionVariables().variables_.get(1).getValue();
         
     constraint[0] = -x2 - (4.0 * x1) + 4.0  ;
     constraint[1] = x1 + 1.0 ;

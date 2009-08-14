@@ -7,14 +7,23 @@
 package jmetal.metaheuristics.densea;
 
 import java.util.Comparator;
-import jmetal.base.*;
-import jmetal.base.operator.comparator.*;
-import jmetal.util.*;
+
+import jmetal.base.Algorithm;
+import jmetal.base.Operator;
+import jmetal.base.Problem;
+import jmetal.base.Solution;
+import jmetal.base.SolutionSet;
+import jmetal.base.operator.comparator.CrowdingComparator;
+import jmetal.base.operator.comparator.EqualSolutions;
+import jmetal.util.Distance;
+import jmetal.util.JMException;
+import jmetal.util.Ranking;
 
 
 public class DENSEA extends Algorithm{
 
-  private Problem problem_;
+  private static final long serialVersionUID = -2886797988032373886L;
+	private Problem problem_;
 
   /* Create a new instance of DENSEA algorithm */
   public DENSEA(Problem problem) {

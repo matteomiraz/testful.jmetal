@@ -7,15 +7,19 @@
  */
 package jmetal.problems;
 
-import jmetal.base.*;
-import jmetal.base.Configuration.*;
-import jmetal.base.variable.* ;
+import jmetal.base.DecisionVariables;
+import jmetal.base.Problem;
+import jmetal.base.Solution;
+import jmetal.base.Configuration.SolutionType_;
+import jmetal.base.Configuration.VariableType_;
+import jmetal.base.variable.Binary;
 
 /**
  * Class representing problem RadioNetworkDesign
  */
 public class RadioNetworkDesign extends Problem {
-  final static  int MAXIMUM_UNCOVERAGE =   10;
+  private static final long serialVersionUID = -8911628124069437164L;
+	final static  int MAXIMUM_UNCOVERAGE =   10;
   final static int MAXIMUM_ANTENNAE    =   60;
   final static int GRID_SIZE_X         =   287; //Artificial grid horizontal size.
   final static int GRID_SIZE_Y         =   287; //Artificial grid vertical size.

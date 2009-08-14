@@ -6,16 +6,23 @@
 
 package jmetal.metaheuristics.spea2;
 
-import jmetal.base.*;
-import java.util.Comparator;
-import jmetal.util.*;
+import jmetal.base.Algorithm;
+import jmetal.base.Operator;
+import jmetal.base.Problem;
+import jmetal.base.Solution;
+import jmetal.base.SolutionSet;
+import jmetal.util.JMException;
+import jmetal.util.Ranking;
+import jmetal.util.Spea2Fitness;
 
 /** 
  * This class representing the SPEA2 algorithm
  */
 public class SPEA2 extends Algorithm{
           
-  /**
+  private static final long serialVersionUID = 749176697788085191L;
+
+	/**
    * Defines the number of tournaments for creating the mating pool
    */
   public static final int TOURNAMENTS_ROUNDS = 1;

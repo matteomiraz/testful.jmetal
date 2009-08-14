@@ -8,12 +8,12 @@
 package jmetal.base.operator.mutation;
 
 import jmetal.base.Configuration;
+import jmetal.base.Operator;
 import jmetal.base.Solution;
-import jmetal.base.variable.*;
+import jmetal.base.Configuration.VariableType_;
+import jmetal.base.variable.Permutation;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
-import jmetal.base.Operator;
-import jmetal.base.Configuration.VariableType_; 
 
 /**
  * This class implements a swap mutation.
@@ -21,7 +21,9 @@ import jmetal.base.Configuration.VariableType_;
  * the type of those variables must be <code>VariableType_.Permutation</code>.
  */
 public class SwapMutation extends Operator{
-  /** 
+  private static final long serialVersionUID = 7556625122222056318L;
+
+	/** 
    * Constructor
    */
   public SwapMutation() {    

@@ -15,6 +15,8 @@ import java.util.logging.Logger;
  */
 public class Configuration implements Serializable {
   
+ private static final long serialVersionUID = -3978998639401276254L;
+
  /**
   * Defines the default number of bits used for binary coded variables.
   */

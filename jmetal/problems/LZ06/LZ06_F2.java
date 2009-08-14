@@ -8,8 +8,11 @@
 
 package jmetal.problems.LZ06;
 
-import jmetal.base.*;
-import jmetal.base.Configuration.*;
+import jmetal.base.DecisionVariables;
+import jmetal.base.Problem;
+import jmetal.base.Solution;
+import jmetal.base.Configuration.SolutionType_;
+import jmetal.base.Configuration.VariableType_;
 import jmetal.util.JMException;
 
 /** 
@@ -17,7 +20,9 @@ import jmetal.util.JMException;
 */
 public class LZ06_F2 extends Problem {
   
- /** 
+ private static final long serialVersionUID = 5825380420784925762L;
+
+/** 
   * Constructor
   * Creates a default instance of the LZ06_F2 problem
   * @param solutionType The solution type must "Real" or "BinaryReal".

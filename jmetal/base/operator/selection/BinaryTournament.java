@@ -7,10 +7,11 @@ package jmetal.base.operator.selection;
 
 
 import java.util.Comparator;
-import jmetal.base.Solution;
+
 import jmetal.base.Operator;
+import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
-import jmetal.base.operator.comparator.*;
+import jmetal.base.operator.comparator.BinaryTournamentComparator;
 import jmetal.util.PseudoRandom;
 
 /**
@@ -18,7 +19,8 @@ import jmetal.util.PseudoRandom;
  */
 public class BinaryTournament extends Operator{
 
-  /**
+  private static final long serialVersionUID = -6155510776793236308L;
+	/**
    * Stores the <code>Comparator</code> used to compare two
    * solutions
    */

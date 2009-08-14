@@ -6,18 +6,22 @@
  */
 package jmetal.metaheuristics.pesaII;
 
-import jmetal.base.*;
+import jmetal.base.Algorithm;
+import jmetal.base.Operator;
+import jmetal.base.Problem;
+import jmetal.base.Solution;
+import jmetal.base.SolutionSet;
 import jmetal.base.archive.AdaptiveGridArchive;
 import jmetal.base.operator.selection.PESA2Selection;
 import jmetal.util.JMException;
-import jmetal.util.PseudoRandom;
 
 /**
  * This class implements the PESA2 algorithm. 
  */
 public class PESA2 extends Algorithm{
   
-  /**
+  private static final long serialVersionUID = -2487602132730970709L;
+	/**
    * Stores the problem to solve
    */
   private Problem problem_;

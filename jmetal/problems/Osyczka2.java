@@ -7,15 +7,20 @@
  */
 package jmetal.problems;
 
-import jmetal.base.*;
-import jmetal.base.Configuration.*;
+import jmetal.base.DecisionVariables;
+import jmetal.base.Problem;
+import jmetal.base.Solution;
+import jmetal.base.Configuration.SolutionType_;
+import jmetal.base.Configuration.VariableType_;
 import jmetal.util.JMException;
 
 /**
  * Class representing problem Oyczka2
  */
 public class Osyczka2 extends Problem{
- /**
+ private static final long serialVersionUID = 8049122475845401386L;
+
+/**
   * Constructor.
   * Creates a default instance of the Osyczka2 problem.
   * @param solutionType The solution type must "Real" or "BinaryReal". 

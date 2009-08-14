@@ -6,17 +6,22 @@
  */
 package jmetal.base.archive;
 
-import jmetal.base.*;
+import java.util.Comparator;
+import java.util.Iterator;
+
+import jmetal.base.Solution;
+import jmetal.base.SolutionSet;
 import jmetal.base.operator.comparator.DominanceComparator;
 import jmetal.util.AdaptiveGrid;
-import java.util.*;
 
 /**
  * This class implements an archive based on an adaptative grid used in PAES
  */
 public class AdaptiveGridArchive extends SolutionSet {  
   
-  /** 
+  private static final long serialVersionUID = -5993209295179799376L;
+
+	/** 
    * Stores the adaptive grid
    */
   private AdaptiveGrid grid_;

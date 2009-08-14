@@ -7,8 +7,11 @@
  */
 package jmetal.problems;
 
-import jmetal.base.*;
-import jmetal.base.Configuration.*;
+import jmetal.base.DecisionVariables;
+import jmetal.base.Problem;
+import jmetal.base.Solution;
+import jmetal.base.Configuration.SolutionType_;
+import jmetal.base.Configuration.VariableType_;
 import jmetal.util.JMException;
 
 /**
@@ -17,7 +20,8 @@ import jmetal.util.JMException;
  */
 public class IntRealProblem extends Problem {  
     
-  int intVariables_  ;
+  private static final long serialVersionUID = -718542992273524814L;
+	int intVariables_  ;
   int realVariables_ ;
   
   /** 

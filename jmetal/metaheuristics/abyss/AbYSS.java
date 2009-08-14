@@ -6,13 +6,19 @@
  */
 package jmetal.metaheuristics.abyss;
 
-import jmetal.base.*;
-import jmetal.base.archive.CrowdingArchive;
+import java.util.Comparator;
+
 import jmetal.base.Algorithm;
-import jmetal.base.operator.comparator.CrowdingDistanceComparator;
-import java.util.*;
-import jmetal.util.*;
+import jmetal.base.Operator;
+import jmetal.base.Problem;
+import jmetal.base.Solution;
+import jmetal.base.SolutionSet;
+import jmetal.base.archive.CrowdingArchive;
 import jmetal.base.operator.localSearch.LocalSearch;
+import jmetal.util.Distance;
+import jmetal.util.JMException;
+import jmetal.util.PseudoRandom;
+import jmetal.util.Spea2Fitness;
 
 /**
  * This class implements the AbYSS algorithm. This algorithm is an adaptation
@@ -22,7 +28,9 @@ import jmetal.base.operator.localSearch.LocalSearch;
  */
 public class AbYSS extends Algorithm {
    
-  /**
+  private static final long serialVersionUID = 2080109026635365758L;
+
+	/**
    * Stores the problem to solve
    */
   private Problem problem_;        

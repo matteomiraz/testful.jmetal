@@ -5,15 +5,20 @@
  */
 package jmetal.metaheuristics.randomSearch;
 
-import jmetal.base.*;
-import jmetal.util.*;
+import jmetal.base.Algorithm;
+import jmetal.base.Problem;
+import jmetal.base.Solution;
+import jmetal.base.SolutionSet;
+import jmetal.util.JMException;
+import jmetal.util.NonDominatedSolutionList;
 
 /**
  * This class implements the NSGA-II algorithm.
  */
 public class RandomSearch extends Algorithm {
 
-  /**
+  private static final long serialVersionUID = -1156000276724123322L;
+	/**
    * stores the problem  to solve
    */
   private Problem  problem_;

@@ -9,8 +9,8 @@ package jmetal.base.variable;
 
 import java.util.BitSet;
 
-import jmetal.base.Configuration.*;
 import jmetal.base.Variable;
+import jmetal.base.Configuration.VariableType_;
 import jmetal.util.PseudoRandom;
 
 /**
@@ -20,7 +20,9 @@ import jmetal.util.PseudoRandom;
  */ 
 public class Binary extends Variable {
   
-  /**
+  private static final long serialVersionUID = -7777100119877645273L;
+
+	/**
    * Stores the bits constituting the binary string. It is
    * implemented using a BitSet object
    */

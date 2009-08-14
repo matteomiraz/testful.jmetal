@@ -8,8 +8,8 @@
  */
 package jmetal.experiments.settings;
 
-import jmetal.metaheuristics.spea2.*;
 import java.util.Properties;
+
 import jmetal.base.Algorithm;
 import jmetal.base.Operator;
 import jmetal.base.Problem;
@@ -17,7 +17,7 @@ import jmetal.base.operator.crossover.CrossoverFactory;
 import jmetal.base.operator.mutation.MutationFactory;
 import jmetal.base.operator.selection.SelectionFactory;
 import jmetal.experiments.Settings;
-import jmetal.problems.ProblemFactory;
+import jmetal.metaheuristics.spea2.SPEA2;
 import jmetal.qualityIndicator.QualityIndicator;
 import jmetal.util.JMException;
 

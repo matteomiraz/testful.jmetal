@@ -8,8 +8,8 @@
 package jmetal.base;
 
 import java.io.Serializable;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 import jmetal.util.JMException;
 
@@ -18,7 +18,8 @@ import jmetal.util.JMException;
  */
 public abstract class Operator implements Serializable {
    
-  /**
+  private static final long serialVersionUID = -8831083242261538103L;
+	/**
    * Stores the current operator parameters. 
    * It is defined as a Map of pairs <<code>String</code>, <code>Object</code>>, 
    * and it allow objects to be accessed by their names, which  are specified 

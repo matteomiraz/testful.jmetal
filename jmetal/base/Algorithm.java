@@ -7,7 +7,8 @@
 package jmetal.base ;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 import jmetal.util.JMException;
 
@@ -19,7 +20,9 @@ import jmetal.util.JMException;
  */ 
 public abstract class Algorithm implements Serializable {
    
- /** 
+ private static final long serialVersionUID = 170011594278842840L;
+
+/** 
   * Stores the operators used by the algorithm, such as selection, crossover,
   * etc.
   */

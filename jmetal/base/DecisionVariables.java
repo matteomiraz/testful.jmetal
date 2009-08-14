@@ -8,7 +8,8 @@ package jmetal.base;
 
 import java.io.Serializable;
 
-import jmetal.base.Configuration.* ;
+import jmetal.base.Configuration.SolutionType_;
+import jmetal.base.Configuration.VariableType_;
 import jmetal.base.variable.Binary;
 import jmetal.base.variable.BinaryReal;
 import jmetal.base.variable.Int;
@@ -19,7 +20,9 @@ import jmetal.base.variable.Real;
  * This class contains the decision variables of a solution
  */
 public class DecisionVariables implements Serializable {  
-  /**
+  private static final long serialVersionUID = 4466133386183087847L;
+
+	/**
    * Stores the decision variables of a solution
    */
   public Variable [] variables_;

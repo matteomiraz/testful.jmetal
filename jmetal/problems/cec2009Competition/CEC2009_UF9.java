@@ -7,7 +7,9 @@
 
 package jmetal.problems.cec2009Competition;
 
-import jmetal.base.*;
+import jmetal.base.DecisionVariables;
+import jmetal.base.Problem;
+import jmetal.base.Solution;
 import jmetal.base.Configuration.SolutionType_;
 import jmetal.base.Configuration.VariableType_;
 import jmetal.util.JMException;
@@ -16,7 +18,8 @@ import jmetal.util.JMException;
  * Class representing problem CEC2009_UF9
  */
 public class CEC2009_UF9 extends Problem {
-  double epsilon_ ;
+  private static final long serialVersionUID = -4671361310493802302L;
+	double epsilon_ ;
   
  /** 
   * Constructor.

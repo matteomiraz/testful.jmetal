@@ -8,8 +8,11 @@
 
 package jmetal.problems.ZZJ07;
 
-import jmetal.base.*;
-import jmetal.base.Configuration.*;
+import jmetal.base.DecisionVariables;
+import jmetal.base.Problem;
+import jmetal.base.Solution;
+import jmetal.base.Configuration.SolutionType_;
+import jmetal.base.Configuration.VariableType_;
 import jmetal.util.JMException;
 
 /** 
@@ -17,7 +20,9 @@ import jmetal.util.JMException;
 */
 public class ZZJ07_F7 extends Problem {
   
- /** 
+ private static final long serialVersionUID = 4286198795105692644L;
+
+/** 
   * Constructor
   * Creates a default instance of the ZZJ07_F7 problem
   * @param solutionType The solution type must "Real" or "BinaryReal".

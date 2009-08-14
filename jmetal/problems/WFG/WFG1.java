@@ -5,9 +5,6 @@
  */
 package jmetal.problems.WFG;
 
-import java.io.*;
-import java.util.Random;
-
 import jmetal.base.DecisionVariables;
 import jmetal.base.Solution;
 import jmetal.util.JMException;
@@ -22,7 +19,9 @@ import jmetal.util.JMException;
  */
 public class WFG1 extends WFG {
  
- /**
+ private static final long serialVersionUID = 2588974773513506174L;
+
+/**
   * Constructor
   * Creates a default WFG1 instance with 
   * 2 position-related parameters

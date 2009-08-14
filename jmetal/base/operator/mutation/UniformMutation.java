@@ -6,13 +6,12 @@
  */
 package jmetal.base.operator.mutation;
 
-import jmetal.base.Solution;
-import jmetal.util.JMException;
-import jmetal.util.PseudoRandom;
 import jmetal.base.Configuration;
 import jmetal.base.Operator;
-import jmetal.base.DecisionVariables;
+import jmetal.base.Solution;
 import jmetal.base.Configuration.SolutionType_;
+import jmetal.util.JMException;
+import jmetal.util.PseudoRandom;
 
 /**
  * This class implements a uniform mutation operator.
@@ -20,7 +19,8 @@ import jmetal.base.Configuration.SolutionType_;
  */
 public class UniformMutation extends Operator{
     
-  /**
+  private static final long serialVersionUID = -1807873962838274568L;
+	/**
    * Stores the value used in a uniform mutation operator
    */
   private Double perturbation_;

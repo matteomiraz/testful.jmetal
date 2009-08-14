@@ -22,7 +22,8 @@ import jmetal.util.JMException;
  */
 public abstract class Variable implements Serializable {
 
-  private VariableType_ type_;
+  private static final long serialVersionUID = -2342249641594119317L;
+	private VariableType_ type_;
 
   /** 
    * Creates an exact copy of a <code>Variable</code> object.

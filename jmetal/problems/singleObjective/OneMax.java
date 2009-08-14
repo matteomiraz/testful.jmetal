@@ -7,7 +7,8 @@
 
 package jmetal.problems.singleObjective;
 
-import jmetal.base.*;
+import jmetal.base.Problem;
+import jmetal.base.Solution;
 import jmetal.base.Configuration.SolutionType_;
 import jmetal.base.Configuration.VariableType_;
 import jmetal.base.variable.Binary;
@@ -19,7 +20,9 @@ import jmetal.base.variable.Binary;
 public class OneMax extends Problem {
 
   
- /**
+ private static final long serialVersionUID = 2785137155554439680L;
+
+/**
   * Creates a new OneMax problem instance
   * @param numberOfBits Length of the problem
   */

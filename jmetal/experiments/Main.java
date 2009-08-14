@@ -6,17 +6,18 @@
  */
 package jmetal.experiments;
 
-import jmetal.base.*;
-import jmetal.problems.*  ;
-
-import jmetal.util.JMException;
 import java.io.IOException;
-
 import java.util.Properties;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 
+import jmetal.base.Algorithm;
+import jmetal.base.Configuration;
+import jmetal.base.Problem;
+import jmetal.base.SolutionSet;
+import jmetal.problems.ProblemFactory;
 import jmetal.qualityIndicator.QualityIndicator;
+import jmetal.util.JMException;
 
 public class Main {
   public static Logger      logger_ ;      // Logger object

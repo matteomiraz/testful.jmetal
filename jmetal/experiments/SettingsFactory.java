@@ -9,9 +9,7 @@ package jmetal.experiments;
 import java.lang.reflect.Constructor;
 
 import jmetal.base.Configuration;
-import jmetal.base.Problem;
 import jmetal.util.JMException;
-import jmetal.experiments.settings.* ;
 
 /**
  * This class represents a factory for problems

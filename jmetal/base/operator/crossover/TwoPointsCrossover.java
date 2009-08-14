@@ -6,11 +6,14 @@
  */
 package jmetal.base.operator.crossover;
 
-import jmetal.base.*;    
-import jmetal.base.variable.*;
+import jmetal.base.Configuration;
+import jmetal.base.Operator;
+import jmetal.base.Solution;
+import jmetal.base.Configuration.SolutionType_;
+import jmetal.base.Configuration.VariableType_;
+import jmetal.base.variable.Permutation;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
-import jmetal.base.Configuration.* ; 
 
  /**
  * This class allows to apply a two points crossover operator using two parent
@@ -21,7 +24,9 @@ import jmetal.base.Configuration.* ;
   public class TwoPointsCrossover extends Operator {
     
     
-  /**
+  private static final long serialVersionUID = 8484533354272297259L;
+
+	/**
    * Constructor
    * Creates a new intance of the two point crossover operator
    */

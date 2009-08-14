@@ -7,10 +7,14 @@
 
 package jmetal.util;
 
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
 import jmetal.base.SolutionSet;
-import jmetal.base.operator.comparator.OverallConstraintViolationComparator;
 import jmetal.base.operator.comparator.DominanceComparator;
-import java.util.*;
+import jmetal.base.operator.comparator.OverallConstraintViolationComparator;
 
 /**
  * This class implements some facilities for ranking solutions.

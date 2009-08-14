@@ -7,15 +7,15 @@
 
 package jmetal.base.operator.localSearch;
 
+import java.util.Comparator;
+
+import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
-import jmetal.base.Operator;
 import jmetal.base.SolutionSet;
-import jmetal.base.operator.comparator.OverallConstraintViolationComparator;
 import jmetal.base.operator.comparator.DominanceComparator;
+import jmetal.base.operator.comparator.OverallConstraintViolationComparator;
 import jmetal.util.JMException;
-
-import java.util.Comparator;
 
 /**
  * This class implements an local search operator based in the use of a 
@@ -24,7 +24,9 @@ import java.util.Comparator;
  */
 public class MutationLocalSearch extends LocalSearch {
     
-  /**
+  private static final long serialVersionUID = 6132501458863378035L;
+
+	/**
    * Stores the problem to solve
    */
   private Problem problem_;

@@ -7,8 +7,11 @@
  */
 package jmetal.problems;
 
-import jmetal.base.*;
-import jmetal.base.Configuration.*;
+import jmetal.base.DecisionVariables;
+import jmetal.base.Problem;
+import jmetal.base.Solution;
+import jmetal.base.Configuration.SolutionType_;
+import jmetal.base.Configuration.VariableType_;
 import jmetal.util.JMException;
 
 /**
@@ -16,7 +19,9 @@ import jmetal.util.JMException;
  */
 public class Kursawe extends Problem {  
     
-  /** 
+  private static final long serialVersionUID = 6446864010464428543L;
+
+	/** 
    * Constructor.
    * Creates a default instance of the Kursawe problem.
    * @param solutionType The solution type must "Real" or "BinaryReal". 

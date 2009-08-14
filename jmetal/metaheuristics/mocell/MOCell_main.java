@@ -16,22 +16,18 @@ import java.io.IOException;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 
-import jmetal.base.*;
-import jmetal.base.operator.crossover.*   ;
-import jmetal.base.operator.mutation.*    ; 
-import jmetal.base.operator.selection.*   ;
-import jmetal.problems.*                  ;
-import jmetal.problems.DTLZ.*;
-import jmetal.problems.ZDT.* ;
-import jmetal.problems.WFG.* ;
-import jmetal.problems.ZZJ07.*;
-import jmetal.problems.LZ07.* ;
-import jmetal.util.JMException;
-
-import java.util.logging.FileHandler;
-import java.util.logging.Logger;
-
+import jmetal.base.Algorithm;
+import jmetal.base.Configuration;
+import jmetal.base.Operator;
+import jmetal.base.Problem;
+import jmetal.base.SolutionSet;
+import jmetal.base.operator.crossover.CrossoverFactory;
+import jmetal.base.operator.mutation.MutationFactory;
+import jmetal.base.operator.selection.SelectionFactory;
+import jmetal.problems.Kursawe;
+import jmetal.problems.ProblemFactory;
 import jmetal.qualityIndicator.QualityIndicator;
+import jmetal.util.JMException;
 
 public class MOCell_main {
   public static Logger      logger_ ;      // Logger object

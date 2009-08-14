@@ -6,8 +6,10 @@
 
 package jmetal.base.operator.selection;
 
-import jmetal.base.*;
-import jmetal.base.archive.*;
+import jmetal.base.Configuration;
+import jmetal.base.Operator;
+import jmetal.base.Solution;
+import jmetal.base.archive.AdaptiveGridArchive;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
 
@@ -17,7 +19,9 @@ import jmetal.util.PseudoRandom;
  */
 public class PESA2Selection extends Operator{      
         
-  /**
+  private static final long serialVersionUID = 345701401946064303L;
+
+	/**
   * Performs the operation
   * @param object Object representing a SolutionSet. This solution set
   * must be an instancen <code>AdaptiveGridArchive</code>

@@ -6,18 +6,26 @@
 
 package jmetal.metaheuristics.fastPGA;
 
-import jmetal.base.*;
-import jmetal.base.operator.comparator.FPGAFitnessComparator;
-import jmetal.util.*;
+import java.util.Comparator;
 
-import java.util.*;
+import jmetal.base.Algorithm;
+import jmetal.base.Operator;
+import jmetal.base.Problem;
+import jmetal.base.Solution;
+import jmetal.base.SolutionSet;
+import jmetal.base.operator.comparator.FPGAFitnessComparator;
+import jmetal.util.Distance;
+import jmetal.util.FPGAFitness;
+import jmetal.util.JMException;
+import jmetal.util.Ranking;
 
 /*
 * This class implements the FPGA (Fast Pareto Genetic Algorithm).
 */
 public class FastPGA extends Algorithm{
     
-  Problem problem_;
+  private static final long serialVersionUID = -1773050806660065098L;
+	Problem problem_;
   
   /**
    * Constructor

@@ -9,22 +9,26 @@
 package jmetal.metaheuristics.ibea;
 
 import java.util.ArrayList;
-import jmetal.base.*;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+
+import jmetal.base.Algorithm;
+import jmetal.base.Operator;
+import jmetal.base.Problem;
+import jmetal.base.Solution;
+import jmetal.base.SolutionSet;
 import jmetal.base.operator.comparator.DominanceComparator;
-import jmetal.base.operator.comparator.FitnessComparator;
-import jmetal.qualityIndicator.Epsilon;
-import jmetal.qualityIndicator.Hypervolume;
-import jmetal.util.*;
+import jmetal.util.JMException;
+import jmetal.util.Ranking;
 
 /**
  * This class representing the SPEA2 algorithm
  */
 public class IBEA extends Algorithm{
 
-  /**
+  private static final long serialVersionUID = 3196948190912308055L;
+
+	/**
    * Defines the number of tournaments for creating the mating pool
    */
   public static final int TOURNAMENTS_ROUNDS = 1;

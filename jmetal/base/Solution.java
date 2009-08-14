@@ -9,8 +9,6 @@ package jmetal.base;
 
 import java.io.Serializable;
 
-import jmetal.base.Configuration.SolutionType_;
-import jmetal.base.Configuration.VariableType_;
 import jmetal.base.variable.Binary;
 
 /**
@@ -19,11 +17,6 @@ import jmetal.base.variable.Binary;
 public class Solution<T extends Variable> implements Serializable {        
   
   private static final long serialVersionUID = 8458216795302135603L;
-
-	/**
-   * Stores the type of the variable
-   */	
-  private SolutionType_ type_ ; 
 
   /**
    * Stores the decision variables of the solution.
@@ -92,7 +85,6 @@ public class Solution<T extends Variable> implements Serializable {
     marked_                       = false ;
     overallConstraintViolation_   = 0.0   ;
     numberOfViolatedConstraints_  = 0     ;  
-    type_                         = SolutionType_.Undefined ;
     decisionVariable_             = null ;
     objective_                    = null ;
   } // Solution
@@ -114,7 +106,6 @@ public class Solution<T extends Variable> implements Serializable {
    */
   public Solution(Problem<T> problem){
     //-> Initializing state variables and allocating memory
-    type_ = problem.getSolutionType() ;
     objective_          = new double[problem.numberOfObjectives_] ;
 
     // Setting initial values
@@ -123,7 +114,7 @@ public class Solution<T extends Variable> implements Serializable {
     crowdingDistance_     = 0.0 ;        
     distanceToSolutionSet_ = Double.POSITIVE_INFINITY ;
     //<-
-
+    
     decisionVariable_ = new DecisionVariables<T>(problem);
   } // Solution
   
@@ -133,7 +124,6 @@ public class Solution<T extends Variable> implements Serializable {
    */
   public Solution(Problem<T>  problem, DecisionVariables<T> variables){
     //-> Initializing state variables and allocating memory
-    type_ = problem.getSolutionType() ;
     objective_          = new double[problem.numberOfObjectives_] ;
 
     // Setting initial values
@@ -152,8 +142,6 @@ public class Solution<T extends Variable> implements Serializable {
    */    
   public Solution(Solution<T> solution) {            
     //-> Initializing state variables
-    type_ = solution.type_;
-
     objective_ = new double[solution.numberOfObjectives()];
     for (int i = 0; i < objective_.length;i++) {
       objective_[i] = solution.getObjective(i);
@@ -418,32 +406,6 @@ public class Solution<T extends Variable> implements Serializable {
   public int getLocation() {
     return this.location_;
   } // getLocation
-
-  /**
-   * Sets the type of the variable. 
-   * @param type The type of the variable.
-   */
-  public void setType(String type) {
-    type_ = Enum.valueOf(SolutionType_.class,type) ;
-  } // setType
-
-  /**
-   * Sets the type of the variable. 
-   * @param type The type of the variable.
-   */
-  public void setType(SolutionType_ type) {
-    type_ = type ;
-  } // setType
-
-  /**
-   * Gets the type of the variable
-   * @return the type of the variable
-   */
-  public SolutionType_ getType() {
-    return type_;
-  } // getType
-
-
 
   /** 
    * Returns the aggregative value of the solution

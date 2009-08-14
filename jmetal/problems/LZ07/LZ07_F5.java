@@ -8,13 +8,12 @@
 
 package jmetal.problems.LZ07;
 
+import java.util.List;
 import java.util.Vector;
 
 import jmetal.base.DecisionVariables;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
-import jmetal.base.Configuration.SolutionType_;
-import jmetal.base.Configuration.VariableType_;
 import jmetal.base.variable.IReal;
 import jmetal.util.JMException;
 
@@ -23,12 +22,14 @@ import jmetal.util.JMException;
  */
 public class LZ07_F5<V extends IReal>  extends Problem<V> {   
 	private static final long serialVersionUID = -5086587493019594056L;
+  private final Class<V> solutionType_;
+
 	LZ07 lz07_ ; 
  /** 
   * Creates a default DTLZ1 problem (7 variables and 3 objectives)
   * @param solutionType The solution type must "Real" or "BinaryReal". 
   */
-  public LZ07_F5(String solutionType){
+  public LZ07_F5(Class<V> solutionType){
     this(21, 1, 26, solutionType);
   } // LZ07_F5
   
@@ -41,7 +42,7 @@ public class LZ07_F5<V extends IReal>  extends Problem<V> {
    public LZ07_F5(Integer ptype, 
    		            Integer dtype,
    		            Integer ltype,
-   		            String solutionType) {
+   		            Class<V> solutionType) {
      numberOfVariables_  = 30;
      numberOfObjectives_ = 2;
      numberOfConstraints_= 0;
@@ -62,14 +63,7 @@ public class LZ07_F5<V extends IReal>  extends Problem<V> {
        upperLimit_[var] = 1.0;
      } //for
          
-     solutionType_ = Enum.valueOf(SolutionType_.class, solutionType) ; 
-     
-     // All the variables are of the same type, so the solutionType name is the
-     // same than the variableType name
-     variableType_ = new VariableType_[numberOfVariables_];
-     for (int var = 0; var < numberOfVariables_; var++){
-       variableType_[var] = Enum.valueOf(VariableType_.class, solutionType) ;    
-     } // for              
+     solutionType_ = solutionType; 
    } // LZ07_F5
    
    /** 
@@ -95,6 +89,9 @@ public class LZ07_F5<V extends IReal>  extends Problem<V> {
       for (int i = 0; i < numberOfObjectives_; i++)
         solution.setObjective(i, y.get(i)); 
     } // evaluate
+
+    @Override
+    public List<V> generateNewDecisionVariable() {
+    	return generate(solutionType_);
+    }
 } // LZ07_F5
-
-

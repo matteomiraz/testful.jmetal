@@ -8,11 +8,11 @@
  */
 package jmetal.problems.DTLZ;
 
+import java.util.List;
+
 import jmetal.base.DecisionVariables;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
-import jmetal.base.Configuration.SolutionType_;
-import jmetal.base.Configuration.VariableType_;
 import jmetal.base.variable.IReal;
 import jmetal.util.JMException;
 
@@ -21,14 +21,15 @@ import jmetal.util.JMException;
  */
 public class DTLZ4<V extends IReal>  extends Problem<V>{
    
-  
  private static final long serialVersionUID = -4898314946109270420L;
+
+ private final Class<V> solutionType_;
 
 /**
   * Creates a default DTLZ4 problem (12 variables and 3 objectives) 
   * @param solutionType The solution type must "Real" or "BinaryReal". 
   */
-  public DTLZ4(String solutionType){
+  public DTLZ4(Class<V> solutionType){
     this(12,3,solutionType);
   }
     
@@ -40,7 +41,7 @@ public class DTLZ4<V extends IReal>  extends Problem<V>{
   */
   public DTLZ4(Integer numberOfVariables, 
                Integer numberOfObjectives, 
-               String solutionType) {
+               Class<V> solutionType) {
     numberOfVariables_  = numberOfVariables.intValue();
     numberOfObjectives_ = numberOfObjectives.intValue();
     numberOfConstraints_= 0;
@@ -53,14 +54,7 @@ public class DTLZ4<V extends IReal>  extends Problem<V>{
       upperLimit_[var] = 1.0;
     }
         
-    solutionType_ = Enum.valueOf(SolutionType_.class, solutionType) ; 
-    
-    // All the variables are of the same type, so the solutionType name is the
-    // same than the variableType name
-    variableType_ = new VariableType_[numberOfVariables_];
-    for (int var = 0; var < numberOfVariables_; var++){
-      variableType_[var] = Enum.valueOf(VariableType_.class, solutionType) ;    
-    } // for
+    solutionType_ = solutionType; 
   } //DTLZ4         
 
   /** 
@@ -98,5 +92,10 @@ public class DTLZ4<V extends IReal>  extends Problem<V>{
     for (int i = 0; i < numberOfObjectives_; i++)
       solution.setObjective(i,f[i]);                
   } // evaluate 
+
+  @Override
+  public List<V> generateNewDecisionVariable() {
+  	return generate(solutionType_);
+  }
 }
 

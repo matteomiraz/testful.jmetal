@@ -7,11 +7,11 @@
 
 package jmetal.problems.cec2009Competition;
 
+import java.util.List;
+
 import jmetal.base.DecisionVariables;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
-import jmetal.base.Configuration.SolutionType_;
-import jmetal.base.Configuration.VariableType_;
 import jmetal.base.variable.IReal;
 import jmetal.util.JMException;
 
@@ -22,12 +22,14 @@ public class CEC2009_UF2<T extends IReal> extends Problem<T> {
     
  private static final long serialVersionUID = -5573422843324628445L;
 
+ private final Class<T> solutionType_;
+
 /** 
   * Constructor.
   * Creates a default instance of problem CEC2009_UF2 (30 decision variables)
   * @param solutionType The solution type must "Real" or "BinaryReal".
   */
-  public CEC2009_UF2(String solutionType) {
+  public CEC2009_UF2(Class<T> solutionType) {
     this(30, solutionType); // 30 variables by default
   } // CEC2009_UF1
   
@@ -36,7 +38,7 @@ public class CEC2009_UF2<T extends IReal> extends Problem<T> {
   * @param numberOfVariables Number of variables.
   * @param solutionType The solution type must "Real" or "BinaryReal".
   */
-  public CEC2009_UF2(Integer numberOfVariables, String solutionType) {
+  public CEC2009_UF2(Integer numberOfVariables, Class<T> solutionType) {
     numberOfVariables_  = numberOfVariables.intValue();
     numberOfObjectives_ =  2;
     numberOfConstraints_=  0;
@@ -52,14 +54,7 @@ public class CEC2009_UF2<T extends IReal> extends Problem<T> {
       upperLimit_[var] = 1.0;
     } // for
 
-    solutionType_ = Enum.valueOf(SolutionType_.class, solutionType) ; 
-    
-    // All the variables are of the same type, so the solutionType name is the
-    // same than the variableType name
-    variableType_ = new VariableType_[numberOfVariables_];
-    for (int var = 0; var < numberOfVariables_; var++){
-      variableType_[var] = Enum.valueOf(VariableType_.class, solutionType) ;    
-    } // for
+    solutionType_ = solutionType; 
   } // CEC2009_UF2
     
   /** 
@@ -98,4 +93,10 @@ public class CEC2009_UF2<T extends IReal> extends Problem<T> {
     solution.setObjective(0, x[0] + 2.0 * sum1 / (double)count1);
     solution.setObjective(1, 1.0 - Math.sqrt(x[0]) + 2.0 * sum2 / (double)count2);
   } // evaluate
+
+  @Override
+  public List<T> generateNewDecisionVariable() {
+  	return generate(solutionType_);
+  }
+
 } // CEC2009_UF2

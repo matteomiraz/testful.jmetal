@@ -8,11 +8,11 @@
  */
 package jmetal.problems.DTLZ;
 
+import java.util.List;
+
 import jmetal.base.DecisionVariables;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
-import jmetal.base.Configuration.SolutionType_;
-import jmetal.base.Configuration.VariableType_;
 import jmetal.base.variable.IReal;
 import jmetal.util.JMException;
 
@@ -23,11 +23,13 @@ public class DTLZ7<T extends IReal> extends Problem<T>{
    
  private static final long serialVersionUID = -1722944559338505767L;
 
+ private final Class<T> solutionType_;
+
 /**
   * Creates a default DTLZ7 problem instance (22 variables and 3 objectives)
   * @param solutionType The solution type must "Real" or "BinaryReal". 
   */
-  public DTLZ7(String solutionType){
+  public DTLZ7(Class<T> solutionType){
     this(22,3,solutionType);
   } // DTLZ7
     
@@ -39,7 +41,7 @@ public class DTLZ7<T extends IReal> extends Problem<T>{
   */
   public DTLZ7(Integer numberOfVariables,
   		         Integer numberOfObjectives, 
-  		         String  solutionType) {
+  		         Class<T>  solutionType) {
     numberOfVariables_  = numberOfVariables.intValue();
     numberOfObjectives_ = numberOfObjectives.intValue();
     numberOfConstraints_= 0;
@@ -52,14 +54,7 @@ public class DTLZ7<T extends IReal> extends Problem<T>{
       upperLimit_[var] = 1.0;
     }
         
-    solutionType_ = Enum.valueOf(SolutionType_.class, solutionType) ; 
-    
-    // All the variables are of the same type, so the solutionType name is the
-    // same than the variableType name
-    variableType_ = new VariableType_[numberOfVariables_];
-    for (int var = 0; var < numberOfVariables_; var++){
-      variableType_[var] = Enum.valueOf(VariableType_.class, solutionType) ;    
-    } // for
+    solutionType_ = solutionType; 
   }
 
   /** 
@@ -105,5 +100,10 @@ public class DTLZ7<T extends IReal> extends Problem<T>{
       solution.setObjective(i,f[i]);        
     //<-
   } // evaluate
+
+  @Override
+  public List<T> generateNewDecisionVariable() {
+  	return generate(solutionType_);
+  }
 }
 

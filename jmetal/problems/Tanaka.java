@@ -7,11 +7,11 @@
  */
 package jmetal.problems;
 
+import java.util.List;
+
 import jmetal.base.DecisionVariables;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
-import jmetal.base.Configuration.SolutionType_;
-import jmetal.base.Configuration.VariableType_;
 import jmetal.base.variable.Real;
 import jmetal.util.JMException;
 
@@ -22,13 +22,14 @@ public class Tanaka<T extends Real> extends Problem<T> {
    
  private static final long serialVersionUID = -1566779597509378893L;
 
+ private final Class<T> solutionType_;
 
-/**
+ /**
   * Constructor.
   * Creates a default instance of the problem Tanaka
   * @param solutionType The solution type must "Real" or "BinaryReal". 
   */
-  public Tanaka(String solutionType) {
+  public Tanaka(Class<T> solutionType) {
     numberOfVariables_  = 2;
     numberOfObjectives_ = 2;
     numberOfConstraints_= 2;
@@ -41,14 +42,7 @@ public class Tanaka<T extends Real> extends Problem<T> {
       upperLimit_[var] = Math.PI;
     } // for
         
-    solutionType_ = Enum.valueOf(SolutionType_.class, solutionType) ; 
-    
-    // All the variables are of the same type, so the solutionType name is the
-    // same than the variableType name
-    variableType_ = new VariableType_[numberOfVariables_];
-    for (int var = 0; var < numberOfVariables_; var++){
-      variableType_[var] = Enum.valueOf(VariableType_.class, solutionType) ;    
-    } // for
+    solutionType_ = solutionType; 
   }
 
   /** 
@@ -93,4 +87,9 @@ public class Tanaka<T extends Real> extends Problem<T> {
     solution.setOverallConstraintViolation(total);    
     solution.setNumberOfViolatedConstraint(number);
   } // evaluateConstraints   
+
+  @Override
+  public List<T> generateNewDecisionVariable() {
+  	return generate(solutionType_);
+  }
 } // Tanaka

@@ -6,9 +6,7 @@
  */
 package jmetal.base.operator.crossover;
 
-import jmetal.base.Configuration;
 import jmetal.base.Solution;
-import jmetal.base.Configuration.SolutionType_;
 import jmetal.base.variable.Permutation;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
@@ -126,19 +124,7 @@ import jmetal.util.PseudoRandom;
   */
   @Override
   public Solution<Permutation>[] execute(Solution<Permutation> parent1, Solution<Permutation> parent2) throws JMException {
-    if ((parent1.getType() != SolutionType_.Permutation) ||
-        (parent2.getType() != SolutionType_.Permutation)) {
-      
-      Configuration.logger_.severe("TwoPointsCrossover.execute: the solutions " +
-          "are not of the right type. The type should be 'Permutation', but " +
-          parent1.getType() + " and " + 
-          parent2.getType() + " are obtained");
-    } // if 
-    	
-    Solution<Permutation> [] offspring = doCrossover(probability,
-                                        parent1,
-                                        parent2);
-
+    Solution<Permutation> [] offspring = doCrossover(probability, parent1, parent2);
     return offspring; 
   } // execute
   

@@ -7,9 +7,7 @@
 
 package jmetal.base.operator.crossover;
 
-import jmetal.base.Configuration;
 import jmetal.base.Solution;
-import jmetal.base.Configuration.SolutionType_;
 import jmetal.base.variable.Real;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
@@ -168,17 +166,6 @@ public class SBXCrossover extends Crossover<Real> {
   * @return An object containing the offSprings
   */
   public Solution<Real>[] execute(Solution<Real> parent1, Solution<Real> parent2) throws JMException {
-    if ((parent1.getType() != SolutionType_.Real) ||
-        (parent2.getType() != SolutionType_.Real)) {
-
-      String msg = "SBXCrossover.execute: the solutions " +
-					    "are not of the right type. The type should be 'Real', but " +
-					    parent1.getType() + " and " + 
-					    parent2.getType() + " are obtained";
-			Configuration.logger_.severe(msg);
-      throw new JMException(msg) ; 
-    } // if 
-    
     Solution<Real> [] offSpring = doCrossover(probability, parent1, parent2);
         
     for (int i = 0; i < offSpring.length; i++)

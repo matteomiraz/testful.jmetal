@@ -8,11 +8,11 @@
  */
 package jmetal.problems.DTLZ;
 
+import java.util.List;
+
 import jmetal.base.DecisionVariables;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
-import jmetal.base.Configuration.SolutionType_;
-import jmetal.base.Configuration.VariableType_;
 import jmetal.base.variable.IReal;
 import jmetal.util.JMException;
 
@@ -23,11 +23,13 @@ import jmetal.util.JMException;
   
  private static final long serialVersionUID = 5723311960534086239L;
 
+ private final Class<V> solutionType_;
+
 /**
   * Creates a default DTLZ6 problem instance (12 variables and 3 objectives)
   * @param solutionType The solution type must "Real" or "BinaryReal". 
   */
-  public DTLZ6(String solutionType){
+  public DTLZ6(Class<V> solutionType){
     this(12,3,solutionType);
   } // DTLZ6
 
@@ -39,7 +41,7 @@ import jmetal.util.JMException;
   */
   public DTLZ6(Integer numberOfVariables, 
   		         Integer numberOfObjectives, 
-  		         String  solutionType) {
+  		         Class<V>  solutionType) {
     numberOfVariables_  = numberOfVariables.intValue();
     numberOfObjectives_ = numberOfObjectives.intValue();                              
     numberOfConstraints_= 0;
@@ -52,14 +54,7 @@ import jmetal.util.JMException;
       upperLimit_[var] = 1.0;
     } //for
         
-    solutionType_ = Enum.valueOf(SolutionType_.class, solutionType) ; 
-    
-    // All the variables are of the same type, so the solutionType name is the
-    // same than the variableType name
-    variableType_ = new VariableType_[numberOfVariables_];
-    for (int var = 0; var < numberOfVariables_; var++){
-      variableType_[var] = Enum.valueOf(VariableType_.class, solutionType) ;    
-    } // for
+    solutionType_ = solutionType; 
   } // DTLZ6
     
   /** 
@@ -102,5 +97,10 @@ import jmetal.util.JMException;
     for (int i = 0; i < numberOfObjectives_; i++)
       solution.setObjective(i,f[i]);        
   } // evaluate
+
+  @Override
+  public List<V> generateNewDecisionVariable() {
+  	return generate(solutionType_);
+  }
 }
 

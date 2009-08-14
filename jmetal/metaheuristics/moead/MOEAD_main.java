@@ -70,7 +70,7 @@ public class MOEAD_main {
       indicators = new QualityIndicator<Real>(problem, args[1]) ;
     } // if
     else { // Default problem
-      problem = new Kursawe(3, "Real"); 
+      problem = new Kursawe(3, Real.class); 
       //problem = new Water("Real");
       //problem = new ZDT4("Real");
       //problem = new ZDT3("Real");

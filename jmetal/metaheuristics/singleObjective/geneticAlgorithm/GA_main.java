@@ -37,7 +37,7 @@ public class GA_main {
     //problem = new OneMax(bits);
     //problem = new Sphere(20, "Real") ;
     //problem = new Easom("Real") ;
-    problem = new Griewank(20, "Real") ;
+    problem = new Griewank(20, Real.class) ;
     
     // algorithm = new SSGA(problem);
     algorithm = new GGA<Real>(problem) ;

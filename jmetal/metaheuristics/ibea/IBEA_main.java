@@ -54,7 +54,7 @@ public class IBEA_main {
       //problem = new Kursawe(3, "Real");
       //problem = new Kursawe(3,"BinaryReal");
       //problem = new Water("Real");
-      problem = new ZDT1("Real");
+      problem = new ZDT1(Real.class);
       //problem = new WFG1("Real");
       //problem = new DTLZ1("Real");
       //problem = new OKA2("Real") ;

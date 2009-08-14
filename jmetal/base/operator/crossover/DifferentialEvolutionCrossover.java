@@ -7,13 +7,12 @@
 package jmetal.base.operator.crossover;
 
 import jmetal.base.Configuration;
-import jmetal.base.Operator;
 import jmetal.base.Solution;
 import jmetal.base.Configuration.SolutionType_;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
 
-public class DifferentialEvolutionCrossover extends Operator {
+public class DifferentialEvolutionCrossover extends DifferentialCrossover {
   private static final long serialVersionUID = -3210629965576501068L;
 
 	/**
@@ -38,16 +37,22 @@ public class DifferentialEvolutionCrossover extends Operator {
   } // Constructor
   
   
+	public void setF(double f) {
+		F_ = f;
+	}
+	
+	
+	public void setCR(double cR) {
+		CR_ = cR;
+	}
+  
   /**
    * Executes the operation
    * @param object An object containing an array of three parents
    * @return An object containing the offSprings
    */
-   public Object execute(Object object) throws JMException {
-     Object[] parameters = (Object[])object ;
-     Solution current   = (Solution) parameters[0];
-     Solution [] parent = (Solution [])parameters[1];
-     
+  @Override
+  public Solution[] execute(Solution current, Solution [] parent) throws JMException {
      Solution child ;
      
      if ((parent[0].getType() != SolutionType_.Real) ||
@@ -63,15 +68,6 @@ public class DifferentialEvolutionCrossover extends Operator {
 
        throw new JMException(msg) ; 
      } // if 
-     
-     Double CR = (Double)getParameter("CR");
-     if (CR != null) {
-       CR_ = CR ;
-     } // if
-     Double F = (Double)getParameter("F");
-     if (F != null) {
-       F_ = F ;
-     } // if
      
      int jrand ;
 
@@ -100,6 +96,6 @@ public class DifferentialEvolutionCrossover extends Operator {
         } // else
      }
      
-     return child ;
+     return new Solution[] { child };
    }
 }

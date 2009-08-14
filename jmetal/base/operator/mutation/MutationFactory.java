@@ -8,7 +8,6 @@
 package jmetal.base.operator.mutation;
 
 import jmetal.base.Configuration;
-import jmetal.base.Operator;
 import jmetal.util.JMException;
 
 /**
@@ -22,7 +21,7 @@ public class MutationFactory {
    * @return the operator
    * @throws JMException 
    */
-  public static Operator getMutationOperator(String name) throws JMException{
+  public static Mutation getMutationOperator(String name) throws JMException{
   
     if (name.equalsIgnoreCase("PolynomialMutation"))
       return new PolynomialMutation(20);

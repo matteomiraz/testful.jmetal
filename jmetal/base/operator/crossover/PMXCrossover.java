@@ -8,7 +8,6 @@
 package jmetal.base.operator.crossover;
 
 import jmetal.base.Configuration;
-import jmetal.base.Operator;
 import jmetal.base.Solution;
 import jmetal.base.Configuration.VariableType_;
 import jmetal.base.variable.Permutation;
@@ -21,7 +20,7 @@ import jmetal.util.PseudoRandom;
  * NOTE: the operator is applied to the first variable of the solutions, and 
  * the type of those variables must be VariableType_.Permutation.
  */
-  public class PMXCrossover extends Operator {
+  public class PMXCrossover extends Crossover {
   private static final long serialVersionUID = 1572296934919082873L;
 
 	/**
@@ -128,28 +127,8 @@ import jmetal.util.PseudoRandom;
    * @param object An object containing an array of two solutions 
    * @throws JMException 
    */
-  public Object execute(Object object) throws JMException {
-    Solution [] parents = (Solution [])object;
-    Double crossoverProbability ;
-    
-    crossoverProbability = (Double)parameters_.get("probability");
-    
-    if (parents.length < 2)
-    {
-      String msg = "PMXCrossover.execute: operator needs two parents";
-			Configuration.logger_.severe(msg);
-      throw new JMException(msg) ; 
-    }
-    else if (crossoverProbability == null)
-    {
-      String msg = "PMXCrossover.execute: probability not specified";
-			Configuration.logger_.severe(msg);
-      throw new JMException(msg) ; 
-    }          
-    
-    Solution [] offspring = doCrossover(crossoverProbability.doubleValue(),
-                                          parents[0],
-                                          parents[1]);
+  public Solution[] execute(Solution parent1, Solution parent2) throws JMException {
+    Solution [] offspring = doCrossover(probability, parent1, parent2);
 
     return offspring; 
   } // execute

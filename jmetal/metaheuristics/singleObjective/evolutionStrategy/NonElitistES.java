@@ -8,7 +8,6 @@ package jmetal.metaheuristics.singleObjective.evolutionStrategy;
 import java.util.Comparator;
 
 import jmetal.base.Algorithm;
-import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
@@ -50,7 +49,6 @@ public class NonElitistES extends Algorithm {
     SolutionSet population          ;
     SolutionSet offspringPopulation ;  
 
-    Operator   mutationOperator ;
     Comparator<Solution> comparator       ;
     
     comparator = new ObjectiveComparator(0) ; // Single objective comparator
@@ -65,8 +63,6 @@ public class NonElitistES extends Algorithm {
     evaluations  = 0;                
 
     // Read the operators
-    mutationOperator  = this.operators_.get("mutation");
-
     System.out.println("(" + mu_ + " , " + lambda_+")ES") ;
      
     // Create the parent population of mu solutions

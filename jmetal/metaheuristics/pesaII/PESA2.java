@@ -7,7 +7,6 @@
 package jmetal.metaheuristics.pesaII;
 
 import jmetal.base.Algorithm;
-import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
@@ -44,7 +43,6 @@ public class PESA2 extends Algorithm{
     int archiveSize, bisections, maxEvaluations, evaluations, populationSize;        
     AdaptiveGridArchive archive;
     SolutionSet solutionSet;
-    Operator crossover,mutation, selection;
         
     // Read parameters
     populationSize = ((Integer)(inputParameters_.get("populationSize"))).intValue();
@@ -53,15 +51,13 @@ public class PESA2 extends Algorithm{
     maxEvaluations = ((Integer)(inputParameters_.get("maxEvaluations"))).intValue();
     
     // Get the operators
-    crossover = operators_.get("crossover");
-    mutation  = operators_.get("mutation");
             
     // Initialize the variables
     evaluations = 0;    
     archive = new AdaptiveGridArchive(archiveSize,bisections,
                                         problem_.getNumberOfObjectives());
     solutionSet  = new SolutionSet(populationSize);
-    selection    = new PESA2Selection();
+    selectionOperator    = new PESA2Selection();
 
     //-> Create the initial individual and evaluate it and his constraints
     for (int i = 0; i < populationSize; i++){
@@ -83,15 +79,14 @@ public class PESA2 extends Algorithm{
     solutionSet.clear();
     
     //Iterations....
-    Solution [] parents = new Solution[2];
     do {
       //-> Create the offSpring solutionSet                    
       while (solutionSet.size() < populationSize){                        
-        parents[0] = (Solution) selection.execute(archive);
-        parents[1] = (Solution) selection.execute(archive);
+        Solution parent1 = (Solution) selectionOperator.execute(archive);
+        Solution parent2 = (Solution) selectionOperator.execute(archive);
         
-        Solution [] offSpring = (Solution []) crossover.execute(parents);        
-        mutation.execute(offSpring[0]);
+        Solution [] offSpring = (Solution []) crossoverOperator.execute(parent1, parent2);        
+        mutationOperator.execute(offSpring[0]);
         problem_.evaluate(offSpring[0]);
         problem_.evaluateConstraints(offSpring[0]);
         evaluations++;

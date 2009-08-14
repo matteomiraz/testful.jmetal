@@ -12,12 +12,14 @@ import java.util.logging.Logger;
 
 import jmetal.base.Algorithm;
 import jmetal.base.Configuration;
-import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.SolutionSet;
+import jmetal.base.operator.crossover.Crossover;
 import jmetal.base.operator.crossover.CrossoverFactory;
+import jmetal.base.operator.mutation.Mutation;
 import jmetal.base.operator.mutation.MutationFactory;
 import jmetal.base.operator.selection.BinaryTournament;
+import jmetal.base.operator.selection.Selection;
 import jmetal.problems.RadioNetworkDesign;
 import jmetal.util.JMException;
 
@@ -28,9 +30,9 @@ public class DENSEA_main {
   public static void main(String [] args) throws JMException, IOException {
     Problem   problem   ;         // The problem to solve
     Algorithm algorithm ;         // The algorithm to use
-    Operator  crossover ;         // Crossover operator
-    Operator  mutation  ;         // Mutation operator
-    Operator  selection ;         // Selection operator
+    Crossover  crossover ;         // Crossover operator
+    Mutation  mutation  ;         // Mutation operator
+    Selection<?>  selection ;         // Selection operator
       
     // Logger object and file to store log messages
     logger_      = Configuration.logger_ ;
@@ -47,17 +49,17 @@ public class DENSEA_main {
     
     // Mutation and Crossover Binary codification 
     crossover = CrossoverFactory.getCrossoverOperator("SinglePointCrossover");                   
-    crossover.setParameter("probability",0.9);                   
+    crossover.setProbability(0.9);                   
     mutation = MutationFactory.getMutationOperator("BitFlipMutation");                    
-    mutation.setParameter("probability",1.0/149);
+    mutation.setProbability(1.0/149);
     
     // Selection Operator 
     selection = new BinaryTournament();                            
     
     // Add the operators to the algorithm
-    algorithm.addOperator("crossover",crossover);
-    algorithm.addOperator("mutation",mutation);
-    algorithm.addOperator("selection",selection);
+    algorithm.setCrossover(crossover);
+    algorithm.setMutation(mutation);
+    algorithm.setSelection(selection);
     
     // Execute the Algorithm
     long initTime = System.currentTimeMillis();

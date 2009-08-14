@@ -9,12 +9,13 @@ package jmetal.base.operator.localSearch;
 
 import java.util.Comparator;
 
-import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
+import jmetal.base.archive.CrowdingArchive;
 import jmetal.base.operator.comparator.DominanceComparator;
 import jmetal.base.operator.comparator.OverallConstraintViolationComparator;
+import jmetal.base.operator.mutation.Mutation;
 import jmetal.util.JMException;
 
 /**
@@ -48,7 +49,7 @@ public class MutationLocalSearch extends LocalSearch {
   /**
    * Stores the mutation operator 
    */
-  private Operator mutationOperator_;
+  private Mutation mutationOperator_;
   
   /**
    * Stores the number of evaluations_ carried out
@@ -64,7 +65,7 @@ public class MutationLocalSearch extends LocalSearch {
   * @param archive The archive
   */
   public MutationLocalSearch(Problem     problem,
-                             Operator    mutationOperator,
+                             Mutation    mutationOperator,
                              SolutionSet archive) {
     evaluations_          = 0      ;
     problem_              = problem;
@@ -80,7 +81,7 @@ public class MutationLocalSearch extends LocalSearch {
   * @param problem The problem to solve
   * @param mutationOperator The mutation operator 
   */
-  public MutationLocalSearch(Problem problem, Operator mutationOperator) {
+  public MutationLocalSearch(Problem problem, Mutation mutationOperator) {
     evaluations_ = 0 ;
     problem_ = problem;
     mutationOperator_ = mutationOperator;
@@ -97,20 +98,13 @@ public class MutationLocalSearch extends LocalSearch {
    * @return An object containing the new improved solution
  * @throws JMException 
    */
-  public Object execute(Object object) throws JMException {
+  @Override
+  public Solution execute(Solution solution) throws JMException {
     int i = 0;
     int best = 0;
     evaluations_ = 0;        
-    Solution solution = (Solution)object;
-    Integer roundsParam = (Integer)getParameter("improvementRounds");
-    archive_ = (SolutionSet)getParameter("archive");
-    int rounds;
-    if (roundsParam == null)
-      rounds = 0;
-    else
-      rounds = roundsParam.intValue();
-                            
-    if (rounds <= 0)
+
+    if (improvementRounds <= 0)
       return new Solution(solution);
         
     do 
@@ -156,7 +150,7 @@ public class MutationLocalSearch extends LocalSearch {
           archive_.add(mutatedSolution);
       }                            
     }
-    while (i < rounds);
+    while (i < improvementRounds);
     return new Solution(solution);
   } // execute
   
@@ -167,4 +161,9 @@ public class MutationLocalSearch extends LocalSearch {
   public int getEvaluations() {
     return evaluations_;
   } // evaluations
+
+
+	public void setArchive(CrowdingArchive archive) {
+		this.archive_ = archive;
+	}
 } // MutationLocalSearch

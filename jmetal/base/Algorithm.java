@@ -10,6 +10,10 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import jmetal.base.operator.crossover.Crossover;
+import jmetal.base.operator.localSearch.LocalSearch;
+import jmetal.base.operator.mutation.Mutation;
+import jmetal.base.operator.selection.Selection;
 import jmetal.util.JMException;
 
 /** This class implements a generic template for the algorithms developed in
@@ -22,12 +26,11 @@ public abstract class Algorithm implements Serializable {
    
  private static final long serialVersionUID = 170011594278842840L;
 
-/** 
-  * Stores the operators used by the algorithm, such as selection, crossover,
-  * etc.
-  */
-  protected Map<String,Operator> operators_ = null;
-  
+ protected Crossover crossoverOperator;
+ protected Mutation mutationOperator;
+ protected Selection<?> selectionOperator;
+ protected LocalSearch improvement;
+ 
  /** 
   * Stores algorithm specific parameters. For example, in NSGA-II these
   * parameters include the population size and the maximum number of function
@@ -48,30 +51,6 @@ public abstract class Algorithm implements Serializable {
   */
   public abstract SolutionSet execute() throws JMException ;   
   
- /**
-  * Offers facilities for add new operators for the algorithm. To use an
-  * operator, an algorithm has to obtain it through the 
-  * <code>getOperator</code> method.
-  * @param name The operator name
-  * @param operator The operator
-  */
-  public void addOperator(String name, Operator operator){
-    if (operators_ == null) {
-      operators_ = new HashMap<String,Operator>();
-    }        
-    operators_.put(name,operator);
-  } // addOperator 
-  
- /**
-  * Gets an operator through his name. If the operator doesn't exist or the name 
-  * is wrong this method returns null. The client of this method have to check 
-  * the result of the method.
-  * @param name The operator name
-  * @return The operator if exists, null in another case.
-  */
-  public Operator getOperator(String name){
-    return operators_.get(name);
-  } // getOperator   
   
  /**
   * Sets an input parameter to an algorithm. Typically,
@@ -128,4 +107,20 @@ public abstract class Algorithm implements Serializable {
     else
       return null ;
   } // getOutputParameter   
+
+  public void setCrossover(Crossover crossover) {
+  	this.crossoverOperator = crossover;
+  }
+  
+	public void setMutation(Mutation mutation) {
+		this.mutationOperator = mutation;
+	}
+
+	public void setSelection(Selection<?> selection) {
+		this.selectionOperator = selection;
+	}
+	
+	public void setImprovement(LocalSearch improvement) {
+		this.improvement = improvement;
+	}
 } // Algorithm

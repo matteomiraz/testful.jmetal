@@ -9,7 +9,6 @@ package jmetal.metaheuristics.densea;
 import java.util.Comparator;
 
 import jmetal.base.Algorithm;
-import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
@@ -18,7 +17,6 @@ import jmetal.base.operator.comparator.EqualSolutions;
 import jmetal.util.Distance;
 import jmetal.util.JMException;
 import jmetal.util.Ranking;
-
 
 public class DENSEA extends Algorithm{
 
@@ -49,7 +47,6 @@ public class DENSEA extends Algorithm{
   public SolutionSet execute() throws JMException {
     int populationSize, maxEvaluations, evaluations               ;
     SolutionSet population                                        ;
-    Operator mutationOperator,crossoverOperator,selectionOperator ;
     Distance distance    = new Distance()                         ;               
 
     //Read the params
@@ -59,11 +56,6 @@ public class DENSEA extends Algorithm{
     //Init the variables
     population        = new SolutionSet(populationSize);        
     evaluations       = 0;                
-
-    //Read the operators
-    mutationOperator  = this.operators_.get("mutation");
-    crossoverOperator = this.operators_.get("crossover");
-    selectionOperator = this.operators_.get("selection");  
 
     //-> Create the initial population
     Solution newIndividual;
@@ -81,11 +73,10 @@ public class DENSEA extends Algorithm{
     while (evaluations < maxEvaluations) {
       SolutionSet P3 = new SolutionSet(populationSize);
       for (int i = 0; i < populationSize/2; i++) {
-        Solution [] parents = new Solution[2];
         Solution [] offSpring;
-        parents[0] = (Solution)selectionOperator.execute(population);
-        parents[1] = (Solution)selectionOperator.execute(population);
-        offSpring = (Solution [])crossoverOperator.execute(parents);
+        Solution parent1 = (Solution)selectionOperator.execute(population);
+        Solution parent2 = (Solution)selectionOperator.execute(population);
+        offSpring = crossoverOperator.execute(parent1, parent2);
         mutationOperator.execute(offSpring[0]);
         problem_.evaluate(offSpring[0]);
         problem_.evaluateConstraints(offSpring[0]);

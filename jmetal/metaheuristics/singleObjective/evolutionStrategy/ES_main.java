@@ -8,9 +8,9 @@
 package jmetal.metaheuristics.singleObjective.evolutionStrategy;
 
 import jmetal.base.Algorithm;
-import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.SolutionSet;
+import jmetal.base.operator.mutation.Mutation;
 import jmetal.base.operator.mutation.MutationFactory;
 import jmetal.problems.singleObjective.OneMax;
 import jmetal.util.JMException;
@@ -25,7 +25,7 @@ public class ES_main {
   public static void main(String [] args) throws JMException {
     Problem   problem   ;         // The problem to solve
     Algorithm algorithm ;         // The algorithm to use
-    Operator  mutation  ;         // Mutation operator
+    Mutation  mutation  ;         // Mutation operator
             
     int bits ; // Length of bit string in the OneMax problem
     
@@ -47,10 +47,9 @@ public class ES_main {
     
     /* Mutation and Crossover for Real codification */
     mutation = MutationFactory.getMutationOperator("BitFlipMutation");                    
-    mutation.setParameter("probability",1.0/bits); 
+    mutation.setProbability(1.0/bits); 
+    algorithm.setMutation(mutation);
     
-    algorithm.addOperator("mutation",mutation);
- 
     /* Execute the Algorithm */
     long initTime = System.currentTimeMillis();
     SolutionSet population = algorithm.execute();

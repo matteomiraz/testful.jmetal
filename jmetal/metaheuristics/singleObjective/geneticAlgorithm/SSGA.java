@@ -8,7 +8,6 @@ package jmetal.metaheuristics.singleObjective.geneticAlgorithm;
 import java.util.Comparator;
 
 import jmetal.base.Algorithm;
-import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
@@ -43,9 +42,6 @@ public class SSGA extends Algorithm {
     int evaluations    ;
 
     SolutionSet population        ;
-    Operator    mutationOperator  ;
-    Operator    crossoverOperator ;
-    Operator    selectionOperator ;
     
     Comparator<Solution>  comparator        ;
     
@@ -58,11 +54,6 @@ public class SSGA extends Algorithm {
     // Initialize the variables
     population   = new SolutionSet(populationSize);        
     evaluations  = 0;                
-
-    // Read the operators
-    mutationOperator  = this.operators_.get("mutation");
-    crossoverOperator = this.operators_.get("crossover");
-    selectionOperator = this.operators_.get("selection");  
 
     // Create the initial population
     Solution newIndividual;
@@ -78,14 +69,13 @@ public class SSGA extends Algorithm {
       if ((evaluations % 10000) == 0) {
         System.out.println(evaluations + ": " + population.get(0).getObjective(0)) ;
       } //
-      Solution [] parents = new Solution[2];
       
       // Selection
-      parents[0] = (Solution)selectionOperator.execute(population);
-      parents[1] = (Solution)selectionOperator.execute(population);
+      Solution parent1 = (Solution)selectionOperator.execute(population);
+      Solution parent2 = (Solution)selectionOperator.execute(population);
  
       // Crossover
-      Solution [] offspring = (Solution []) crossoverOperator.execute(parents);  
+      Solution [] offspring = (Solution []) crossoverOperator.execute(parent1, parent2);  
 
       // Mutation
       mutationOperator.execute(offspring[0]);

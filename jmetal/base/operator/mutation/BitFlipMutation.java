@@ -7,7 +7,6 @@
 package jmetal.base.operator.mutation;
 
 import jmetal.base.Configuration;
-import jmetal.base.Operator;
 import jmetal.base.Solution;
 import jmetal.base.Configuration.SolutionType_;
 import jmetal.base.variable.Binary;
@@ -19,7 +18,7 @@ import jmetal.util.PseudoRandom;
  * NOTE: the operator is applied to binary or integer solutions, considering the
  * whole solution as a single variable.
  */
-public class BitFlipMutation extends Operator {
+public class BitFlipMutation extends Mutation {
 
   private static final long serialVersionUID = 7338668714477076348L;
 
@@ -73,8 +72,7 @@ public class BitFlipMutation extends Operator {
    * @return An object containing the mutated solution
    * @throws JMException 
    */
-  public Object execute(Object object) throws JMException {
-    Solution solution = (Solution) object;
+  public Solution execute(Solution solution) throws JMException {
 
     if ((solution.getType() != SolutionType_.Binary) &&
             (solution.getType() != SolutionType_.BinaryReal) &&
@@ -86,14 +84,7 @@ public class BitFlipMutation extends Operator {
       throw new JMException(msg);
     } // if 
 
-    Double probability = (Double) getParameter("probability");
-    if (probability == null) {
-      String msg = "BitFlipMutation.execute: probability not specified";
-			Configuration.logger_.severe(msg);
-      throw new JMException(msg);
-    }
-
-    doMutation(probability.doubleValue(), solution);
+    doMutation(probability, solution);
     return solution;
   } // execute
 } // BitFlipMutation

@@ -18,12 +18,14 @@ import java.util.logging.Logger;
 
 import jmetal.base.Algorithm;
 import jmetal.base.Configuration;
-import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.SolutionSet;
 import jmetal.base.operator.crossover.CrossoverFactory;
+import jmetal.base.operator.crossover.SBXCrossover;
+import jmetal.base.operator.localSearch.LocalSearch;
 import jmetal.base.operator.localSearch.MutationLocalSearch;
 import jmetal.base.operator.mutation.MutationFactory;
+import jmetal.base.operator.mutation.PolynomialMutation;
 import jmetal.problems.Kursawe;
 import jmetal.problems.ProblemFactory;
 import jmetal.util.JMException;
@@ -50,9 +52,9 @@ public class AbYSS_main {
                                  JMException, SecurityException, IOException {    
     Problem   problem     ; // The problem to solve
     Algorithm algorithm   ; // The algorithm to use
-    Operator  crossover   ; // Crossover operator
-    Operator  mutation    ; // Mutation operator
-    Operator  improvement ; // Operator for improvement
+    SBXCrossover crossover   ; // Crossover operator
+    PolynomialMutation mutation    ; // Mutation operator
+    LocalSearch improvement ; // Operator for improvement
             
     // Logger object and file to store log messages
     logger_      = Configuration.logger_ ;
@@ -86,21 +88,21 @@ public class AbYSS_main {
       
     // STEP 4. Specify and configure the crossover operator, used in the
     //         solution combination method of the scatter search
-    crossover = CrossoverFactory.getCrossoverOperator("SBXCrossover");                   
-    crossover.setParameter("probability"      , 1.0) ;                   
-    crossover.setParameter("distributionIndex", 20.0) ;
+    crossover = (SBXCrossover) CrossoverFactory.getCrossoverOperator("SBXCrossover");                   
+    crossover.setProbability(1.0);
+    crossover.setDistributionIndex(20.0) ;
     
     // STEP 5. Specify and configure the improvement method. We use by default
     //         a polynomial mutation in this method.
-    mutation = MutationFactory.getMutationOperator("PolynomialMutation");
-    mutation.setParameter("probability", 1.0/problem.getNumberOfVariables());
+    mutation = (PolynomialMutation) MutationFactory.getMutationOperator("PolynomialMutation");                    
+    mutation.setProbability(1.0/problem.getNumberOfVariables());
     
     improvement = new MutationLocalSearch(problem,mutation);
-    improvement.setParameter("improvementRounds", 1);
+    improvement.setImprovementRounds(1);
           
     // STEP 6. Add the operators to the algorithm
-    algorithm.addOperator("crossover",crossover);
-    algorithm.addOperator("improvement",improvement);   
+    algorithm.setCrossover(crossover);
+    algorithm.setImprovement(improvement);   
     
     long initTime      ;
     long estimatedTime ;    

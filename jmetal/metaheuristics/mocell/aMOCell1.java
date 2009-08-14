@@ -8,7 +8,6 @@ package jmetal.metaheuristics.mocell;
 import java.util.Comparator;
 
 import jmetal.base.Algorithm;
-import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
@@ -48,7 +47,6 @@ public class aMOCell1 extends Algorithm{
    */   
   public SolutionSet execute() throws JMException {
     int populationSize, archiveSize, maxEvaluations, evaluations, feedBack;
-    Operator mutationOperator, crossoverOperator, selectionOperator;
     SolutionSet currentSolutionSet;
     CrowdingArchive archive;
     SolutionSet [] neighbors;    
@@ -62,11 +60,6 @@ public class aMOCell1 extends Algorithm{
     archiveSize       = ((Integer)getInputParameter("archiveSize")).intValue();
     maxEvaluations    = ((Integer)getInputParameter("maxEvaluations")).intValue();                
     feedBack          = ((Integer)getInputParameter("feedBack")).intValue();
-
-    //Read the operators
-    mutationOperator  = operators_.get("mutation");
-    crossoverOperator = operators_.get("crossover");
-    selectionOperator = operators_.get("selection");        
 
     //Init the variables
     //init the population and the archive
@@ -91,7 +84,6 @@ public class aMOCell1 extends Algorithm{
       for (int ind = 0; ind < currentSolutionSet.size(); ind++){
         Solution individual = new Solution(currentSolutionSet.get(ind));
 
-        Solution [] parents = new Solution[2];
         Solution [] offSpring;
 
         //neighbors[ind] = neighborhood.getFourNeighbors(currentSolutionSet,ind);
@@ -99,11 +91,11 @@ public class aMOCell1 extends Algorithm{
         neighbors[ind].add(individual);
 
         //parents
-        parents[0] = (Solution)selectionOperator.execute(neighbors[ind]);
-        parents[1] = (Solution)selectionOperator.execute(neighbors[ind]);
+        Solution parent1 = (Solution)selectionOperator.execute(neighbors[ind]);
+        Solution parent2 = (Solution)selectionOperator.execute(neighbors[ind]);
 
         //Create a new solution, using genetic operators mutation and crossover
-        offSpring = (Solution [])crossoverOperator.execute(parents);               
+        offSpring = (Solution [])crossoverOperator.execute(parent1, parent2);               
         mutationOperator.execute(offSpring[0]);
 
         //Evaluate solution and constraints

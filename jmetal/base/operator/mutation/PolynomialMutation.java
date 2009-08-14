@@ -7,7 +7,6 @@
 package jmetal.base.operator.mutation;
 
 import jmetal.base.Configuration;
-import jmetal.base.Operator;
 import jmetal.base.Solution;
 import jmetal.base.Configuration.SolutionType_;
 import jmetal.util.JMException;
@@ -21,7 +20,7 @@ import jmetal.util.PseudoRandom;
  * DEFAULT_INDEX_MUTATION. You can change it using the parameter 
  * "distributionIndex" before invoking the execute() method -- see lines 116-119
  */
-public class PolynomialMutation extends Operator {
+public class PolynomialMutation extends Mutation {
     
   private static final long serialVersionUID = -4694450476401572161L;
 
@@ -94,15 +93,18 @@ public class PolynomialMutation extends Operator {
     }                
   } // doMutation
   
+  
+	public void setDistributionIndex(double etaM) {
+		eta_m_ = etaM;
+	}
+  
   /**
   * Executes the operation
   * @param object An object containing a solution
   * @return An object containing the mutated solution
    * @throws JMException 
   */  
-  public Object execute(Object object) throws JMException {
-    Solution solution = (Solution)object;
-
+  public Solution execute(Solution solution) throws JMException {
     if (solution.getType() != SolutionType_.Real) {
       String msg = "PolynomialMutation.execute: the solution " +
           "is not of the right type. The type should be 'Real', but " +
@@ -111,20 +113,7 @@ public class PolynomialMutation extends Operator {
       throw new JMException(msg) ;
     } // if 
     
-    Double probability = (Double)getParameter("probability");       
-    if (probability == null)
-    {
-      String msg = "PolynomialMutation.execute: probability not specified";
-			Configuration.logger_.severe(msg);
-      throw new JMException(msg) ;  
-    }
-        
-    Double distributionIndex = (Double)getParameter("distributionIndex");
-    if (distributionIndex != null) {
-      eta_m_ = distributionIndex ;
-    } // if
-    
-    doMutation(probability.doubleValue(),solution);
+    doMutation(probability, solution);
     return solution;      
   } // execute
  

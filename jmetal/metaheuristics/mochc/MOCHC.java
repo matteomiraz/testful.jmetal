@@ -9,12 +9,12 @@ package jmetal.metaheuristics.mochc;
 import java.util.Comparator;
 
 import jmetal.base.Algorithm;
-import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
 import jmetal.base.archive.CrowdingArchive;
 import jmetal.base.operator.comparator.CrowdingComparator;
+import jmetal.base.operator.selection.RankingAndCrowdingSelection;
 import jmetal.base.variable.Binary;
 import jmetal.util.JMException;
 
@@ -29,7 +29,8 @@ public class MOCHC extends Algorithm {
   * Stores the problem to solve
   */
   private Problem problem_;
-
+  private RankingAndCrowdingSelection newGenerationSelection;
+  
   /**
   * Constructor
   * Creates a new instance of MOCHC 
@@ -37,6 +38,10 @@ public class MOCHC extends Algorithm {
   public MOCHC(Problem problem) {
     problem_ = problem;
   }
+  
+	public void setNewGenerationSelection(RankingAndCrowdingSelection newGenerationSelection) {
+		this.newGenerationSelection = newGenerationSelection;
+	}
   
   /** 
   * Compares two solutionSets to determine if both are equals
@@ -96,11 +101,6 @@ public class MOCHC extends Algorithm {
     
     Comparator<Solution> crowdingComparator = new CrowdingComparator();
     
-    Operator crossover              ;
-    Operator parentSelection        ;
-    Operator newGenerationSelection ;
-    Operator cataclysmicMutation    ;
-    
     double preservedPopulation     ;
     double initialConvergenceCount ;
     boolean condition = false;
@@ -118,12 +118,6 @@ public class MOCHC extends Algorithm {
     maxEvaluations          = 
            ((Integer)getInputParameter("maxEvaluations")).intValue();
 
-
-    // Read operators
-    crossover = (Operator)getOperator("crossover");
-    cataclysmicMutation = (Operator)getOperator("cataclysmicMutation");
-    parentSelection = (Operator)getOperator("parentSelection");
-    newGenerationSelection = (Operator)getOperator("newGenerationSelection");
 
     iterations  = 0 ;
     evaluations = 0 ;
@@ -148,11 +142,11 @@ public class MOCHC extends Algorithm {
     while (!condition) {
       offspringPopulation = new SolutionSet(populationSize);
       for (int i = 0; i < solutionSet.size()/2; i++) {
-        Solution [] parents   = (Solution [])parentSelection.execute(solutionSet);         
+        Solution [] parents   = (Solution [])selectionOperator.execute(solutionSet);         
 
         //Equality condition between solutions
         if (hammingDistance(parents[0],parents[1]) >= (minimumDistance)) {
-          Solution [] offspring = (Solution [])crossover.execute(parents);
+          Solution [] offspring = (Solution [])crossoverOperator.execute(parents[0], parents[1]);
           problem_.evaluate(offspring[0]);
           problem_.evaluateConstraints(offspring[0]);
           problem_.evaluate(offspring[1]);
@@ -163,7 +157,7 @@ public class MOCHC extends Algorithm {
         }
       }
       SolutionSet union = solutionSet.union(offspringPopulation);
-      newGenerationSelection.setParameter("populationSize",populationSize);
+      newGenerationSelection.setPopulationSize(populationSize);
       newPopulation = (SolutionSet)newGenerationSelection.execute(union);
 
       if (equals(solutionSet,newPopulation)) {
@@ -182,7 +176,7 @@ public class MOCHC extends Algorithm {
         }
         for (int i = preserve;i < populationSize; i++) {
           Solution solution = new Solution(solutionSet.get(i));
-          cataclysmicMutation.execute(solution);
+          mutationOperator.execute(solution);
           problem_.evaluate(solution);
           problem_.evaluateConstraints(solution);
           newPopulation.add(solution);

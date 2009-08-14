@@ -9,12 +9,11 @@ package jmetal.metaheuristics.abyss;
 import java.util.Comparator;
 
 import jmetal.base.Algorithm;
-import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
 import jmetal.base.archive.CrowdingArchive;
-import jmetal.base.operator.localSearch.LocalSearch;
+import jmetal.base.operator.localSearch.MutationLocalSearch;
 import jmetal.util.Distance;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
@@ -115,16 +114,6 @@ public class AbYSS extends Algorithm {
   private Comparator<Solution> crowdingDistance_;
   
   /**
-   * Stores the crossover operator
-   */
-  private Operator crossoverOperator_;
-  
-  /**
-   * Stores the improvement operator
-   */
-  private LocalSearch improvementOperator_;
-  
-  /**
    * Stores a <code>Distance</code> object
    */
   private Distance distance_;
@@ -177,9 +166,7 @@ public class AbYSS extends Algorithm {
     reverseFrequency_ = new int[numberOfSubranges_][problem_.getNumberOfVariables()] ;    
     
     //Read the operators of crossover and improvement
-    crossoverOperator_   =  operators_.get("crossover");
-    improvementOperator_ = (LocalSearch) operators_.get("improvement");
-    improvementOperator_.setParameter("archive",archive_);        
+    ((MutationLocalSearch)improvement).setArchive(archive_);        
   } // initParam
             
   /**
@@ -302,8 +289,8 @@ public class AbYSS extends Algorithm {
     } else { // Update the reference set from the subset generation result
       Solution individual;
       for (int i = 0; i < subSet_.size();i++){
-        individual = (Solution)improvementOperator_.execute(subSet_.get(i));
-        evaluations_ += improvementOperator_.getEvaluations();
+        individual = improvement.execute(subSet_.get(i));
+        evaluations_ += improvement.getEvaluations();
                 
         if (refSet1Test(individual)){ //Update distance of RefSet2
           for (int indSet2 = 0; indSet2 < refSet2_.size();indSet2++) {
@@ -430,7 +417,7 @@ public class AbYSS extends Algorithm {
         parents[1] = refSet1_.get(j);
         if (!parents[0].isMarked() || !parents[1].isMarked()){
           //offSpring = parent1.crossover(1.0,parent2);
-          offSpring = (Solution [])crossoverOperator_.execute(parents);
+          offSpring = crossoverOperator.execute(parents[0], parents[1]);
           problem_.evaluate(offSpring[0]);
           problem_.evaluate(offSpring[1]);    
           problem_.evaluateConstraints(offSpring[0]);
@@ -453,7 +440,7 @@ public class AbYSS extends Algorithm {
         parents[1] = refSet2_.get(j);
         if (!parents[0].isMarked() || !parents[1].isMarked()){
           //offSpring = parents[0].crossover(1.0,parent2);                    
-          offSpring = (Solution []) crossoverOperator_.execute(parents);
+          offSpring = crossoverOperator.execute(parents[0], parents[1]);
           problem_.evaluateConstraints(offSpring[0]);
           problem_.evaluateConstraints(offSpring[1]);                    
           problem_.evaluate(offSpring[0]);
@@ -489,8 +476,8 @@ public class AbYSS extends Algorithm {
       problem_.evaluateConstraints(solution);
       problem_.evaluate(solution);            
       evaluations_++;
-      solution = (Solution)improvementOperator_.execute(solution);            
-      evaluations_ += improvementOperator_.getEvaluations();
+      solution = (Solution)improvement.execute(solution);            
+      evaluations_ += improvement.getEvaluations();
       solutionSet_.add(solution);            
     } // fpr
         
@@ -513,8 +500,8 @@ public class AbYSS extends Algorithm {
         for (int i = 0; i < refSet1_.size();i++){
           solution = refSet1_.get(i);
           solution.unMarked();
-          solution = (Solution)improvementOperator_.execute(solution);
-          evaluations_ += improvementOperator_.getEvaluations();
+          solution = improvement.execute(solution);
+          evaluations_ += improvement.getEvaluations();
           solutionSet_.add(solution);
         }
         // Remove refSet1 and refSet2
@@ -547,8 +534,8 @@ public class AbYSS extends Algorithm {
           problem_.evaluateConstraints(solution);                                         
           problem_.evaluate(solution);
           evaluations_++;
-          solution = (Solution)improvementOperator_.execute(solution);
-          evaluations_ += improvementOperator_.getEvaluations();
+          solution = (Solution)improvement.execute(solution);
+          evaluations_ += improvement.getEvaluations();
           solution.unMarked();
           solutionSet_.add(solution);
         } // while

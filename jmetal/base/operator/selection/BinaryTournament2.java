@@ -8,7 +8,6 @@ package jmetal.base.operator.selection;
 
 import java.util.Comparator;
 
-import jmetal.base.Operator;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
 import jmetal.base.operator.comparator.DominanceComparator;
@@ -18,7 +17,7 @@ import jmetal.util.PseudoRandom;
  * This class implements an opertor for binary selections using the same code
  * in Deb's NSGA-II implementation
  */
-public class BinaryTournament2 extends Operator{
+public class BinaryTournament2 extends Selection<Solution> {
   
   private static final long serialVersionUID = 2774421116618537328L;
 
@@ -52,9 +51,8 @@ public class BinaryTournament2 extends Operator{
   * @param object Object representing a SolutionSet
   * @return the selected solution
   */
-  public Object execute(Object object)    
-  {
-    SolutionSet population = (SolutionSet)object;
+
+  public Solution execute(SolutionSet population) throws jmetal.util.JMException {
     if (index_ == 0) //Create the permutation
     {
       a_= (new jmetal.util.PermutationUtility()).intPermutation(population.size());

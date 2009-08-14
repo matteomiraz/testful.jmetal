@@ -90,12 +90,12 @@ public class OMOPSO extends Algorithm {
   /**
   * Stores a comparator for checking dominance
   */
-  private Comparator dominance_;
+  private Comparator<Solution> dominance_;
   
   /**
   * Stores a comparator for crowding checking
   */
-  private Comparator crowdingDistanceComparator_;
+  private Comparator<Solution> crowdingDistanceComparator_;
   
   /**
    * Stores a <code>Distance</code> object

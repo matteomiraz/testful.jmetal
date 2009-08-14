@@ -49,10 +49,9 @@ public class GDE3 extends Algorithm {
     
     SolutionSet population          ;
     SolutionSet offspringPopulation ;
-    SolutionSet union               ;
     
     Distance   distance  ;
-    Comparator dominance ;
+    Comparator<Solution> dominance ;
     
     Operator selectionOperator ;
     Operator crossoverOperator ;
@@ -60,12 +59,6 @@ public class GDE3 extends Algorithm {
     distance  = new Distance()  ;               
     dominance = new jmetal.base.operator.comparator.DominanceComparator(); 
     
-    // Differential evolution parameters
-    int r1    ;
-    int r2    ;
-    int r3    ;
-    int jrand ;
-
     Solution parent[] ;
     
     //Read the parameters

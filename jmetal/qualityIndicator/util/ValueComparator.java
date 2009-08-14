@@ -14,7 +14,7 @@ import java.util.Comparator;
  * to compare points given as <code>double</code>. The points are compared
  * taken account the value of a index
  */
-public class ValueComparator implements Comparator {
+public class ValueComparator implements Comparator<double[]> {
   
   /**
    * Stores the value of the index to compare
@@ -35,11 +35,7 @@ public class ValueComparator implements Comparator {
    * @param o2 An object that reference a double[]
    * @return -1 if o1 < o1, 1 if o1 > o2 or 0 in other case.
    */
-  public int compare(Object o1, Object o2) {
-    //Cast to double [] o1 and o2.
-    double [] pointOne = (double [])o1;
-    double [] pointTwo = (double [])o2;
-    
+  public int compare(double [] pointOne, double [] pointTwo) {
     if (pointOne[index_] < pointTwo[index_]) {
       return -1;
     } else if (pointOne[index_] > pointTwo[index_]) {

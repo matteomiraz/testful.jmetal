@@ -129,7 +129,7 @@ public class MOEAD extends Algorithm {
         } else {
           type = 2;   // whole population
         }
-        Vector<Integer> p = new Vector();
+        Vector<Integer> p = new Vector<Integer>();
         matingSelection(p, n, 2, type);
 
         // STEP 2.2. Reproduction
@@ -181,7 +181,7 @@ public class MOEAD extends Algorithm {
       for (int i = 0; i <= H_; i++) {
         for (int j = 0; j <= H_; j++) {
           if (i + j <= H_) {
-            Vector<Integer> array = new Vector();
+            Vector<Integer> array = new Vector<Integer>();
             array.addElement(i);
             array.addElement(j);
             array.addElement(H_ - i - j);

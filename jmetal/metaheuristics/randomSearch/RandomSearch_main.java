@@ -12,7 +12,6 @@ import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 
 import jmetal.base.Algorithm;
-import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.SolutionSet;
 import jmetal.problems.Kursawe;
@@ -36,9 +35,6 @@ public class RandomSearch_main {
                                   JMException, SecurityException, IOException {
     Problem   problem   ;         // The problem to solve
     Algorithm algorithm ;         // The algorithm to use
-    Operator  crossover ;         // Crossover operator
-    Operator  mutation  ;         // Mutation operator
-    Operator  selection ;         // Selection operator
 
     if (args.length == 1) {
       Object [] params = {"Real"};

@@ -18,7 +18,6 @@ import jmetal.base.SolutionSet;
 import jmetal.base.operator.mutation.MutationFactory;
 import jmetal.problems.Kursawe;
 import jmetal.problems.ProblemFactory;
-import jmetal.qualityIndicator.QualityIndicator;
 import jmetal.util.JMException;
 
 public class PAES_main {
@@ -33,18 +32,13 @@ public class PAES_main {
   public static void main(String [] args) throws JMException, IOException {
     Problem   problem   ;         // The problem to solve
     Algorithm algorithm ;         // The algorithm to use
-    Operator  crossover ;         // Crossover operator
     Operator  mutation  ;         // Mutation operator
-    Operator  selection ;         // Selection operator
     
-    QualityIndicator indicators ; // Object to get quality indicators
-
     // Logger object and file to store log messages
     logger_      = Configuration.logger_ ;
     fileHandler_ = new FileHandler("PAES_main.log");
     logger_.addHandler(fileHandler_) ;
     
-    indicators = null ;
     if (args.length == 1) {
       Object [] params = {"Real"};
       problem = (new ProblemFactory()).getProblem(args[0],params);
@@ -52,7 +46,6 @@ public class PAES_main {
     else if (args.length == 2) {
       Object [] params = {"Real"};
       problem = (new ProblemFactory()).getProblem(args[0],params);
-      indicators = new QualityIndicator(problem, args[1]) ;
     } // if
     else { // Default problem
       problem = new Kursawe(3, "Real"); 

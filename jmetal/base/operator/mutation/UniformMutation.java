@@ -69,13 +69,11 @@ public class UniformMutation extends Operator{
     Solution solution = (Solution )object;
     
     if (solution.getType() != SolutionType_.Real) {
-      Configuration.logger_.severe("UniformMutation.execute: the solution " +
+      String msg = "UniformMutation.execute: the solution " +
           "is not of the right type. The type should be 'Real', but " +
-          solution.getType() + " is obtained");
-
-      Class cls = java.lang.String.class;
-      String name = cls.getName(); 
-      throw new JMException("Exception in " + name + ".execute()") ;
+          solution.getType() + " is obtained";
+			Configuration.logger_.severe(msg);
+      throw new JMException(msg) ;
     } // if 
     
     Double probability;
@@ -86,11 +84,9 @@ public class UniformMutation extends Operator{
     probability = (Double)getParameter("probability");
     if (probability == null)
     {
-      Configuration.logger_.severe("UniformMutation.execute: probability " +
-      "not specified");
-      Class cls = java.lang.String.class;
-      String name = cls.getName(); 
-      throw new JMException("Exception in " + name + ".execute()") ;  
+      String msg = "UniformMutation.execute: probability not specified";
+			Configuration.logger_.severe(msg);
+      throw new JMException(msg) ;  
     }
     
     doMutation(probability.doubleValue(),solution);

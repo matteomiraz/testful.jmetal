@@ -47,7 +47,6 @@ public class MOEAD_main {
   public static void main(String [] args) throws JMException, SecurityException, IOException {
     Problem   problem   ;         // The problem to solve
     Algorithm algorithm ;         // The algorithm to use
-    Operator  selection ;
     Operator  crossover ;         // Crossover operator
     Operator  mutation  ;         // Mutation operator
      

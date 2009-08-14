@@ -48,7 +48,7 @@ public class GDE3_Settings extends Settings {
     Algorithm algorithm;
     Operator selection;
     Operator crossover;
-    Operator mutation;
+    //Operator mutation;
 
     QualityIndicator indicators;
 

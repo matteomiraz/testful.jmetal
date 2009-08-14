@@ -78,8 +78,8 @@ public class NSGAIIStudy extends Experiment {
     exp.independentRuns_ = 30 ;
     
     // Run the experiments
-    int numberOfThreads ;
-    exp.runExperiment(numberOfThreads = 6) ;
+    int numberOfThreads = 6;
+    exp.runExperiment(numberOfThreads) ;
     
     // Generate latex tables (comment this sentence is not desired)
     exp.generateLatexTables() ;
@@ -95,8 +95,8 @@ public class NSGAIIStudy extends Experiment {
     prefix = new String("Problems");
     problems = new String[]{"ZDT1", "ZDT2","ZDT3", "ZDT4", "DTLZ1", "WFG2"} ;
 
-    boolean notch ;
-    exp.generateRBoxplotScripts(rows, columns, problems, prefix, notch = false) ;
+    boolean notch = false;
+    exp.generateRBoxplotScripts(rows, columns, problems, prefix, notch) ;
     exp.generateRWilcoxonScripts(problems, prefix) ;
   }
 } // NSGAIIStudy

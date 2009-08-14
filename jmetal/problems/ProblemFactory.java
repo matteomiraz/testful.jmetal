@@ -48,8 +48,8 @@ public class ProblemFactory {
       base += "cec2009Competition.";    
     
     try {
-      Class problemClass = Class.forName(base+name);
-      Constructor [] constructors = problemClass.getConstructors();
+      Class<?> problemClass = Class.forName(base+name);
+      Constructor<?> [] constructors = problemClass.getConstructors();
       int i = 0;
       //find the constructor
       while ((i < constructors.length) && 

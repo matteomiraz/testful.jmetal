@@ -14,7 +14,7 @@ import jmetal.base.Solution;
  * This class implements a <code>Comparator</code> (a method for comparing
  * <code>Solution</code> objects) based on epsilon dominance.
  */
-public class EpsilonDominanceComparator implements Comparator{
+public class EpsilonDominanceComparator implements Comparator<Solution>{
    
   /**
    * Stores the value of eta, needed for epsilon-dominance.
@@ -24,7 +24,7 @@ public class EpsilonDominanceComparator implements Comparator{
   /** 
    * stores a comparator for check the OverallConstraintComparator
    */
-  private static final Comparator overallConstraintViolationComparator_ =
+	private static final Comparator<Solution> overallConstraintViolationComparator_ =
                               new OverallConstraintViolationComparator();
   
   /**
@@ -42,10 +42,10 @@ public class EpsilonDominanceComparator implements Comparator{
   * @return -1, or 0, or 1 if solution1 dominates solution2, both are 
   * non-dominated, or solution1 is dominated by solution2, respectively.
   */
-  public int compare(Object object1, Object object2) {
-    if (object1==null)
+  public int compare(Solution solution1, Solution solution2) {
+    if (solution1==null)
       return 1;
-    else if (object2 == null)
+    else if (solution2 == null)
       return -1;    
         
     int dominate1 ; // dominate1 indicates if some objective of solution1 
@@ -55,12 +55,8 @@ public class EpsilonDominanceComparator implements Comparator{
     dominate1 = 0 ; 
     dominate2 = 0 ;   
     
-    Solution solution1 = (Solution)object1;
-    Solution solution2 = (Solution)object2;
-    
     int flag; 
-    Comparator constraint = new jmetal.base.operator.comparator.OverallConstraintViolationComparator();
-    flag = constraint.compare(solution1,solution2);
+    flag = overallConstraintViolationComparator_.compare(solution1,solution2);
     
     if (flag != 0) {      
       return flag;

@@ -82,11 +82,11 @@ public class SMPSO extends Algorithm {
   /**
    * Stores a comparator for checking dominance
    */
-  private Comparator dominance_;
+  private Comparator<Solution> dominance_;
   /**
    * Stores a comparator for crowding checking
    */
-  private Comparator crowdingDistanceComparator_;
+  private Comparator<Solution> crowdingDistanceComparator_;
   /**
    * Stores a <code>Distance</code> object
    */
@@ -163,12 +163,11 @@ public class SMPSO extends Algorithm {
     hy_ = new Hypervolume();
     jmetal.qualityIndicator.util.MetricsUtil mu = new jmetal.qualityIndicator.util.MetricsUtil();
     trueFront_ = mu.readNonDominatedSolutionSet(trueParetoFront);
-    trueHypervolume_ = hy_.hypervolume(trueFront_.writeObjectivesToMatrix(),
+    hy_.hypervolume(trueFront_.writeObjectivesToMatrix(),
       trueFront_.writeObjectivesToMatrix(),
       problem_.getNumberOfObjectives());
 
   } // SMPSO
-  private double trueHypervolume_;
   private Hypervolume hy_;
   private SolutionSet trueFront_;
   private double deltaMax_[];
@@ -185,7 +184,7 @@ public class SMPSO extends Algorithm {
     hy_ = new Hypervolume();
     jmetal.qualityIndicator.util.MetricsUtil mu = new jmetal.qualityIndicator.util.MetricsUtil();
     trueFront_ = mu.readNonDominatedSolutionSet(trueParetoFront);
-    trueHypervolume_ = hy_.hypervolume(trueFront_.writeObjectivesToMatrix(),
+    hy_.hypervolume(trueFront_.writeObjectivesToMatrix(),
       trueFront_.writeObjectivesToMatrix(),
       problem_.getNumberOfObjectives());
 
@@ -302,8 +301,8 @@ public class SMPSO extends Algorithm {
    * @throws JMException 
    */
   private void computeSpeed(int iter, int miter) throws JMException, IOException {
-    double r1, r2, W, C1, C2;
-    double wmax, wmin, deltaMax, deltaMin;
+    double r1, r2, C1, C2;
+    double wmax, wmin;
     DecisionVariables bestGlobal;
 
     for (int i = 0; i < particlesSize_; i++) {
@@ -327,8 +326,7 @@ public class SMPSO extends Algorithm {
       r2 = PseudoRandom.randDouble(r2Min_, r2Max_);
       C1 = PseudoRandom.randDouble(C1Min_, C1Max_);
       C2 = PseudoRandom.randDouble(C2Min_, C2Max_);
-      W = PseudoRandom.randDouble(WMin_, WMax_);
-      //
+
       wmax = WMax_;
       wmin = WMin_;
 

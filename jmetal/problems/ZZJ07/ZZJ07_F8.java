@@ -71,7 +71,8 @@ public class ZZJ07_F8 extends Problem {
     double [] fx = new double[numberOfVariables_] ; 
     
     double g   ;
-    double h   ;
+    @SuppressWarnings("unused")
+		double h   ;
     double sum ;
     for (int i = 0; i < numberOfVariables_; i++)
       x[i] = decisionVariables.variables_[i].getValue() ;

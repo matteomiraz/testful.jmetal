@@ -31,9 +31,6 @@ public class GA_main {
     Operator  mutation  ;         // Mutation operator
     Operator  selection ;         // Selection operator
             
-    int bits ; // Length of bit string in the OneMax problem
-    
-    bits = 512 ;
     //problem = new OneMax(bits);
     //problem = new Sphere(20, "Real") ;
     //problem = new Easom("Real") ;

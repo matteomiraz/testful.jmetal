@@ -64,12 +64,10 @@ public class SwapMutation extends Operator{
       } // if
     } // if
     else  {
-      Configuration.logger_.severe("SwapMutation.doMutation: invalid type. " +
-          ""+ solution.getDecisionVariables().variables_[0].getVariableType());
-
-      Class cls = java.lang.String.class;
-      String name = cls.getName(); 
-      throw new JMException("Exception in " + name + ".doMutation()") ;
+      String msg = "SwapMutation.doMutation: invalid type. " +
+          solution.getDecisionVariables().variables_[0].getVariableType();
+			Configuration.logger_.severe(msg);
+      throw new JMException(msg) ;
     } // catch               
   } // doMutation
 
@@ -85,11 +83,9 @@ public class SwapMutation extends Operator{
     Double probability = (Double)getParameter("probability");       
     if (probability == null)
     {
-      Configuration.logger_.severe("SwapMutation.execute: probability " +
-      "not specified");
-      Class cls = java.lang.String.class;
-      String name = cls.getName(); 
-      throw new JMException("Exception in " + name + ".execute()") ;  
+      String msg = "SwapMutation.execute: probability not specified";
+			Configuration.logger_.severe(msg);
+      throw new JMException(msg) ;  
     }
     
     this.doMutation(probability.doubleValue(), solution);

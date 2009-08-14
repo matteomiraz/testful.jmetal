@@ -9,6 +9,7 @@ package jmetal.util;
 import java.util.Comparator;
 
 import jmetal.base.Problem;
+import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
 import jmetal.base.operator.comparator.DominanceComparator;
 
@@ -23,15 +24,15 @@ public class FPGAFitness {
   */
   private SolutionSet solutionSet_ = null;
   
-  /**
-   * problem to solve
-   */
-  private Problem     problem_     = null;
+//  /**
+//   * problem to solve
+//   */
+//  private Problem     problem_     = null;
         
   /**
    * stores a <code>Comparator</code> for dominance checking
    */
-  private static final Comparator dominance_ = new DominanceComparator();
+  private static final Comparator<Solution> dominance_ = new DominanceComparator();
   
   /**
    * Constructor.
@@ -41,7 +42,7 @@ public class FPGAFitness {
    */
   public FPGAFitness(SolutionSet solutionSet, Problem problem) {   
     solutionSet_ = solutionSet;
-    problem_    = problem;
+//    problem_    = problem;
     for (int i = 0; i < solutionSet_.size(); i++) {
       solutionSet_.get(i).setLocation(i);
     } // for
@@ -53,7 +54,7 @@ public class FPGAFitness {
    */
   public void fitnessAssign() {
     double [] strength    = new double[solutionSet_.size()];
-    double [] rawFitness  = new double[solutionSet_.size()];  
+//    double [] rawFitness  = new double[solutionSet_.size()];  
     
     //Ranking  ranking  = new Ranking(solutionSet_);
     //Distance distance = new Distance();

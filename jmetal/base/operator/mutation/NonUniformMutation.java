@@ -113,13 +113,11 @@ public class NonUniformMutation extends Operator{
     Solution solution = (Solution )object;
     
     if (solution.getType() != SolutionType_.Real) {
-      Configuration.logger_.severe("NonUniformMutation.execute: the solution " +
+      String msg = "NonUniformMutation.execute: the solution " +
           "is not of the right type. The type should be 'Real', but " +
-          solution.getType() + " is obtained");
-
-      Class cls = java.lang.String.class;
-      String name = cls.getName(); 
-      throw new JMException("Exception in " + name + ".execute()") ;
+          solution.getType() + " is obtained";
+			Configuration.logger_.severe(msg);
+      throw new JMException(msg) ;
     } // if 
     
     Double probability;
@@ -135,11 +133,9 @@ public class NonUniformMutation extends Operator{
     
     if (probability == null)
     {
-      Configuration.logger_.severe("NonUniformMutation.execute: probability " +
-          "not specified");
-      Class cls = java.lang.String.class;
-      String name = cls.getName(); 
-      throw new JMException("Exception in " + name + ".execute()") ;  
+      String msg = "NonUniformMutation.execute: probability not specified";
+			Configuration.logger_.severe(msg);
+      throw new JMException(msg) ;  
     }         
     
     doMutation(probability.doubleValue(),solution);

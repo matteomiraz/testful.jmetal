@@ -62,11 +62,8 @@ public class BitFlipMutation extends Operator {
             } // if
       } // else
     } catch (ClassCastException e1) {
-      Configuration.logger_.severe("BitFlipMutation.doMutation: " +
-              "ClassCastException error" + e1.getMessage());
-      Class cls = java.lang.String.class;
-      String name = cls.getName();
-      throw new JMException("Exception in " + name + ".doMutation()");
+      String msg = "BitFlipMutation.doMutation: ClassCastException error" + e1.getMessage();
+      throw new JMException(msg);
     }
   } // doMutation
 
@@ -82,22 +79,18 @@ public class BitFlipMutation extends Operator {
     if ((solution.getType() != SolutionType_.Binary) &&
             (solution.getType() != SolutionType_.BinaryReal) &&
             (solution.getType() != SolutionType_.Int)) {
-      Configuration.logger_.severe("BitFlipMutation.execute: the solution " +
-              "is not of the right type. The type should be 'Binary', " +
-              "'BinaryReal' or 'Int', but " + solution.getType() + " is obtained");
-
-      Class cls = java.lang.String.class;
-      String name = cls.getName();
-      throw new JMException("Exception in " + name + ".execute()");
+      String msg = "BitFlipMutation.execute: the solution " +
+							        "is not of the right type. The type should be 'Binary', " +
+							        "'BinaryReal' or 'Int', but " + solution.getType() + " is obtained";
+			Configuration.logger_.severe(msg);
+      throw new JMException(msg);
     } // if 
 
     Double probability = (Double) getParameter("probability");
     if (probability == null) {
-      Configuration.logger_.severe("BitFlipMutation.execute: probability not " +
-              "specified");
-      Class cls = java.lang.String.class;
-      String name = cls.getName();
-      throw new JMException("Exception in " + name + ".execute()");
+      String msg = "BitFlipMutation.execute: probability not specified";
+			Configuration.logger_.severe(msg);
+      throw new JMException(msg);
     }
 
     doMutation(probability.doubleValue(), solution);

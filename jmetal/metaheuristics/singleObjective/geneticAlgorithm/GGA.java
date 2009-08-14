@@ -8,7 +8,6 @@ package jmetal.metaheuristics.singleObjective.geneticAlgorithm;
 import java.util.Comparator;
 
 import jmetal.base.Algorithm;
-import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
@@ -44,10 +43,6 @@ public class GGA extends Algorithm {
     SolutionSet population          ;
     SolutionSet offspringPopulation ;
 
-    Operator    mutationOperator  ;
-    Operator    crossoverOperator ;
-    Operator    selectionOperator ;
-    
     Comparator<Solution>  comparator        ;
     
     comparator = new ObjectiveComparator(0) ; // Single objective comparator
@@ -61,11 +56,6 @@ public class GGA extends Algorithm {
     offspringPopulation = new SolutionSet(populationSize) ;
     
     evaluations  = 0;                
-
-    // Read the operators
-    mutationOperator  = this.operators_.get("mutation");
-    crossoverOperator = this.operators_.get("crossover");
-    selectionOperator = this.operators_.get("selection");  
 
     // Create the initial population
     Solution newIndividual;
@@ -97,13 +87,12 @@ public class GGA extends Algorithm {
       // Reproductive cycle
       for (int i = 0 ; i < (populationSize / 2 - 1) ; i ++) {
         // Selection
-        Solution [] parents = new Solution[2];
 
-        parents[0] = (Solution)selectionOperator.execute(population);
-        parents[1] = (Solution)selectionOperator.execute(population);
+        Solution parent1 = (Solution)selectionOperator.execute(population);
+        Solution parent2 = (Solution)selectionOperator.execute(population);
  
         // Crossover
-        Solution [] offspring = (Solution []) crossoverOperator.execute(parents);                
+        Solution [] offspring = (Solution []) crossoverOperator.execute(parent1, parent2);                
           
         // Mutation
         mutationOperator.execute(offspring[0]);

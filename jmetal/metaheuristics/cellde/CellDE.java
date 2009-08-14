@@ -8,12 +8,12 @@ package jmetal.metaheuristics.cellde;
 import java.util.Comparator;
 
 import jmetal.base.Algorithm;
-import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
 import jmetal.base.operator.comparator.CrowdingComparator;
 import jmetal.base.operator.comparator.DominanceComparator;
+import jmetal.base.operator.crossover.DifferentialCrossover;
 import jmetal.util.Distance;
 import jmetal.util.JMException;
 import jmetal.util.Neighborhood;
@@ -50,7 +50,6 @@ public class CellDE extends Algorithm{
    */ 
   public SolutionSet execute() throws JMException {
     int populationSize, archiveSize, maxEvaluations, evaluations, feedBack;
-    Operator crossoverOperator, selectionOperator;
     SolutionSet currentSolutionSet;
     SolutionSet archive;
     SolutionSet [] neighbors;    
@@ -64,11 +63,6 @@ public class CellDE extends Algorithm{
     archiveSize       = ((Integer)getInputParameter("archiveSize")).intValue();
     maxEvaluations    = ((Integer)getInputParameter("maxEvaluations")).intValue();                
     feedBack          = ((Integer)getInputParameter("feedBack")).intValue();
-
-    //Read the operators
-    //mutationOperator  = operators_.get("mutation");
-    crossoverOperator = operators_.get("crossover");
-    selectionOperator = operators_.get("selection");        
 
     //Initialize the variables    
     currentSolutionSet  = new SolutionSet(populationSize);                       
@@ -102,7 +96,7 @@ public class CellDE extends Algorithm{
         parents[2] = individual ;
 
         //Create a new solution, using genetic operators mutation and crossover
-        offSpring = (Solution)crossoverOperator.execute(new Object[]{individual, parents});               
+        offSpring = ((DifferentialCrossover)crossoverOperator).execute(individual, parents)[0];               
         
         //->Evaluate offspring and constraints
         problem_.evaluate(offSpring);

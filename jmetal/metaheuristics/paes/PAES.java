@@ -9,7 +9,6 @@ package jmetal.metaheuristics.paes;
 import java.util.Comparator;
 
 import jmetal.base.Algorithm;
-import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
@@ -74,16 +73,12 @@ public class PAES extends Algorithm {
   public SolutionSet execute() throws JMException{     
     int bisections, archiveSize, maxEvaluations, evaluations;
     AdaptiveGridArchive archive;
-    Operator mutationOperator;
     Comparator<Solution> dominance;
     
     //Read the params
     bisections     = ((Integer)this.getInputParameter("biSections")).intValue();
     archiveSize    = ((Integer)this.getInputParameter("archiveSize")).intValue();
     maxEvaluations = ((Integer)this.getInputParameter("maxEvaluations")).intValue();
-
-    //Read the operators        
-    mutationOperator = this.operators_.get("mutation");        
 
     //Initialize the variables                
     evaluations = 0;

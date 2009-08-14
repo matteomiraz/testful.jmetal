@@ -8,7 +8,6 @@
 package jmetal.base.operator.mutation;
 
 import jmetal.base.Configuration;
-import jmetal.base.Operator;
 import jmetal.base.Solution;
 import jmetal.base.Configuration.VariableType_;
 import jmetal.base.variable.Permutation;
@@ -20,7 +19,7 @@ import jmetal.util.PseudoRandom;
  * NOTE: the operator is applied to the first variable of the solutions, and 
  * the type of those variables must be <code>VariableType_.Permutation</code>.
  */
-public class SwapMutation extends Operator{
+public class SwapMutation extends Mutation {
   private static final long serialVersionUID = 7556625122222056318L;
 
 	/** 
@@ -77,18 +76,10 @@ public class SwapMutation extends Operator{
    * @return an object containing the mutated solution
    * @throws JMException 
    */
-  public Object execute(Object object) throws JMException {
-    Solution solution = (Solution)object;
-
-    Double probability = (Double)getParameter("probability");       
-    if (probability == null)
-    {
-      String msg = "SwapMutation.execute: probability not specified";
-			Configuration.logger_.severe(msg);
-      throw new JMException(msg) ;  
-    }
+  @Override
+  public Solution execute(Solution parent) throws JMException {
+    doMutation(probability, parent);
     
-    this.doMutation(probability.doubleValue(), solution);
-    return solution;
+    return parent;
   } // execute  
 } // SwapMutation

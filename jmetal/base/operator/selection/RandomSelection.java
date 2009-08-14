@@ -5,16 +5,16 @@
  */
 package jmetal.base.operator.selection;
 
-import jmetal.base.Operator;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
+import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
 
 /**
  * This class implements a random selection operator used for selecting two
  * random parents
  */
-public class RandomSelection extends Operator {
+public class RandomSelection extends Selection<Solution[]> {
   
   private static final long serialVersionUID = 7446171924839213334L;
 
@@ -23,8 +23,8 @@ public class RandomSelection extends Operator {
   * @param object Object representing a SolutionSet.
   * @return an object representing an array with the selected parents
   */
-  public Object execute(Object object) {
-    SolutionSet population = (SolutionSet)object;
+  @Override
+  public Solution[] execute(SolutionSet population) throws JMException {
     int pos1, pos2;
     pos1 = PseudoRandom.randInt(0,population.size()-1);
     pos2 = PseudoRandom.randInt(0,population.size()-1);

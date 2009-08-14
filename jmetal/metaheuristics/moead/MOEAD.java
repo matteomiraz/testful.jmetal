@@ -8,10 +8,10 @@ package jmetal.metaheuristics.moead;
 import java.util.Vector;
 
 import jmetal.base.Algorithm;
-import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
+import jmetal.base.operator.crossover.DifferentialCrossover;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
 
@@ -59,11 +59,6 @@ public class MOEAD extends Algorithm {
   Solution[] indArray_;
   String functionType_;
   int evaluations_;
-  /**
-   * Operators
-   */
-  Operator crossover_;
-  Operator mutation_;
 
   /** 
    * Constructor
@@ -97,9 +92,6 @@ public class MOEAD extends Algorithm {
     //lambda_ = new Vector(problem_.getNumberOfObjectives()) ;
     lambda_ = new double[populationSize_][problem_.getNumberOfObjectives()];
     
-    crossover_ = operators_.get("crossover"); // default: DE crossover
-    mutation_ = operators_.get("mutation");  // default: polynomial mutation
-
     // STEP 1. Initialization
     // STEP 1.1. Compute euclidean distances between weight vectors and find T
     initUniformWeight();
@@ -141,11 +133,11 @@ public class MOEAD extends Algorithm {
         parents[2] = population_.get(n);
 
         // Apply DE crossover 
-        child = (Solution) crossover_.execute(new Object[]{population_.get(n), parents});
+        child = ((DifferentialCrossover)crossoverOperator).execute(population_.get(n), parents)[0];
         //diff_evo_xover2(population[n].indiv,population[p[0]].indiv,population[p[1]].indiv,child);
 
         // Apply mutation
-        mutation_.execute(child);
+        mutationOperator.execute(child);
 
         // Evaluation
         problem_.evaluate(child);

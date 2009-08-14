@@ -12,10 +12,10 @@ import java.util.logging.Logger;
 
 import jmetal.base.Algorithm;
 import jmetal.base.Configuration;
-import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.SolutionSet;
 import jmetal.base.operator.mutation.MutationFactory;
+import jmetal.base.operator.mutation.PolynomialMutation;
 import jmetal.problems.Kursawe;
 import jmetal.problems.ProblemFactory;
 import jmetal.util.JMException;
@@ -32,7 +32,7 @@ public class PAES_main {
   public static void main(String [] args) throws JMException, IOException {
     Problem   problem   ;         // The problem to solve
     Algorithm algorithm ;         // The algorithm to use
-    Operator  mutation  ;         // Mutation operator
+    PolynomialMutation  mutation  ;         // Mutation operator
     
     // Logger object and file to store log messages
     logger_      = Configuration.logger_ ;
@@ -65,16 +65,16 @@ public class PAES_main {
     algorithm.setInputParameter("maxEvaluations",25000);
       
     // Mutation (Real variables)
-    mutation = MutationFactory.getMutationOperator("PolynomialMutation");                    
-    mutation.setParameter("probability",1.0/problem.getNumberOfVariables());
-    mutation.setParameter("distributionIndex",20.0);
+    mutation = (PolynomialMutation) MutationFactory.getMutationOperator("PolynomialMutation");                    
+    mutation.setProbability(1.0/problem.getNumberOfVariables());
+    mutation.setDistributionIndex(20.0);
     
     // Mutation (BinaryReal variables)
     //mutation = MutationFactory.getMutationOperator("BitFlipMutation");                    
     //mutation.setParameter("probability",1.0/80);
     
     // Add the operators to the algorithm
-    algorithm.addOperator("mutation", mutation);
+    algorithm.setMutation(mutation);
     
     // Execute the Algorithm 
     long initTime = System.currentTimeMillis();

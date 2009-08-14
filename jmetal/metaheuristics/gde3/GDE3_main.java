@@ -12,10 +12,11 @@ import java.util.logging.Logger;
 
 import jmetal.base.Algorithm;
 import jmetal.base.Configuration;
-import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.SolutionSet;
 import jmetal.base.operator.crossover.CrossoverFactory;
+import jmetal.base.operator.crossover.DifferentialEvolutionCrossover;
+import jmetal.base.operator.selection.DifferentialEvolutionSelection;
 import jmetal.base.operator.selection.SelectionFactory;
 import jmetal.problems.Kursawe;
 import jmetal.problems.ProblemFactory;
@@ -35,8 +36,8 @@ public class GDE3_main {
   public static void main(String [] args) throws JMException, SecurityException, IOException {
     Problem   problem   ;         // The problem to solve
     Algorithm algorithm ;         // The algorithm to use
-    Operator  selection ;
-    Operator  crossover ;
+    DifferentialEvolutionSelection  selection ;
+    DifferentialEvolutionCrossover crossover ;
     
     // Logger object and file to store log messages
     logger_      = Configuration.logger_ ;
@@ -66,15 +67,15 @@ public class GDE3_main {
     algorithm.setInputParameter("maxIterations",250);
     
     // Crossover operator 
-    crossover = CrossoverFactory.getCrossoverOperator("DifferentialEvolutionCrossover");                   
-    crossover.setParameter("CR", 0.1);                   
-    crossover.setParameter("F", 0.5);
+    crossover = (DifferentialEvolutionCrossover) CrossoverFactory.getCrossoverOperator("DifferentialEvolutionCrossover");                   
+    crossover.setCR(0.1);                   
+    crossover.setF(0.5);
     
     // Add the operators to the algorithm
-    selection = SelectionFactory.getSelectionOperator("DifferentialEvolutionSelection") ;
+    selection = (DifferentialEvolutionSelection) SelectionFactory.getSelectionOperator("DifferentialEvolutionSelection") ;
 
-    algorithm.addOperator("crossover",crossover);
-    algorithm.addOperator("selection",selection);
+    algorithm.setCrossover(crossover);
+    algorithm.setSelection(selection);
     
     // Execute the Algorithm 
     long initTime = System.currentTimeMillis();

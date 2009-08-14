@@ -8,7 +8,6 @@
 package jmetal.base.operator.crossover;
 
 import jmetal.base.Configuration;
-import jmetal.base.Operator;
 import jmetal.base.Solution;
 import jmetal.base.Configuration.SolutionType_;
 import jmetal.base.variable.Binary;
@@ -21,7 +20,7 @@ import jmetal.util.PseudoRandom;
  * NOTE: the operator is applied to binary or integer solutions, considering the
  * whole solution as a single variable.
  */
-public class SinglePointCrossover extends Operator {
+public class SinglePointCrossover extends Crossover {
 
   private static final long serialVersionUID = 7967959079668529640L;
 
@@ -136,39 +135,24 @@ public class SinglePointCrossover extends Operator {
    * @return An object containing an array with the offSprings
    * @throws JMException
    */
-  public Object execute(Object object) throws JMException {
-    Solution[] parents = (Solution[]) object;
-
-    if (((parents[0].getType() != SolutionType_.Binary) ||
-            (parents[1].getType() != SolutionType_.Binary)) &&
-            ((parents[0].getType() != SolutionType_.BinaryReal) ||
-            (parents[1].getType() != SolutionType_.BinaryReal)) &&
-            ((parents[0].getType() != SolutionType_.Int) ||
-            (parents[1].getType() != SolutionType_.Int))) {
+  @Override
+  public Solution[] execute(Solution parent1, Solution parent2) throws JMException {
+    if (((parent1.getType() != SolutionType_.Binary) ||
+            (parent2.getType() != SolutionType_.Binary)) &&
+            ((parent1.getType() != SolutionType_.BinaryReal) ||
+            (parent2.getType() != SolutionType_.BinaryReal)) &&
+            ((parent1.getType() != SolutionType_.Int) ||
+            (parent2.getType() != SolutionType_.Int))) {
 
       String msg = "SinglePointCrossover.execute: the solutions " +
 							        "are not of the right type. The type should be 'Binary' or 'Int', but " +
-							        parents[0].getType() + " and " +
-							        parents[1].getType() + " are obtained";
+							        parent1.getType() + " and " +
+							        parent2.getType() + " are obtained";
 			Configuration.logger_.severe(msg);
       throw new JMException(msg) ; 
     } // if
 
-    Double probability = (Double) getParameter("probability");
-    if (parents.length < 2) {
-      String msg = "SinglePointCrossover.execute: operator needs two parents";
-			Configuration.logger_.severe(msg);
-      throw new JMException(msg) ; 
-    } else if (probability == null) {
-      String msg = "SinglePointCrossover.execute: probability not specified";
-			Configuration.logger_.severe(msg);
-      throw new JMException(msg) ; 
-    }
-
-    Solution[] offSpring;
-    offSpring = doCrossover(probability.doubleValue(),
-            parents[0],
-            parents[1]);
+    Solution[] offSpring = doCrossover(probability, parent1, parent2);
 
     //-> Update the offSpring solutions
     for (int i = 0; i < offSpring.length; i++) {

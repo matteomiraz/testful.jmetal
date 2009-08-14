@@ -18,11 +18,12 @@ import java.util.logging.Logger;
 
 import jmetal.base.Algorithm;
 import jmetal.base.Configuration;
-import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.SolutionSet;
 import jmetal.base.operator.crossover.CrossoverFactory;
+import jmetal.base.operator.crossover.DifferentialEvolutionCrossover;
 import jmetal.base.operator.mutation.MutationFactory;
+import jmetal.base.operator.mutation.PolynomialMutation;
 import jmetal.problems.Kursawe;
 import jmetal.problems.ProblemFactory;
 import jmetal.qualityIndicator.QualityIndicator;
@@ -47,8 +48,8 @@ public class MOEAD_main {
   public static void main(String [] args) throws JMException, SecurityException, IOException {
     Problem   problem   ;         // The problem to solve
     Algorithm algorithm ;         // The algorithm to use
-    Operator  crossover ;         // Crossover operator
-    Operator  mutation  ;         // Mutation operator
+    DifferentialEvolutionCrossover  crossover ;         // Crossover operator
+    PolynomialMutation  mutation  ;         // Mutation operator
      
     QualityIndicator indicators ; // Object to get quality indicators
 
@@ -84,17 +85,17 @@ public class MOEAD_main {
     algorithm.setInputParameter("maxEvaluations",150000);
     
     // Crossover operator 
-    crossover = CrossoverFactory.getCrossoverOperator("DifferentialEvolutionCrossover");                   
-    crossover.setParameter("CR", 1.0);                   
-    crossover.setParameter("F", 0.5);
+    crossover = (DifferentialEvolutionCrossover) CrossoverFactory.getCrossoverOperator("DifferentialEvolutionCrossover");                   
+    crossover.setCR(1.0);                   
+    crossover.setF(0.5);
     
     // Mutation operator
-    mutation = MutationFactory.getMutationOperator("PolynomialMutation");                    
-    mutation.setParameter("probability",1.0/problem.getNumberOfVariables());
-    mutation.setParameter("distributionIndex",20.0);  
+    mutation = (PolynomialMutation) MutationFactory.getMutationOperator("PolynomialMutation");                    
+    mutation.setProbability(1.0/problem.getNumberOfVariables());
+    mutation.setDistributionIndex(20.0);  
     
-    algorithm.addOperator("crossover",crossover);
-    algorithm.addOperator("mutation",mutation);
+    algorithm.setCrossover(crossover);
+    algorithm.setMutation(mutation);
     
     // Execute the Algorithm
     long initTime = System.currentTimeMillis();

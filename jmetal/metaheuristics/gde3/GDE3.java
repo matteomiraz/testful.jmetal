@@ -8,10 +8,11 @@ package jmetal.metaheuristics.gde3;
 import java.util.Comparator;
 
 import jmetal.base.Algorithm;
-import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
+import jmetal.base.operator.crossover.DifferentialCrossover;
+import jmetal.base.operator.selection.DifferentialEvolutionSelection;
 import jmetal.util.Distance;
 import jmetal.util.JMException;
 import jmetal.util.Ranking;
@@ -53,9 +54,6 @@ public class GDE3 extends Algorithm {
     Distance   distance  ;
     Comparator<Solution> dominance ;
     
-    Operator selectionOperator ;
-    Operator crossoverOperator ;
-    
     distance  = new Distance()  ;               
     dominance = new jmetal.base.operator.comparator.DominanceComparator(); 
     
@@ -65,9 +63,6 @@ public class GDE3 extends Algorithm {
     populationSize = ((Integer)this.getInputParameter("populationSize")).intValue();
     maxIterations  = ((Integer)this.getInputParameter("maxIterations")).intValue();                             
    
-    selectionOperator = operators_.get("selection");   
-    crossoverOperator = operators_.get("crossover") ;
-    
     //Initialize the variables
     population  = new SolutionSet(populationSize);        
     evaluations = 0;                
@@ -91,12 +86,13 @@ public class GDE3 extends Algorithm {
       for (int i = 0; i < (populationSize); i++){   
         // Obtain parents. Two parameters are required: the population and the 
         //                 index of the current individual
-        parent = (Solution [])selectionOperator.execute(new Object[]{population, i});
+      	((DifferentialEvolutionSelection)selectionOperator).setIndex(i);
+        parent = (Solution [])selectionOperator.execute(population);
 
         Solution child ;
         // Crossover. Two parameters are required: the current individual and the 
         //            array of parents
-        child = (Solution)crossoverOperator.execute(new Object[]{population.get(i), parent}) ;
+        child = ((DifferentialCrossover)crossoverOperator).execute(population.get(i), parent)[0];
 
         problem_.evaluate(child) ;
         problem_.evaluateConstraints(child);

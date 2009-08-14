@@ -8,7 +8,6 @@ package jmetal.base.operator.selection;
 
 import java.util.Comparator;
 
-import jmetal.base.Operator;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
 import jmetal.base.operator.comparator.BinaryTournamentComparator;
@@ -17,7 +16,7 @@ import jmetal.util.PseudoRandom;
 /**
  * This class implements an opertor for binary selections
  */
-public class BinaryTournament extends Operator{
+public class BinaryTournament extends Selection<Solution>{
 
   private static final long serialVersionUID = -6155510776793236308L;
 	/**
@@ -50,11 +49,10 @@ public class BinaryTournament extends Operator{
   * @param object Object representing a SolutionSet
   * @return the selected solution
   */
-  public Object execute(Object object){
-    SolutionSet SolutionSet = (SolutionSet)object;
+  public Solution execute(SolutionSet population) throws jmetal.util.JMException {
     Solution solution1,solution2;
-    solution1 = SolutionSet.get(PseudoRandom.randInt(0,SolutionSet.size()-1));
-    solution2 = SolutionSet.get(PseudoRandom.randInt(0,SolutionSet.size()-1));
+    solution1 = population.get(PseudoRandom.randInt(0,population.size()-1));
+    solution2 = population.get(PseudoRandom.randInt(0,population.size()-1));
 
     int flag = comparator_.compare(solution1,solution2);
     if (flag == -1)

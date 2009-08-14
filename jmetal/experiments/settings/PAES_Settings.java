@@ -11,9 +11,9 @@ package jmetal.experiments.settings;
 import java.util.Properties;
 
 import jmetal.base.Algorithm;
-import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.operator.mutation.MutationFactory;
+import jmetal.base.operator.mutation.PolynomialMutation;
 import jmetal.experiments.Settings;
 import jmetal.metaheuristics.paes.PAES;
 import jmetal.qualityIndicator.QualityIndicator;
@@ -51,7 +51,7 @@ public class PAES_Settings extends Settings{
    */
   public Algorithm configure() throws JMException {
     Algorithm algorithm ;
-    Operator  mutation  ;
+    PolynomialMutation  mutation  ;
     
     QualityIndicator indicators ;
     
@@ -64,12 +64,12 @@ public class PAES_Settings extends Settings{
     algorithm.setInputParameter("archiveSize",archiveSize_ );
     
     // Mutation for Real codification 
-    mutation = MutationFactory.getMutationOperator("PolynomialMutation");                    
-    mutation.setParameter("probability", mutationProbability_);
-    mutation.setParameter("distributionIndex",distributionIndexForMutation_);    
+    mutation = (PolynomialMutation) MutationFactory.getMutationOperator("PolynomialMutation");                    
+    mutation.setProbability(mutationProbability_);
+    mutation.setDistributionIndex(distributionIndexForMutation_);    
         
     // Add the operators to the algorithm
-    algorithm.addOperator("mutation",mutation);
+    algorithm.setMutation(mutation);
     
    // Creating the indicator object
    if (! paretoFrontFile_.equals("")) {

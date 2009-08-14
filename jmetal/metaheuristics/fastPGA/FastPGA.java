@@ -9,7 +9,6 @@ package jmetal.metaheuristics.fastPGA;
 import java.util.Comparator;
 
 import jmetal.base.Algorithm;
-import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
@@ -46,7 +45,6 @@ public class FastPGA extends Algorithm{
         evaluations, maxEvaluations, initialPopulationSize;
     SolutionSet solutionSet, offSpringSolutionSet, candidateSolutionSet = null;
     double a, b, c, d;
-    Operator crossover, mutation, selection;    
     int termination;
     Distance distance = new Distance();
     Comparator<Solution> fpgaFitnessComparator = new FPGAFitnessComparator();
@@ -57,11 +55,6 @@ public class FastPGA extends Algorithm{
     initialPopulationSize = 
                   ((Integer)getInputParameter("initialPopulationSize")).intValue();
     termination = ((Integer)getInputParameter("termination")).intValue();
-    
-    //Read the operators
-    crossover = (Operator) operators_.get("crossover");
-    mutation  = (Operator) operators_.get("mutation");
-    selection = (Operator) operators_.get("selection");
     
     //Read the params
     a = ((Double)getInputParameter("a")).doubleValue();
@@ -85,7 +78,6 @@ public class FastPGA extends Algorithm{
     }
     
     //Begin the iterations
-    Solution [] parents = new Solution[2];
     Solution [] offSprings;
     boolean stop = false;
     int reachesMaxNonDominated = 0;
@@ -94,11 +86,11 @@ public class FastPGA extends Algorithm{
       // Create the candidate solutionSet
       offSpringSolutionSet = new SolutionSet(offSpringSize);
       for (int i = 0; i < offSpringSize/2; i++) {
-        parents[0] = (Solution)selection.execute(solutionSet);
-        parents[1] = (Solution)selection.execute(solutionSet);
-        offSprings = (Solution [])crossover.execute(parents);
-        mutation.execute(offSprings[0]);
-        mutation.execute(offSprings[1]);
+        Solution parent1 = (Solution)selectionOperator.execute(solutionSet);
+        Solution parent2 = (Solution)selectionOperator.execute(solutionSet);
+        offSprings = (Solution [])crossoverOperator.execute(parent1, parent2);
+        mutationOperator.execute(offSprings[0]);
+        mutationOperator.execute(offSprings[1]);
         problem_.evaluate(offSprings[0]);        
         problem_.evaluateConstraints(offSprings[0]);
         evaluations++;

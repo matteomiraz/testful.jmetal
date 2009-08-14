@@ -8,7 +8,6 @@
 package jmetal.base.operator.crossover;
 
 import jmetal.base.Configuration;
-import jmetal.base.Operator;
 import jmetal.base.Solution;
 import jmetal.base.Configuration.SolutionType_;
 import jmetal.util.JMException;
@@ -23,7 +22,7 @@ import jmetal.util.PseudoRandom;
  * DEFAULT_INDEX_CROSSOVER. You can change it using the parameter 
  * "distributionIndex" before invoking the execute() method -- see lines 196-199
  */
-public class SBXCrossover extends Operator {
+public class SBXCrossover extends Crossover {
     
   private static final long serialVersionUID = 485761542428572217L;
 
@@ -157,50 +156,28 @@ public class SBXCrossover extends Operator {
      return offSpring;                                                                                      
   } // doCrossover
   
+  public void setDistributionIndex(double value) {
+  	eta_c = value;
+  }
   
   /**
   * Executes the operation
   * @param object An object containing an array of two parents
   * @return An object containing the offSprings
   */
-  public Object execute(Object object) throws JMException {
-    Solution [] parents = (Solution [])object;
-
-    if ((parents[0].getType() != SolutionType_.Real) ||
-        (parents[1].getType() != SolutionType_.Real)) {
+  public Solution[] execute(Solution parent1, Solution parent2) throws JMException {
+    if ((parent1.getType() != SolutionType_.Real) ||
+        (parent2.getType() != SolutionType_.Real)) {
 
       String msg = "SBXCrossover.execute: the solutions " +
 					    "are not of the right type. The type should be 'Real', but " +
-					    parents[0].getType() + " and " + 
-					    parents[1].getType() + " are obtained";
+					    parent1.getType() + " and " + 
+					    parent2.getType() + " are obtained";
 			Configuration.logger_.severe(msg);
       throw new JMException(msg) ; 
     } // if 
     
-    Double probability = (Double)getParameter("probability");
-    if (parents.length < 2)
-    {
-      String msg = "SBXCrossover.execute: operator needs two parents";
-			Configuration.logger_.severe(msg);
-      throw new JMException(msg) ; 
-    }
-    else if (probability == null)
-    {
-      String msg = "SBXCrossover.execute: probability not specified";
-			Configuration.logger_.severe(msg);
-      throw new JMException(msg) ; 
-    }
- 
-    Double distributionIndex = (Double)getParameter("distributionIndex");
-    if (distributionIndex != null) {
-      eta_c = distributionIndex ;
-    } // if
-    
-    Solution [] offSpring;
-    offSpring = doCrossover(probability.doubleValue(),
-                            parents[0],
-                            parents[1]);
-        
+    Solution [] offSpring = doCrossover(probability, parent1, parent2);
         
     for (int i = 0; i < offSpring.length; i++)
     {

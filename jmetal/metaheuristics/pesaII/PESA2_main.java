@@ -12,11 +12,12 @@ import java.util.logging.Logger;
 
 import jmetal.base.Algorithm;
 import jmetal.base.Configuration;
-import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.SolutionSet;
 import jmetal.base.operator.crossover.CrossoverFactory;
+import jmetal.base.operator.crossover.SBXCrossover;
 import jmetal.base.operator.mutation.MutationFactory;
+import jmetal.base.operator.mutation.PolynomialMutation;
 import jmetal.problems.Kursawe;
 import jmetal.problems.ProblemFactory;
 import jmetal.util.JMException;
@@ -33,8 +34,8 @@ public class PESA2_main {
   public static void main(String [] args) throws JMException, IOException {
     Problem   problem   ;         // The problem to solve
     Algorithm algorithm ;         // The algorithm to use
-    Operator  crossover ;         // Crossover operator
-    Operator  mutation  ;         // Mutation operator    
+    SBXCrossover crossover ;         // Crossover operator
+    PolynomialMutation  mutation  ;         // Mutation operator    
      
     // Logger object and file to store log messages
     logger_      = Configuration.logger_ ;
@@ -64,13 +65,13 @@ public class PESA2_main {
     algorithm.setInputParameter("maxEvaluations",25000);
     
     // Mutation and Crossover for Real codification 
-    crossover = CrossoverFactory.getCrossoverOperator("SBXCrossover");                   
-    crossover.setParameter("probability",0.9);                   
-    crossover.setParameter("distributionIndex",20.0);
+    crossover = (SBXCrossover) CrossoverFactory.getCrossoverOperator("SBXCrossover");                   
+    crossover.setProbability(0.9);                   
+    crossover.setDistributionIndex(20.0);
     
-    mutation = MutationFactory.getMutationOperator("PolynomialMutation");                    
-    mutation.setParameter("probability",1.0/problem.getNumberOfVariables());
-    mutation.setParameter("distributionIndex",20.0);
+    mutation = (PolynomialMutation) MutationFactory.getMutationOperator("PolynomialMutation");                    
+    mutation.setProbability(1.0/problem.getNumberOfVariables());
+    mutation.setDistributionIndex(20.0);
     
     // Mutation and Crossover Binary codification
     /*
@@ -81,8 +82,8 @@ public class PESA2_main {
     */
     
     // Add the operators to the algorithm
-    algorithm.addOperator("crossover",crossover);
-    algorithm.addOperator("mutation",mutation);
+    algorithm.setCrossover(crossover);
+    algorithm.setMutation(mutation);
     
     
     // Execute the Algorithm

@@ -10,7 +10,6 @@ import java.util.Comparator;
 
 import jmetal.base.Algorithm;
 import jmetal.base.DecisionVariables;
-import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
@@ -105,12 +104,12 @@ public class OMOPSO extends Algorithm {
   /**
   * Stores a operator for uniform mutations
   */
-  private Operator uniformMutation_;
+  private UniformMutation uniformMutation_;
   
   /**
   * Stores a operator for non uniform mutations
   */ 
-  private Operator nonUniformMutation_;
+  private NonUniformMutation nonUniformMutation_;
   
   /**
   * eta_ value
@@ -150,12 +149,12 @@ public class OMOPSO extends Algorithm {
     speed_ = new double[particlesSize_][problem_.getNumberOfVariables()];
     
     uniformMutation_ = new UniformMutation();
-    uniformMutation_.setParameter("perturbationIndex",perturbation_);
-    uniformMutation_.setParameter("probability",1.0/problem_.getNumberOfVariables());
+    uniformMutation_.setPerturbationIndex(perturbation_);
+    uniformMutation_.setProbability(1.0/problem_.getNumberOfVariables());
     nonUniformMutation_ = new NonUniformMutation();
-    nonUniformMutation_.setParameter("perturbationIndex",perturbation_);        
-    nonUniformMutation_.setParameter("maxIterations",maxIterations_);
-    nonUniformMutation_.setParameter("probability",1.0/problem_.getNumberOfVariables());
+    nonUniformMutation_.setPerturbation(perturbation_);        
+    nonUniformMutation_.setMaxIterations(maxIterations_);
+    nonUniformMutation_.setProbability(1.0/problem_.getNumberOfVariables());
   } // initParams
            
   
@@ -235,7 +234,7 @@ public class OMOPSO extends Algorithm {
     //There are three groups of particles_, the ones that are mutated with
     //a non-uniform mutation operator, the ones that are mutated with a 
     //uniform mutation and the one that no are mutated
-    nonUniformMutation_.setParameter("currentIteration",actualIteration);
+    nonUniformMutation_.setCurrentIteration(actualIteration);
     //*/
 
     for (int i = 0; i < particles_.size();i++)            

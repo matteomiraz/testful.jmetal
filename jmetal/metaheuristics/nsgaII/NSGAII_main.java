@@ -19,11 +19,13 @@ import java.util.logging.Logger;
 
 import jmetal.base.Algorithm;
 import jmetal.base.Configuration;
-import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.SolutionSet;
 import jmetal.base.operator.crossover.CrossoverFactory;
+import jmetal.base.operator.crossover.SBXCrossover;
 import jmetal.base.operator.mutation.MutationFactory;
+import jmetal.base.operator.mutation.PolynomialMutation;
+import jmetal.base.operator.selection.Selection;
 import jmetal.base.operator.selection.SelectionFactory;
 import jmetal.problems.Kursawe;
 import jmetal.problems.ProblemFactory;
@@ -48,9 +50,9 @@ public class NSGAII_main {
                                   JMException, SecurityException, IOException {
     Problem   problem   ;         // The problem to solve
     Algorithm algorithm ;         // The algorithm to use
-    Operator  crossover ;         // Crossover operator
-    Operator  mutation  ;         // Mutation operator
-    Operator  selection ;         // Selection operator
+    SBXCrossover  crossover ;         // Crossover operator
+    PolynomialMutation mutation  ;         // Mutation operator
+    Selection<?> selection ;         // Selection operator
     
     QualityIndicator indicators ; // Object to get quality indicators
 
@@ -86,22 +88,22 @@ public class NSGAII_main {
     algorithm.setInputParameter("maxEvaluations",25000);
 
     // Mutation and Crossover for Real codification 
-    crossover = CrossoverFactory.getCrossoverOperator("SBXCrossover");                   
-    crossover.setParameter("probability",0.9);                   
-    crossover.setParameter("distributionIndex",20.0);
+    crossover = (SBXCrossover) CrossoverFactory.getCrossoverOperator("SBXCrossover");                   
+    crossover.setProbability(0.9);                   
+    crossover.setDistributionIndex(20.0);
 
-    mutation = MutationFactory.getMutationOperator("PolynomialMutation");                    
-    mutation.setParameter("probability",1.0/problem.getNumberOfVariables());
-    mutation.setParameter("distributionIndex",20.0);    
+    mutation = (PolynomialMutation) MutationFactory.getMutationOperator("PolynomialMutation");                    
+    mutation.setProbability(1.0/problem.getNumberOfVariables());
+    mutation.setDistributionIndex(20.0);    
 
     // Selection Operator 
     selection = SelectionFactory.getSelectionOperator("BinaryTournament2") ;                           
 
     // Add the operators to the algorithm
-    algorithm.addOperator("crossover",crossover);
-    algorithm.addOperator("mutation",mutation);
-    algorithm.addOperator("selection",selection);
-
+    algorithm.setCrossover(crossover);
+    algorithm.setMutation(mutation);
+    algorithm.setSelection(selection);
+    
     // Add the indicator object to the algorithm
     algorithm.setInputParameter("indicators", indicators) ;
     

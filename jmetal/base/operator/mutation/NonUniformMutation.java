@@ -7,7 +7,6 @@
 package jmetal.base.operator.mutation;
 
 import jmetal.base.Configuration;
-import jmetal.base.Operator;
 import jmetal.base.Solution;
 import jmetal.base.Configuration.SolutionType_;
 import jmetal.util.JMException;
@@ -17,7 +16,7 @@ import jmetal.util.PseudoRandom;
   * This class implements a non-uniform mutation operator.
   * NOTE: the type of the solutions must be <code>SolutionType_.Real</code>
   */
-public class NonUniformMutation extends Operator{
+public class NonUniformMutation extends Mutation {
     
   private static final long serialVersionUID = 7432414654294815093L;
 
@@ -103,14 +102,27 @@ public class NonUniformMutation extends Operator{
                          )));
   } // delta
 
+  
+	public void setPerturbation(double perturbation) {
+		perturbation_ = perturbation;
+	}
+	
+	
+	public void setMaxIterations(int maxIterations) {
+		maxIterations_ = maxIterations;
+	}
+  
+	public void setCurrentIteration(int actualIteration) {
+		actualIteration_ = actualIteration;
+	}
+	
   /**
   * Executes the operation
   * @param object An object containing a solution
   * @return An object containing the mutated solution
    * @throws JMException 
   */
-  public Object execute(Object object) throws JMException {
-    Solution solution = (Solution )object;
+  public Solution execute(Solution solution) throws JMException {
     
     if (solution.getType() != SolutionType_.Real) {
       String msg = "NonUniformMutation.execute: the solution " +
@@ -120,25 +132,7 @@ public class NonUniformMutation extends Operator{
       throw new JMException(msg) ;
     } // if 
     
-    Double probability;
-      
-    if (perturbation_ == null)
-      perturbation_ = (Double) getParameter("perturbationIndex");
-        
-    if (maxIterations_ == null)
-      maxIterations_ = (Integer) getParameter("maxIterations");
-        
-    actualIteration_ = (Integer) getParameter("currentIteration");
-    probability =(Double) parameters_.get("probability");
-    
-    if (probability == null)
-    {
-      String msg = "NonUniformMutation.execute: probability not specified";
-			Configuration.logger_.severe(msg);
-      throw new JMException(msg) ;  
-    }         
-    
-    doMutation(probability.doubleValue(),solution);
+    doMutation(probability,solution);
         
     return solution;    
   } // execute

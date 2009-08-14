@@ -6,7 +6,6 @@
 package jmetal.metaheuristics.nsgaII;
 
 import jmetal.base.Algorithm;
-import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
@@ -53,10 +52,6 @@ public class NSGAII extends Algorithm {
     SolutionSet offspringPopulation;
     SolutionSet union;
 
-    Operator mutationOperator;
-    Operator crossoverOperator;
-    Operator selectionOperator;
-
     Distance distance = new Distance();
 
     //Read the parameters
@@ -69,11 +64,6 @@ public class NSGAII extends Algorithm {
     evaluations = 0;
 
     requiredEvaluations = 0;
-
-    //Read the operators
-    mutationOperator = operators_.get("mutation");
-    crossoverOperator = operators_.get("crossover");
-    selectionOperator = operators_.get("selection");
 
     // Create the initial solutionSet
     Solution newSolution;
@@ -90,13 +80,12 @@ public class NSGAII extends Algorithm {
 
       // Create the offSpring solutionSet      
       offspringPopulation = new SolutionSet(populationSize);
-      Solution[] parents = new Solution[2];
       for (int i = 0; i < (populationSize / 2); i++) {
         if (evaluations < maxEvaluations) {
           //obtain parents
-          parents[0] = (Solution) selectionOperator.execute(population);
-          parents[1] = (Solution) selectionOperator.execute(population);
-          Solution[] offSpring = (Solution[]) crossoverOperator.execute(parents);
+        	Solution parent1 = (Solution) selectionOperator.execute(population);
+        	Solution parent2 = (Solution) selectionOperator.execute(population);
+          Solution[] offSpring = (Solution[]) crossoverOperator.execute(parent1, parent2);
           mutationOperator.execute(offSpring[0]);
           mutationOperator.execute(offSpring[1]);
           problem_.evaluate(offSpring[0]);

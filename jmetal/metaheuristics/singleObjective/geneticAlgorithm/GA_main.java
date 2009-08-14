@@ -8,11 +8,13 @@
 package jmetal.metaheuristics.singleObjective.geneticAlgorithm;
 
 import jmetal.base.Algorithm;
-import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.SolutionSet;
 import jmetal.base.operator.crossover.CrossoverFactory;
+import jmetal.base.operator.crossover.SBXCrossover;
 import jmetal.base.operator.mutation.MutationFactory;
+import jmetal.base.operator.mutation.PolynomialMutation;
+import jmetal.base.operator.selection.Selection;
 import jmetal.base.operator.selection.SelectionFactory;
 import jmetal.problems.singleObjective.Griewank;
 import jmetal.util.JMException;
@@ -27,9 +29,9 @@ public class GA_main {
   public static void main(String [] args) throws JMException {
     Problem   problem   ;         // The problem to solve
     Algorithm algorithm ;         // The algorithm to use
-    Operator  crossover ;         // Crossover operator
-    Operator  mutation  ;         // Mutation operator
-    Operator  selection ;         // Selection operator
+    SBXCrossover  crossover ;         // Crossover operator
+    PolynomialMutation  mutation  ;         // Mutation operator
+    Selection<?>  selection ;         // Selection operator
             
     //problem = new OneMax(bits);
     //problem = new Sphere(20, "Real") ;
@@ -44,13 +46,13 @@ public class GA_main {
     algorithm.setInputParameter("maxEvaluations",100000);
     
     // Mutation and Crossover for Real codification 
-    crossover = CrossoverFactory.getCrossoverOperator("SBXCrossover");                   
-    crossover.setParameter("probability",1.0);                   
-    crossover.setParameter("distributionIndex",10.0);
+    crossover = (SBXCrossover) CrossoverFactory.getCrossoverOperator("SBXCrossover");                   
+    crossover.setProbability(1.0);                   
+    crossover.setDistributionIndex(10.0);
 
-    mutation = MutationFactory.getMutationOperator("PolynomialMutation");                    
-    mutation.setParameter("probability",1.0/problem.getNumberOfVariables());
-    mutation.setParameter("distributionIndex",10.0);    
+    mutation = (PolynomialMutation) MutationFactory.getMutationOperator("PolynomialMutation");                    
+    mutation.setProbability(1.0/problem.getNumberOfVariables());
+    mutation.setDistributionIndex(10.0);    
     
     /**
     // Mutation and Crossover for Binary codification 
@@ -64,9 +66,9 @@ public class GA_main {
     selection = SelectionFactory.getSelectionOperator("BinaryTournament") ;                            
     
     /* Add the operators to the algorithm*/
-    algorithm.addOperator("crossover",crossover);
-    algorithm.addOperator("mutation",mutation);
-    algorithm.addOperator("selection",selection);
+    algorithm.setCrossover(crossover);
+    algorithm.setMutation(mutation);
+    algorithm.setSelection(selection);
  
     /* Execute the Algorithm */
     long initTime = System.currentTimeMillis();

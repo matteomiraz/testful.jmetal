@@ -7,8 +7,8 @@
 package jmetal.base.operator.selection;
 
 import jmetal.base.Configuration;
-import jmetal.base.Operator;
 import jmetal.base.Solution;
+import jmetal.base.SolutionSet;
 import jmetal.base.archive.AdaptiveGridArchive;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
@@ -17,7 +17,7 @@ import jmetal.util.PseudoRandom;
  * This class implements a selection operator as the used in PESA-II 
  * algorithm
  */
-public class PESA2Selection extends Operator{      
+public class PESA2Selection extends Selection<Solution> {      
         
   private static final long serialVersionUID = 345701401946064303L;
 
@@ -28,9 +28,10 @@ public class PESA2Selection extends Operator{
   * @return the selected solution
    * @throws JMException 
   */
-  public Object execute(Object object) throws JMException    {
+  @Override
+  public Solution execute(SolutionSet set) throws JMException {
     try {
-      AdaptiveGridArchive archive = (AdaptiveGridArchive)object;
+      AdaptiveGridArchive archive = (AdaptiveGridArchive)set;
       int selected;        
       int hypercube1 = archive.getGrid().randomOccupiedHypercube();
       int hypercube2 = archive.getGrid().randomOccupiedHypercube();                                        
@@ -67,7 +68,7 @@ public class PESA2Selection extends Operator{
       }        
       return archive.get((base + cnt) % archive.size());
     } catch (ClassCastException e) {
-      String msg = "PESA2Selection.execute: ClassCastException. Found" + object.getClass() + "Expected: AdaptativeGridArchive";
+      String msg = "PESA2Selection.execute: ClassCastException. Found" + set.getClass().getCanonicalName() + "Expected: AdaptativeGridArchive";
 			Configuration.logger_.severe(msg) ;
       throw new JMException(msg) ; 
     }

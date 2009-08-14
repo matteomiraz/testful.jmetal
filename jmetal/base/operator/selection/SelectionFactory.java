@@ -8,7 +8,6 @@
 package jmetal.base.operator.selection;
 
 import jmetal.base.Configuration;
-import jmetal.base.Operator;
 import jmetal.util.JMException;
 
 /**
@@ -22,7 +21,7 @@ public class SelectionFactory {
    * @return the operator
    * @throws JMException 
    */
-  public static Operator getSelectionOperator(String name) throws JMException {
+  public static Selection<?> getSelectionOperator(String name) throws JMException {
     if (name.equalsIgnoreCase("BinaryTournament"))
       return new BinaryTournament();
     else if (name.equalsIgnoreCase("BinaryTournament2"))

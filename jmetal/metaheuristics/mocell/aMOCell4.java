@@ -9,7 +9,6 @@ package jmetal.metaheuristics.mocell;
 import java.util.Comparator;
 
 import jmetal.base.Algorithm;
-import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
@@ -39,7 +38,6 @@ public class aMOCell4 extends Algorithm{
   public SolutionSet execute() throws JMException {
     //Init the param
     int populationSize, archiveSize, maxEvaluations, evaluations;
-    Operator mutationOperator, crossoverOperator, selectionOperator;
     SolutionSet currentPopulation;
     CrowdingArchive archive;
     SolutionSet [] neighbors;    
@@ -53,11 +51,6 @@ public class aMOCell4 extends Algorithm{
     populationSize    = ((Integer)getInputParameter("populationSize")).intValue();
     archiveSize       = ((Integer)getInputParameter("archiveSize")).intValue();
     maxEvaluations    = ((Integer)getInputParameter("maxEvaluations")).intValue();                                
-
-    //Read the operators
-    mutationOperator  = operators_.get("mutation");
-    crossoverOperator = operators_.get("crossover");
-    selectionOperator = operators_.get("selection");        
 
     //Init the variables    
     currentPopulation  = new SolutionSet(populationSize);        
@@ -81,7 +74,6 @@ public class aMOCell4 extends Algorithm{
       for (int ind = 0; ind < currentPopulation.size(); ind++){
         Solution individual = new Solution(currentPopulation.get(ind));
 
-        Solution [] parents = new Solution[2];
         Solution [] offSpring;
 
         //neighbors[ind] = neighborhood.getFourNeighbors(currentPopulation,ind);
@@ -89,15 +81,16 @@ public class aMOCell4 extends Algorithm{
         neighbors[ind].add(individual);
 
         // parents
-        parents[0] = (Solution)selectionOperator.execute(neighbors[ind]);
+        Solution parent1 = (Solution)selectionOperator.execute(neighbors[ind]);
+        Solution parent2;
         if (archive.size() > 0) {
-          parents[1] = (Solution)selectionOperator.execute(archive);
+          parent2 = (Solution)selectionOperator.execute(archive);
         } else {                   
-          parents[1] = (Solution)selectionOperator.execute(neighbors[ind]);
+          parent2 = (Solution)selectionOperator.execute(neighbors[ind]);
         }
 
         // Create a new individual, using genetic operators mutation and crossover
-        offSpring = (Solution [])crossoverOperator.execute(parents);               
+        offSpring = (Solution [])crossoverOperator.execute(parent1, parent2);               
         mutationOperator.execute(offSpring[0]);
 
         // Evaluate individual an his constraints

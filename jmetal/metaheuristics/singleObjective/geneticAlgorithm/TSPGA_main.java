@@ -11,11 +11,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import jmetal.base.Algorithm;
-import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.SolutionSet;
+import jmetal.base.operator.crossover.Crossover;
 import jmetal.base.operator.crossover.CrossoverFactory;
+import jmetal.base.operator.mutation.Mutation;
 import jmetal.base.operator.mutation.MutationFactory;
+import jmetal.base.operator.selection.Selection;
 import jmetal.base.operator.selection.SelectionFactory;
 import jmetal.problems.singleObjective.TSP;
 import jmetal.util.JMException;
@@ -32,9 +34,9 @@ public class TSPGA_main {
                                                   IOException, JMException{
     Problem   problem   ;         // The problem to solve
     Algorithm algorithm ;         // The algorithm to use
-    Operator  crossover ;         // Crossover operator
-    Operator  mutation  ;         // Mutation operator
-    Operator  selection ;         // Selection operator
+    Crossover  crossover ;         // Crossover operator
+    Mutation  mutation  ;         // Mutation operator
+    Selection<?>  selection ;         // Selection operator
             
     String problemName = "eil101.tsp" ;
     
@@ -50,17 +52,17 @@ public class TSPGA_main {
     // Mutation and Crossover for Real codification */
     crossover = CrossoverFactory.getCrossoverOperator("TwoPointsCrossover");
     //crossover = CrossoverFactory.getCrossoverOperator("PMXCrossover");
-    crossover.setParameter("probability",0.95);                   
+    crossover.setProbability(0.95);                   
     mutation = MutationFactory.getMutationOperator("SwapMutation");                    
-    mutation.setParameter("probability",0.2); 
+    mutation.setProbability(0.2); 
   
     /* Selection Operator */
     selection = SelectionFactory.getSelectionOperator("BinaryTournament") ;                            
     
     /* Add the operators to the algorithm*/
-    algorithm.addOperator("crossover",crossover);
-    algorithm.addOperator("mutation",mutation);
-    algorithm.addOperator("selection",selection);
+    algorithm.setCrossover(crossover);
+    algorithm.setMutation(mutation);
+    algorithm.setSelection(selection);
 
     /* Execute the Algorithm */
     long initTime = System.currentTimeMillis();

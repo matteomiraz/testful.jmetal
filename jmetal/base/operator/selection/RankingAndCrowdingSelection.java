@@ -8,7 +8,6 @@ package jmetal.base.operator.selection;
 import java.util.Comparator;
 
 import jmetal.base.Configuration;
-import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
@@ -24,7 +23,7 @@ import jmetal.util.Ranking;
  * NOTE: if you use the default constructor, the problem has to be passed as
  * a parameter before invoking the execute() method -- see lines 67 - 74
  */
-public class RankingAndCrowdingSelection extends Operator {
+public class RankingAndCrowdingSelection extends Selection<SolutionSet> {
 
   private static final long serialVersionUID = -5632920415904561097L;
 
@@ -45,6 +44,8 @@ public class RankingAndCrowdingSelection extends Operator {
    */
   private static final Distance distance_ = new Distance();
   
+  int populationSize;
+  
   /**
    * Constructor
    */
@@ -60,25 +61,28 @@ public class RankingAndCrowdingSelection extends Operator {
     problem_ = problem;
   } // RankingAndCrowdingSelection
 
+  
+	public void setPopulationSize(int populationSize) {
+		this.populationSize = populationSize;
+	}
+	
+	public void setProblem(Problem problem) {
+		problem_ = problem;
+	}
+	
   /**
   * Performs the operation
   * @param object Object representing a SolutionSet.
   * @return an object representing a <code>SolutionSet<code> with the selected parents
    * @throws JMException 
   */
-  public Object execute (Object object) throws JMException {
-    SolutionSet population = (SolutionSet)object;
-    int populationSize     = (Integer)parameters_.get("populationSize");
+  public SolutionSet execute(SolutionSet population) throws JMException {
     SolutionSet result     = new SolutionSet(populationSize);
 
     if (problem_ == null) {
-      problem_ = (Problem)getParameter("problem");
-      if (problem_ == null) {
-        
-        String msg = "RankingAndCrowdingSelection.execute: problem not specified";
-				Configuration.logger_.severe(msg) ;
-        throw new JMException(msg) ; 
-      } // if
+    	String msg = "RankingAndCrowdingSelection.execute: problem not specified";
+    	Configuration.logger_.severe(msg) ;
+    	throw new JMException(msg) ; 
     } // if
     
     //->Ranking the union

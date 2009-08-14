@@ -18,10 +18,11 @@ import java.util.logging.Logger;
 
 import jmetal.base.Algorithm;
 import jmetal.base.Configuration;
-import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.SolutionSet;
 import jmetal.base.operator.crossover.CrossoverFactory;
+import jmetal.base.operator.crossover.DifferentialEvolutionCrossover;
+import jmetal.base.operator.selection.Selection;
 import jmetal.base.operator.selection.SelectionFactory;
 import jmetal.problems.Kursawe;
 import jmetal.problems.ProblemFactory;
@@ -43,8 +44,8 @@ public class CellDE_main {
                                  JMException, SecurityException, IOException {
     Problem   problem   ;         // The problem to solve
     Algorithm algorithm ;         // The algorithm to use
-    Operator  selection ;
-    Operator  crossover ;
+    Selection<?>  selection ;
+    DifferentialEvolutionCrossover  crossover ;
     
     QualityIndicator indicators ; // Object to get quality indicators
 
@@ -82,15 +83,15 @@ public class CellDE_main {
     algorithm.setInputParameter("feedBack", 20);
     
     // Crossover operator 
-    crossover = CrossoverFactory.getCrossoverOperator("DifferentialEvolutionCrossover");                   
-    crossover.setParameter("CR", 0.5);                   
-    crossover.setParameter("F", 0.5);
+    crossover = (DifferentialEvolutionCrossover) CrossoverFactory.getCrossoverOperator("DifferentialEvolutionCrossover");                   
+    crossover.setCR(0.5);                   
+    crossover.setF(0.5);
     
     // Add the operators to the algorithm
     selection = SelectionFactory.getSelectionOperator("BinaryTournament") ; 
 
-    algorithm.addOperator("crossover",crossover);
-    algorithm.addOperator("selection",selection);
+    algorithm.setCrossover(crossover);
+    algorithm.setSelection(selection);
     
     // Execute the Algorithm 
     long initTime = System.currentTimeMillis();

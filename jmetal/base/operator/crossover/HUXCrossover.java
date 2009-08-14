@@ -7,7 +7,6 @@
 package jmetal.base.operator.crossover;
 
 import jmetal.base.Configuration;
-import jmetal.base.Operator;
 import jmetal.base.Solution;
 import jmetal.base.Configuration.SolutionType_;
 import jmetal.base.variable.Binary;
@@ -22,7 +21,7 @@ import jmetal.util.PseudoRandom;
  * (e.g., <code>SolutionType_.Binary</code> or 
  * <code>SolutionType_.BinaryReal</code>.
  */
-public class HUXCrossover extends Operator{
+public class HUXCrossover extends Crossover{
 
   private static final long serialVersionUID = -98268788775592756L;
 
@@ -89,41 +88,23 @@ public class HUXCrossover extends Operator{
   * @param object An object containing an array of two solutions 
   * @return An object containing the offSprings
   */
-  public Object execute(Object object) throws JMException {
-    Solution [] parents = (Solution [])object;
-    
-    if ( ((parents[0].getType() != SolutionType_.Binary) ||
-          (parents[1].getType() != SolutionType_.Binary)) && 
-         ((parents[0].getType() != SolutionType_.BinaryReal) ||
-          (parents[1].getType() != SolutionType_.BinaryReal))) {
+  public Solution[] execute(Solution parent1, Solution parent2) throws JMException {
+    if ( ((parent1.getType() != SolutionType_.Binary) ||
+          (parent2.getType() != SolutionType_.Binary)) && 
+         ((parent1.getType() != SolutionType_.BinaryReal) ||
+          (parent2.getType() != SolutionType_.BinaryReal))) {
       
       String msg = "HUXCrossover.execute: the solutions " +
 						    "are not of the right type. The type should be 'Binary' of " +
 						    "'BinaryReal', but " +
-						    parents[0].getType() + " and " + 
-						    parents[1].getType() + " are obtained";
+						    parent1.getType() + " and " + 
+						    parent2.getType() + " are obtained";
 			Configuration.logger_.severe(msg);
       throw new JMException(msg) ; 
 
     } // if 
     
-    Double probability = (Double)getParameter("probability");
-    if (parents.length < 2)
-    {
-      String msg = "HUXCrossover.execute: operator needs two parents";
-			Configuration.logger_.severe(msg);
-      throw new JMException(msg) ; 
-    }
-    else if (probability == null)
-    {
-      String msg = "HUXCrossover.execute: probability not specified";
-			Configuration.logger_.severe(msg);
-      throw new JMException(msg) ; 
-    }         
-    
-    Solution [] offSpring = doCrossover(probability.doubleValue(),
-                                                       parents[0],
-                                                       parents[1]);
+    Solution [] offSpring = doCrossover(probability, parent1, parent2);
     
     for (int i = 0; i < offSpring.length; i++)
     {

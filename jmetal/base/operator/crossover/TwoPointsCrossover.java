@@ -7,7 +7,6 @@
 package jmetal.base.operator.crossover;
 
 import jmetal.base.Configuration;
-import jmetal.base.Operator;
 import jmetal.base.Solution;
 import jmetal.base.Configuration.SolutionType_;
 import jmetal.base.Configuration.VariableType_;
@@ -21,7 +20,7 @@ import jmetal.util.PseudoRandom;
  * NOTE: the operator is applied to the first variable of the solutions, and 
  * the type of the solutions must be <code>SolutionType_.Permutation</code>.
  */
-  public class TwoPointsCrossover extends Operator {
+  public class TwoPointsCrossover extends Crossover {
     
     
   private static final long serialVersionUID = 8484533354272297259L;
@@ -135,37 +134,20 @@ import jmetal.util.PseudoRandom;
   * @return An object containing an array with the offSprings
  * @throws JMException 
   */
-  public Object execute(Object object) throws JMException {
-    Solution [] parents = (Solution [])object;
-    Double crossoverProbability ;
-
-    if ((parents[0].getType() != SolutionType_.Permutation) ||
-        (parents[1].getType() != SolutionType_.Permutation)) {
+  @Override
+  public Solution[] execute(Solution parent1, Solution parent2) throws JMException {
+    if ((parent1.getType() != SolutionType_.Permutation) ||
+        (parent2.getType() != SolutionType_.Permutation)) {
       
       Configuration.logger_.severe("TwoPointsCrossover.execute: the solutions " +
           "are not of the right type. The type should be 'Permutation', but " +
-          parents[0].getType() + " and " + 
-          parents[1].getType() + " are obtained");
+          parent1.getType() + " and " + 
+          parent2.getType() + " are obtained");
     } // if 
     	
-    crossoverProbability = (Double)getParameter("probability");
-
-    if (parents.length < 2)
-    {
-      String msg = "SBXCrossover.execute: operator needs two parents";
-			Configuration.logger_.severe(msg);
-      throw new JMException(msg) ; 
-    }
-    else if (crossoverProbability == null)
-    {
-      String msg = "SBXCrossover.execute: probability not specified";
-			Configuration.logger_.severe(msg);
-      throw new JMException(msg) ; 
-    }      
-
-    Solution [] offspring = doCrossover(crossoverProbability.doubleValue(),
-                                        parents[0],
-                                        parents[1]);
+    Solution [] offspring = doCrossover(probability,
+                                        parent1,
+                                        parent2);
 
     return offspring; 
   } // execute

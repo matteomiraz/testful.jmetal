@@ -13,7 +13,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import jmetal.base.Algorithm;
-import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
@@ -248,18 +247,12 @@ public class IBEA extends Algorithm{
   */
   public SolutionSet execute() throws JMException{
     int populationSize, archiveSize, maxEvaluations, evaluations;
-    Operator crossoverOperator, mutationOperator, selectionOperator;
     SolutionSet solutionSet, archive, offSpringSolutionSet;
 
     //Read the params
     populationSize = ((Integer)getInputParameter("populationSize")).intValue();
     archiveSize    = ((Integer)getInputParameter("archiveSize")).intValue();
     maxEvaluations = ((Integer)getInputParameter("maxEvaluations")).intValue();
-
-    //Read the operators
-    crossoverOperator = operators_.get("crossover");
-    mutationOperator  = operators_.get("mutation");
-    selectionOperator = operators_.get("selection");
 
     //Initialize the variables
     solutionSet  = new SolutionSet(populationSize);
@@ -286,21 +279,21 @@ public class IBEA extends Algorithm{
       }
       // Create a new offspringPopulation
       offSpringSolutionSet= new SolutionSet(populationSize);
-      Solution  [] parents = new Solution[2];
       while (offSpringSolutionSet.size() < populationSize){
-        int j = 0;
+      	Solution parent1, parent2;
+      	int j = 0;
         do{
           j++;
-          parents[0] = (Solution)selectionOperator.execute(archive);
+          parent1 = (Solution)selectionOperator.execute(archive);
         } while (j < IBEA.TOURNAMENTS_ROUNDS); // do-while
         int k = 0;
         do{
           k++;
-          parents[1] = (Solution)selectionOperator.execute(archive);
+          parent2 = (Solution)selectionOperator.execute(archive);
         } while (k < IBEA.TOURNAMENTS_ROUNDS); // do-while
 
         //make the crossover
-        Solution [] offSpring = (Solution [])crossoverOperator.execute(parents);
+        Solution [] offSpring = crossoverOperator.execute(parent1, parent2);
         mutationOperator.execute(offSpring[0]);
         problem_.evaluate(offSpring[0]);
         problem_.evaluateConstraints(offSpring[0]);

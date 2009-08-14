@@ -11,11 +11,13 @@ package jmetal.experiments.settings;
 import java.util.Properties;
 
 import jmetal.base.Algorithm;
-import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
+import jmetal.base.operator.crossover.Crossover;
 import jmetal.base.operator.crossover.CrossoverFactory;
+import jmetal.base.operator.mutation.Mutation;
 import jmetal.base.operator.mutation.MutationFactory;
+import jmetal.base.operator.selection.Selection;
 import jmetal.base.operator.selection.SelectionFactory;
 import jmetal.experiments.Settings;
 import jmetal.metaheuristics.nsgaII.NSGAII;
@@ -56,9 +58,9 @@ public class NSGAIIBinary_Settings extends Settings{
    */
   public Algorithm configure() throws JMException {
     Algorithm algorithm ;
-    Operator  selection ;
-    Operator  crossover ;
-    Operator  mutation  ;
+    Selection<?>  selection ;
+    Crossover  crossover ;
+    Mutation mutation  ;
     
     QualityIndicator indicators ;
     
@@ -72,18 +74,18 @@ public class NSGAIIBinary_Settings extends Settings{
     
     // Mutation and Crossover Binary codification
     crossover = CrossoverFactory.getCrossoverOperator("SinglePointCrossover");                   
-    crossover.setParameter("probability",0.9);                   
+    crossover.setProbability(0.9);                   
     mutation = MutationFactory.getMutationOperator("BitFlipMutation");     
     Solution dummy = new Solution(problem_) ;
-    mutation.setParameter("probability",1.0/dummy.getNumberOfBits());
+    mutation.setProbability(1.0/dummy.getNumberOfBits());
     
     // Selection Operator 
     selection = SelectionFactory.getSelectionOperator("BinaryTournament2") ;   
     
     // Add the operators to the algorithm
-    algorithm.addOperator("crossover",crossover);
-    algorithm.addOperator("mutation",mutation);
-    algorithm.addOperator("selection",selection);
+    algorithm.setCrossover(crossover);
+    algorithm.setMutation(mutation);
+    algorithm.setSelection(selection);
     
    // Creating the indicator object
    if (! paretoFrontFile_.equals("")) {

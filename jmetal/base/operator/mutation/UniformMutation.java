@@ -7,7 +7,6 @@
 package jmetal.base.operator.mutation;
 
 import jmetal.base.Configuration;
-import jmetal.base.Operator;
 import jmetal.base.Solution;
 import jmetal.base.Configuration.SolutionType_;
 import jmetal.util.JMException;
@@ -17,7 +16,7 @@ import jmetal.util.PseudoRandom;
  * This class implements a uniform mutation operator.
  * NOTE: the type of the solutions must be <code>SolutionType_.Real</code>
  */
-public class UniformMutation extends Operator{
+public class UniformMutation extends Mutation {
     
   private static final long serialVersionUID = -1807873962838274568L;
 	/**
@@ -60,14 +59,17 @@ public class UniformMutation extends Operator{
     }
   } // doMutation
   
+  
+	public void setPerturbationIndex(double value) {
+		perturbation_ = value;
+	}
+  
   /**
   * Executes the operation
   * @param object An object containing the solution to mutate
    * @throws JMException 
   */
-  public Object execute(Object object) throws JMException {
-    Solution solution = (Solution )object;
-    
+  public Solution execute(Solution solution) throws JMException {
     if (solution.getType() != SolutionType_.Real) {
       String msg = "UniformMutation.execute: the solution " +
           "is not of the right type. The type should be 'Real', but " +
@@ -76,20 +78,7 @@ public class UniformMutation extends Operator{
       throw new JMException(msg) ;
     } // if 
     
-    Double probability;
-        
-    if (perturbation_ == null)
-      perturbation_ = (Double)getParameter("perturbationIndex");
-        
-    probability = (Double)getParameter("probability");
-    if (probability == null)
-    {
-      String msg = "UniformMutation.execute: probability not specified";
-			Configuration.logger_.severe(msg);
-      throw new JMException(msg) ;  
-    }
-    
-    doMutation(probability.doubleValue(),solution);
+    doMutation(probability, solution);
         
     return solution;
   } // execute                  

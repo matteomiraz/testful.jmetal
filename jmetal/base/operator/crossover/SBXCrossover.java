@@ -10,6 +10,7 @@ package jmetal.base.operator.crossover;
 import jmetal.base.Configuration;
 import jmetal.base.Solution;
 import jmetal.base.Configuration.SolutionType_;
+import jmetal.base.variable.Real;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
 
@@ -22,7 +23,7 @@ import jmetal.util.PseudoRandom;
  * DEFAULT_INDEX_CROSSOVER. You can change it using the parameter 
  * "distributionIndex" before invoking the execute() method -- see lines 196-199
  */
-public class SBXCrossover extends Crossover {
+public class SBXCrossover extends Crossover<Real> {
     
   private static final long serialVersionUID = 485761542428572217L;
 
@@ -68,14 +69,15 @@ public class SBXCrossover extends Crossover {
    * @param parent2 The second parent
    * @return An array containing the two offsprings
    */
-  public Solution[] doCrossover(double probability, 
-                                Solution parent1, 
-                                Solution parent2) throws JMException {
+  @SuppressWarnings("unchecked")
+	public Solution<Real>[] doCrossover(double probability, 
+                                Solution<Real> parent1, 
+                                Solution<Real> parent2) throws JMException {
     
-    Solution [] offSpring = new Solution[2];
+    Solution<Real> [] offSpring = new Solution[2];
 
-    offSpring[0] = new Solution(parent1);
-    offSpring[1] = new Solution(parent2);
+    offSpring[0] = new Solution<Real>(parent1);
+    offSpring[1] = new Solution<Real>(parent2);
                     
     int i;
     double rand;
@@ -165,7 +167,7 @@ public class SBXCrossover extends Crossover {
   * @param object An object containing an array of two parents
   * @return An object containing the offSprings
   */
-  public Solution[] execute(Solution parent1, Solution parent2) throws JMException {
+  public Solution<Real>[] execute(Solution<Real> parent1, Solution<Real> parent2) throws JMException {
     if ((parent1.getType() != SolutionType_.Real) ||
         (parent2.getType() != SolutionType_.Real)) {
 
@@ -177,7 +179,7 @@ public class SBXCrossover extends Crossover {
       throw new JMException(msg) ; 
     } // if 
     
-    Solution [] offSpring = doCrossover(probability, parent1, parent2);
+    Solution<Real> [] offSpring = doCrossover(probability, parent1, parent2);
         
     for (int i = 0; i < offSpring.length; i++)
     {

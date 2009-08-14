@@ -7,12 +7,13 @@ package jmetal.util;
 
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
+import jmetal.base.Variable;
 
 /**
  * This class defines an adaptative grid over a SolutionSet as the one used the
  * algorithm PAES.
  */
-public class AdaptiveGrid {
+public class AdaptiveGrid<T extends Variable> {
    
   /**
    * Number of bi-divisions of the objective space
@@ -79,7 +80,7 @@ public class AdaptiveGrid {
   *  <code>SolutionSet</code>.
   *  @param solutionSet The <code>SolutionSet</code> considered.
   */
-  private void updateLimits(SolutionSet solutionSet){          
+  private void updateLimits(SolutionSet<T> solutionSet){          
     //Init the lower and upper limits 
     for (int obj = 0; obj < objectives_; obj++){
       //Set the lower limits to the max real
@@ -90,7 +91,7 @@ public class AdaptiveGrid {
 	   
     //Find the max and min limits of objetives into the population
     for (int ind = 0; ind < solutionSet.size(); ind++){
-      Solution tmpIndividual = solutionSet.get(ind);
+      Solution<T> tmpIndividual = solutionSet.get(ind);
       for (int obj = 0; obj < objectives_; obj++) {
         if (tmpIndividual.getObjective(obj) < lowerLimits_[obj]) {
           lowerLimits_[obj] = tmpIndividual.getObjective(obj);
@@ -108,7 +109,7 @@ public class AdaptiveGrid {
    * <b>REQUIRE</b> The grid limits must have been previously calculated.
    * @param solutionSet The <code>SolutionSet</code> considered.
    */
-  private void addSolutionSet(SolutionSet solutionSet){
+  private void addSolutionSet(SolutionSet<T> solutionSet){
     //Calculate the location of all individuals and update the grid
     mostPopulated_ = 0;
     int location;              
@@ -130,7 +131,7 @@ public class AdaptiveGrid {
    * in a specific <code>SolutionSet</code>.
    * @param solutionSet The <code>SolutionSet</code>.
    */
-  public void updateGrid(SolutionSet solutionSet){	   
+  public void updateGrid(SolutionSet<T> solutionSet){	   
     //Update lower and upper limits
     updateLimits(solutionSet);
 
@@ -157,7 +158,7 @@ public class AdaptiveGrid {
    * @param solution <code>Solution</code> considered to update the grid.
    * @param solutionSet <code>SolutionSet</code> used to update the grid.
    */
-  public void updateGrid(Solution solution, SolutionSet solutionSet){	   
+  public void updateGrid(Solution<T> solution, SolutionSet<T> solutionSet){	   
     
     int location = location(solution);
     if (location == -1) {//Re-build the Adaptative-Grid
@@ -192,7 +193,7 @@ public class AdaptiveGrid {
    * Calculates the hypercube of a solution.
    * @param solution The <code>Solution</code>.
    */
-  public int location(Solution solution){                 
+  public int location(Solution<T> solution){                 
     //Create a int [] to store the range of each objetive
     int [] position = new int[objectives_];
 

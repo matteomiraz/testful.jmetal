@@ -26,6 +26,7 @@ import jmetal.util.JMException;
 /**
  * Constructor
  */
+@SuppressWarnings("unchecked")
 public class AbYSS_Settings extends Settings {
   // Default settings
   int populationSize_ = 100;

@@ -9,8 +9,8 @@ package jmetal.base.variable;
 
 import java.util.BitSet;
 
-import jmetal.base.Variable;
-import jmetal.base.Configuration.VariableType_;
+import jmetal.base.VariableValue;
+import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
 
 /**
@@ -18,7 +18,7 @@ import jmetal.util.PseudoRandom;
  * a base class other binary string based classes (e.g., binary coded integer
  * or real variables).
  */ 
-public class Binary extends Variable {
+public class Binary implements VariableValue {
   
   private static final long serialVersionUID = -7777100119877645273L;
 
@@ -37,7 +37,6 @@ public class Binary extends Variable {
    * Default constructor.
    */
   public Binary() {       
-    setVariableType(VariableType_.Binary) ;
   } //Binary
 
   
@@ -46,7 +45,6 @@ public class Binary extends Variable {
    *  @param numberOfBits Length of the bit string
    */
   public Binary(int numberOfBits){
-    setVariableType(VariableType_.Binary) ;
    
     numberOfBits_ = numberOfBits;
 
@@ -61,7 +59,6 @@ public class Binary extends Variable {
    * @param variable The Binary variable to copy.
    */
   public Binary(Binary variable){
-	setVariableType(VariableType_.Binary) ;
 
     numberOfBits_ = variable.numberOfBits_;
         
@@ -86,7 +83,7 @@ public class Binary extends Variable {
    * Creates an exact copy of a Binary object
    * @return An exact copy of the object.
    **/
-  public Variable deepCopy() {
+  public VariableValue clone() {
     return new Binary(this);
   } //deepCopy
 
@@ -148,4 +145,35 @@ public class Binary extends Variable {
         
     return result ;
   } // toString
+
+
+  public double getLowerBound() throws JMException {
+  	throw new JMException("Not Implemented");
+  }
+
+
+  public double getUpperBound() throws JMException {
+  	throw new JMException("Not Implemented");
+  }
+
+
+  public double getValue() throws JMException {
+  	throw new JMException("Not Implemented");
+  }
+
+
+  public void setLowerBound(double lowerBound) throws JMException {
+  	throw new JMException("Not Implemented");
+  }
+
+
+  public void setUpperBound(double upperBound) throws JMException {
+  	throw new JMException("Not Implemented");
+  }
+
+
+  public void setValue(double value) throws JMException {
+  	throw new JMException("Not Implemented");
+  }
+
 } // Binary

@@ -10,6 +10,7 @@ package jmetal.problems;
 import jmetal.base.DecisionVariables;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
+import jmetal.base.VariableValue;
 import jmetal.base.Configuration.SolutionType_;
 import jmetal.base.Configuration.VariableType_;
 import jmetal.util.JMException;
@@ -17,7 +18,7 @@ import jmetal.util.JMException;
 /**
  * Class representing problem Schaffer
  */
-public class Schaffer extends Problem {    
+public class Schaffer<T extends VariableValue> extends Problem<T> {    
 
  private static final long serialVersionUID = -8707134037543183769L;
 
@@ -54,8 +55,8 @@ public class Schaffer extends Problem {
   * @param solution The solution to evaluate
    * @throws JMException 
   */
-  public void evaluate(Solution solution) throws JMException {
-    DecisionVariables decisionVariables  = solution.getDecisionVariables();
+  public void evaluate(Solution<T> solution) throws JMException {
+    DecisionVariables<T> decisionVariables  = solution.getDecisionVariables();
     
     double [] f = new double[numberOfObjectives_];
     f[0] = decisionVariables.variables_.get(0).getValue() * 

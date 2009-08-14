@@ -21,12 +21,13 @@ public class MutationFactory {
    * @return the operator
    * @throws JMException 
    */
-  public static Mutation getMutationOperator(String name) throws JMException{
+  @SuppressWarnings("unchecked")
+	public static Mutation<?> getMutationOperator(String name) throws JMException{
   
     if (name.equalsIgnoreCase("PolynomialMutation"))
       return new PolynomialMutation(20);
     else if (name.equalsIgnoreCase("BitFlipMutation"))
-      return new BitFlipMutation();
+      return new BitFlipMutationInt();
     else if (name.equalsIgnoreCase("SwapMutation"))
       return new SwapMutation();
     else

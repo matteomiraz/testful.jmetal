@@ -23,6 +23,7 @@ import jmetal.util.JMException;
 /**
  * @author Antonio J. Nebro
  */
+@SuppressWarnings("unchecked")
 public class StandardStudy extends Experiment {
 
   /**

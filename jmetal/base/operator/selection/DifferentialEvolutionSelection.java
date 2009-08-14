@@ -8,10 +8,11 @@ package jmetal.base.operator.selection;
 
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
+import jmetal.base.Variable;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
 
-public class DifferentialEvolutionSelection extends Selection<Solution[]> {
+public class DifferentialEvolutionSelection<T extends Variable> extends Selection<T, Solution<T>[]> {
 
   private static final long serialVersionUID = -7513751998032671539L;
 
@@ -33,9 +34,10 @@ public class DifferentialEvolutionSelection extends Selection<Solution[]> {
    *               of the current individual
    * @return An object containing the three selected parents
    */
-  @Override
-  public Solution[] execute(SolutionSet population) throws JMException {
-    Solution[] parents = new Solution[3] ;
+  @SuppressWarnings("unchecked")
+	@Override
+  public Solution<T>[] execute(SolutionSet<T> population) throws JMException {
+    Solution<T>[] parents = new Solution[3] ;
     int r1, r2, r3 ;
 
     if (population.size() < 4)

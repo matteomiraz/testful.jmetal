@@ -10,12 +10,12 @@ import java.io.IOException;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 
-import jmetal.base.Algorithm;
 import jmetal.base.Configuration;
 import jmetal.base.Problem;
 import jmetal.base.SolutionSet;
 import jmetal.base.operator.mutation.MutationFactory;
 import jmetal.base.operator.mutation.PolynomialMutation;
+import jmetal.base.variable.Real;
 import jmetal.problems.Kursawe;
 import jmetal.problems.ProblemFactory;
 import jmetal.util.JMException;
@@ -29,9 +29,10 @@ public class PAES_main {
    *             the problem to solve.
    * @throws JMException 
    */
-  public static void main(String [] args) throws JMException, IOException {
-    Problem   problem   ;         // The problem to solve
-    Algorithm algorithm ;         // The algorithm to use
+  @SuppressWarnings("unchecked")
+	public static void main(String [] args) throws JMException, IOException {
+    Problem<Real>   problem   ;         // The problem to solve
+    PAES<Real> algorithm ;         // The algorithm to use
     PolynomialMutation  mutation  ;         // Mutation operator
     
     // Logger object and file to store log messages
@@ -41,11 +42,11 @@ public class PAES_main {
     
     if (args.length == 1) {
       Object [] params = {"Real"};
-      problem = (new ProblemFactory()).getProblem(args[0],params);
+      problem = (Problem<Real>) ProblemFactory.getProblem(args[0],params);
     } // if
     else if (args.length == 2) {
       Object [] params = {"Real"};
-      problem = (new ProblemFactory()).getProblem(args[0],params);
+      problem = (Problem<Real>) ProblemFactory.getProblem(args[0],params);
     } // if
     else { // Default problem
       problem = new Kursawe(3, "Real"); 
@@ -57,7 +58,7 @@ public class PAES_main {
       //problem = new OKA2("Real") ;
     } // else
     
-    algorithm = new PAES(problem);
+    algorithm = new PAES<Real>(problem);
     
     // Algorithm parameters
     algorithm.setInputParameter("archiveSize",100);
@@ -78,7 +79,7 @@ public class PAES_main {
     
     // Execute the Algorithm 
     long initTime = System.currentTimeMillis();
-    SolutionSet population = algorithm.execute();
+    SolutionSet<Real> population = algorithm.execute();
     long estimatedTime = System.currentTimeMillis() - initTime;
     
     // Result messages 

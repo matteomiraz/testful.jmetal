@@ -20,14 +20,14 @@ import java.util.List;
 /** 
  * Class representing a SolutionSet (a set of solutions)
  */
-public class SolutionSet implements Serializable {
+public class SolutionSet<T extends Variable> implements Serializable, Iterable<Solution<T>> {
     
   private static final long serialVersionUID = 4113136899421961879L;
 
 	/**
    * Stores a list of <code>solution</code> objects.
    */
-  protected List<Solution> solutionsList_;
+  protected List<Solution<T>> solutionsList_;
   
   /** 
    * Maximum size of the solution set 
@@ -39,7 +39,7 @@ public class SolutionSet implements Serializable {
    * Creates an unbounded solution set.
    */
   public SolutionSet() {
-    solutionsList_ = new ArrayList<Solution>();
+    solutionsList_ = new ArrayList<Solution<T>>();
   } // SolutionSet
     
   /** 
@@ -47,7 +47,7 @@ public class SolutionSet implements Serializable {
    * @param maximumSize Maximum size.
    */
   public SolutionSet(int maximumSize){    
-    solutionsList_ = new ArrayList<Solution>();
+    solutionsList_ = new ArrayList<Solution<T>>();
     capacity_      = maximumSize;
   } // SolutionSet
     
@@ -57,7 +57,7 @@ public class SolutionSet implements Serializable {
   * @return True If the <code>Solution</code> has been inserted, false 
   * otherwise. 
   */
-  public boolean add(Solution solution) {
+  public boolean add(Solution<T> solution) {
     if (solutionsList_.size() == capacity_) {
       Configuration.logger_.severe("The population is full");
       Configuration.logger_.severe("Capacity       is : "+capacity_);
@@ -75,7 +75,7 @@ public class SolutionSet implements Serializable {
    * @return The <code>Solution</code> at the position i.
    * @throws IndexOutOfBoundsException.
    */
-  public Solution get(int i){
+  public Solution<T> get(int i){
     if (i >= solutionsList_.size()) {
       throw new IndexOutOfBoundsException("Index out of Bound "+i);
     }
@@ -94,7 +94,7 @@ public class SolutionSet implements Serializable {
    * Sorts a SolutionSet using a <code>Comparator</code>.
    * @param comparator <code>Comparator</code> used to sort.
    */
-  public void sort(Comparator<Solution> comparator){
+  public void sort(Comparator<Solution<T>> comparator){
     if (comparator == null) {
       Configuration.logger_.severe("No criterium for compare exist");
       return ;
@@ -185,7 +185,7 @@ public class SolutionSet implements Serializable {
    * Returns an <code>Iterator</code> to access to the solution set list.
    * @return the <code>Iterator</code>.
    */    
-  public Iterator<Solution> iterator(){
+  public Iterator<Solution<T>> iterator(){
     return solutionsList_.iterator();
   } // iterator   
    
@@ -195,21 +195,16 @@ public class SolutionSet implements Serializable {
    * @param solutionSet SolutionSet to join with the current solutionSet.
    * @return The result of the union operation.
    */
-  public SolutionSet union(SolutionSet solutionSet) {       
+  public SolutionSet<T> union(SolutionSet<T> solutionSet) {       
     //Check the correct size. In development
     int newSize = this.size() + solutionSet.size();
     if (newSize < capacity_)
       newSize = capacity_;
         
     //Create a new population 
-    SolutionSet union = new SolutionSet(newSize);                
-    for (int i = 0; i < this.size(); i++) {      
-      union.add(this.get(i));
-    } // for
-        
-    for (int i = this.size(); i < (this.size() + solutionSet.size()); i++) {
-      union.add(solutionSet.get(i-this.size()));
-    } // for
+    SolutionSet<T> union = new SolutionSet<T>(newSize);
+    for(Solution<T> s : this) union.add(s);
+    for(Solution<T> s : solutionSet) union.add(s);
             
     return union;        
   } // union                   
@@ -219,7 +214,7 @@ public class SolutionSet implements Serializable {
    * @param position The position of the solution to replace
    * @param solution The new solution
    */
-  public void replace(int position, Solution solution) {
+  public void replace(int position, Solution<T> solution) {
     if (position > this.solutionsList_.size()) {
       solutionsList_.add(solution);
     } // if 

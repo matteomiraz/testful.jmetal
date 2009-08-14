@@ -12,12 +12,13 @@ import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.Configuration.SolutionType_;
 import jmetal.base.Configuration.VariableType_;
+import jmetal.base.variable.IReal;
 import jmetal.util.JMException;
 
 /** 
  * Class representing problem Fonseca
  */
-public class Fonseca extends Problem {
+public class Fonseca<T extends IReal> extends Problem<T> {
    
   private static final long serialVersionUID = -574100028358684089L;
 
@@ -54,8 +55,8 @@ public class Fonseca extends Problem {
   * @param solution The solution to evaluate
    * @throws JMException 
   */        
-  public void evaluate(Solution solution) throws JMException {
-    DecisionVariables decisionVariables  = solution.getDecisionVariables();
+  public void evaluate(Solution<T> solution) throws JMException {
+    DecisionVariables<T> decisionVariables  = solution.getDecisionVariables();
 
     double [] f = new double[numberOfObjectives_];
     double sum1 = 0.0;

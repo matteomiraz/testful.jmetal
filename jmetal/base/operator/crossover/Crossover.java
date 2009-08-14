@@ -3,9 +3,10 @@ package jmetal.base.operator.crossover;
 import java.io.Serializable;
 
 import jmetal.base.Solution;
+import jmetal.base.Variable;
 import jmetal.util.JMException;
 
-public abstract class Crossover implements Serializable {
+public abstract class Crossover<T extends Variable> implements Serializable {
 
 	private static final long serialVersionUID = -5454704223436690588L;
 	protected double probability;
@@ -20,6 +21,6 @@ public abstract class Crossover implements Serializable {
 		return probability;
 	}
 
-	public abstract Solution[] execute(Solution parent1, Solution parent2) throws JMException;
+	public abstract Solution<T>[] execute(Solution<T> parent1, Solution<T> parent2) throws JMException;
 
 }

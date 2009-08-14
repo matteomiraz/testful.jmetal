@@ -10,6 +10,7 @@ import java.util.Comparator;
 
 import jmetal.base.Configuration;
 import jmetal.base.Solution;
+import jmetal.base.VariableValue;
 import jmetal.util.Distance;
 import jmetal.util.JMException;
 
@@ -17,7 +18,7 @@ import jmetal.util.JMException;
  * This class implements a <code>Comparator</code> (a method for comparing
  * <code>Solution</code> objects) based on the values of the variables.
  */
-public class SolutionComparator implements Comparator<Solution> {
+public class SolutionComparator<T extends VariableValue> implements Comparator<Solution<T>> {
    
   /**
    * Establishes a value of allowed dissimilarity
@@ -33,12 +34,12 @@ public class SolutionComparator implements Comparator<Solution> {
    * @throws JMException 
    * @throws JMException 
    */
-  public int compare(Solution solution1, Solution solution2) {
+  public int compare(Solution<T> solution1, Solution<T> solution2) {
     if (solution1.numberOfVariables() != solution2.numberOfVariables())
       return -1;
 
     try {
-      if ((new Distance()).distanceBetweenSolutions(solution1,solution2) < EPSILON)
+      if (Distance.distanceBetweenSolutions(solution1,solution2) < EPSILON)
         return 0;
     } catch (JMException e) {
       Configuration.logger_.severe("SolutionComparator.compare: JMException ") ; 

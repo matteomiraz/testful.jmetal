@@ -8,7 +8,6 @@ package jmetal.base.operator.crossover;
 
 import jmetal.base.Configuration;
 import jmetal.base.Solution;
-import jmetal.base.Configuration.SolutionType_;
 import jmetal.base.variable.Binary;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
@@ -21,7 +20,7 @@ import jmetal.util.PseudoRandom;
  * (e.g., <code>SolutionType_.Binary</code> or 
  * <code>SolutionType_.BinaryReal</code>.
  */
-public class HUXCrossover extends Crossover{
+public class HUXCrossover extends Crossover<Binary>{
 
   private static final long serialVersionUID = -98268788775592756L;
 
@@ -42,12 +41,13 @@ public class HUXCrossover extends Crossover{
    * @return An array containig the two offsprings
    * @throws JMException 
    */
-  public Solution[] doCrossover(double   probability, 
-                                Solution parent1, 
-                                Solution parent2) throws JMException {
-    Solution [] offSpring = new Solution[2];
-    offSpring[0] = new Solution(parent1);
-    offSpring[1] = new Solution(parent2);
+  @SuppressWarnings("unchecked")
+	public Solution<Binary>[] doCrossover(double   probability, 
+                                Solution<Binary> parent1, 
+                                Solution<Binary> parent2) throws JMException {
+    Solution<Binary> [] offSpring = new Solution[2];
+    offSpring[0] = new Solution<Binary>(parent1);
+    offSpring[1] = new Solution<Binary>(parent2);
     try {         
       if (PseudoRandom.randDouble() < probability)
       {
@@ -88,23 +88,8 @@ public class HUXCrossover extends Crossover{
   * @param object An object containing an array of two solutions 
   * @return An object containing the offSprings
   */
-  public Solution[] execute(Solution parent1, Solution parent2) throws JMException {
-    if ( ((parent1.getType() != SolutionType_.Binary) ||
-          (parent2.getType() != SolutionType_.Binary)) && 
-         ((parent1.getType() != SolutionType_.BinaryReal) ||
-          (parent2.getType() != SolutionType_.BinaryReal))) {
-      
-      String msg = "HUXCrossover.execute: the solutions " +
-						    "are not of the right type. The type should be 'Binary' of " +
-						    "'BinaryReal', but " +
-						    parent1.getType() + " and " + 
-						    parent2.getType() + " are obtained";
-			Configuration.logger_.severe(msg);
-      throw new JMException(msg) ; 
-
-    } // if 
-    
-    Solution [] offSpring = doCrossover(probability, parent1, parent2);
+  public Solution<Binary>[] execute(Solution<Binary> parent1, Solution<Binary> parent2) throws JMException {
+    Solution<Binary>[] offSpring = doCrossover(probability, parent1, parent2);
     
     for (int i = 0; i < offSpring.length; i++)
     {

@@ -21,7 +21,8 @@ public class SelectionFactory {
    * @return the operator
    * @throws JMException 
    */
-  public static Selection<?> getSelectionOperator(String name) throws JMException {
+  @SuppressWarnings("unchecked")
+	public static Selection<?, ?> getSelectionOperator(String name) throws JMException {
     if (name.equalsIgnoreCase("BinaryTournament"))
       return new BinaryTournament();
     else if (name.equalsIgnoreCase("BinaryTournament2"))

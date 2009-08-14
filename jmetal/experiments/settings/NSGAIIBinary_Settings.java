@@ -28,6 +28,7 @@ import jmetal.util.JMException;
  *
  * @author Antonio J. Nebro
  */
+@SuppressWarnings("unchecked")
 public class NSGAIIBinary_Settings extends Settings{
   
   // Default settings
@@ -39,7 +40,7 @@ public class NSGAIIBinary_Settings extends Settings{
   // applied to a solution
   Solution dummy = new Solution(problem_) ;
   
-  double mutationProbability_  = 1.0/dummy.getNumberOfBits() ;
+  double mutationProbability_  = 1.0/Solution.getNumberOfBits(dummy) ;
   double crossoverProbability_ = 0.9 ;
   
   String paretoFrontFile_ = "" ;
@@ -58,7 +59,7 @@ public class NSGAIIBinary_Settings extends Settings{
    */
   public Algorithm configure() throws JMException {
     Algorithm algorithm ;
-    Selection<?>  selection ;
+    Selection  selection ;
     Crossover  crossover ;
     Mutation mutation  ;
     
@@ -77,7 +78,7 @@ public class NSGAIIBinary_Settings extends Settings{
     crossover.setProbability(0.9);                   
     mutation = MutationFactory.getMutationOperator("BitFlipMutation");     
     Solution dummy = new Solution(problem_) ;
-    mutation.setProbability(1.0/dummy.getNumberOfBits());
+    mutation.setProbability(1.0/Solution.getNumberOfBits(dummy));
     
     // Selection Operator 
     selection = SelectionFactory.getSelectionOperator("BinaryTournament2") ;   

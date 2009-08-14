@@ -11,6 +11,7 @@ import jmetal.base.Configuration;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
+import jmetal.base.Variable;
 import jmetal.base.operator.comparator.CrowdingComparator;
 import jmetal.util.Distance;
 import jmetal.util.JMException;
@@ -23,26 +24,21 @@ import jmetal.util.Ranking;
  * NOTE: if you use the default constructor, the problem has to be passed as
  * a parameter before invoking the execute() method -- see lines 67 - 74
  */
-public class RankingAndCrowdingSelection extends Selection<SolutionSet> {
+public class RankingAndCrowdingSelection<T extends Variable> extends Selection<T, SolutionSet<T>> {
 
   private static final long serialVersionUID = -5632920415904561097L;
 
 	/**
    * stores the problem to solve 
    */
-  private Problem problem_;
+  private Problem<T> problem_;
   
   /**
    * stores a <code>Comparator</code> for crowding comparator checking.
    */
-  private static final Comparator<Solution> crowdingComparator_ = 
-                                  new CrowdingComparator();
+  private final Comparator<Solution<T>> crowdingComparator_ = 
+                                  new CrowdingComparator<T>();
 
-  
-  /**
-   * stores a <code>Distance</code> object for distance utilities.
-   */
-  private static final Distance distance_ = new Distance();
   
   int populationSize;
   
@@ -57,7 +53,7 @@ public class RankingAndCrowdingSelection extends Selection<SolutionSet> {
    * Constructor
    * @param problem Problem to be solved
    */
-  public RankingAndCrowdingSelection(Problem problem) {
+  public RankingAndCrowdingSelection(Problem<T> problem) {
     problem_ = problem;
   } // RankingAndCrowdingSelection
 
@@ -66,7 +62,7 @@ public class RankingAndCrowdingSelection extends Selection<SolutionSet> {
 		this.populationSize = populationSize;
 	}
 	
-	public void setProblem(Problem problem) {
+	public void setProblem(Problem<T> problem) {
 		problem_ = problem;
 	}
 	
@@ -76,8 +72,8 @@ public class RankingAndCrowdingSelection extends Selection<SolutionSet> {
   * @return an object representing a <code>SolutionSet<code> with the selected parents
    * @throws JMException 
   */
-  public SolutionSet execute(SolutionSet population) throws JMException {
-    SolutionSet result     = new SolutionSet(populationSize);
+  public SolutionSet<T> execute(SolutionSet<T> population) throws JMException {
+    SolutionSet<T> result     = new SolutionSet<T>(populationSize);
 
     if (problem_ == null) {
     	String msg = "RankingAndCrowdingSelection.execute: problem not specified";
@@ -86,11 +82,11 @@ public class RankingAndCrowdingSelection extends Selection<SolutionSet> {
     } // if
     
     //->Ranking the union
-    Ranking ranking = new Ranking(population);                        
+    Ranking<T> ranking = new Ranking<T>(population);                        
 
     int remain = populationSize;
     int index  = 0;
-    SolutionSet front = null;
+    SolutionSet<T> front = null;
     population.clear();
 
     //-> Obtain the next front
@@ -98,7 +94,7 @@ public class RankingAndCrowdingSelection extends Selection<SolutionSet> {
 
     while ((remain > 0) && (remain >= front.size())){                
       //Asign crowding distance to individuals
-      distance_.crowdingDistanceAssignment(front,problem_.getNumberOfObjectives());                
+      Distance.crowdingDistanceAssignment(front,problem_.getNumberOfObjectives());                
       //Add the individuals of this front
       for (int k = 0; k < front.size(); k++ ) {
         result.add(front.get(k));
@@ -116,7 +112,7 @@ public class RankingAndCrowdingSelection extends Selection<SolutionSet> {
 
     //-> remain is less than front(index).size, insert only the best one
     if (remain > 0) {  // front containt individuals to insert                        
-      distance_.crowdingDistanceAssignment(front,problem_.getNumberOfObjectives());
+      Distance.crowdingDistanceAssignment(front,problem_.getNumberOfObjectives());
       front.sort(crowdingComparator_);
       for (int k = 0; k < remain; k++) {
         result.add(front.get(k));

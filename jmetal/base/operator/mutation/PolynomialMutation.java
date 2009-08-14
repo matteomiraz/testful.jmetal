@@ -6,9 +6,8 @@
  */
 package jmetal.base.operator.mutation;
 
-import jmetal.base.Configuration;
 import jmetal.base.Solution;
-import jmetal.base.Configuration.SolutionType_;
+import jmetal.base.variable.Real;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
 
@@ -20,7 +19,7 @@ import jmetal.util.PseudoRandom;
  * DEFAULT_INDEX_MUTATION. You can change it using the parameter 
  * "distributionIndex" before invoking the execute() method -- see lines 116-119
  */
-public class PolynomialMutation extends Mutation {
+public class PolynomialMutation<T extends Real> extends Mutation<T> {
     
   private static final long serialVersionUID = -4694450476401572161L;
 
@@ -57,7 +56,7 @@ public class PolynomialMutation extends Mutation {
   * @param solution The solution to mutate
    * @throws JMException 
   */
-  public void doMutation(double probability, Solution solution) throws JMException {        
+  public void doMutation(double probability, Solution<T> solution) throws JMException {        
     double rnd, delta1, delta2, mut_pow, deltaq;
     double y, yl, yu, val, xy;
     for (int var=0; var < solution.getDecisionVariables().size(); var++)
@@ -104,17 +103,8 @@ public class PolynomialMutation extends Mutation {
   * @return An object containing the mutated solution
    * @throws JMException 
   */  
-  public Solution execute(Solution solution) throws JMException {
-    if (solution.getType() != SolutionType_.Real) {
-      String msg = "PolynomialMutation.execute: the solution " +
-          "is not of the right type. The type should be 'Real', but " +
-          solution.getType() + " is obtained";
-			Configuration.logger_.severe(msg);
-      throw new JMException(msg) ;
-    } // if 
-    
+  public void execute(Solution<T> solution) throws JMException {
     doMutation(probability, solution);
-    return solution;      
   } // execute
  
 } // PolynomialMutation

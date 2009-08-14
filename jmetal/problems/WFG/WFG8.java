@@ -7,6 +7,7 @@ package jmetal.problems.WFG;
 
 import jmetal.base.DecisionVariables;
 import jmetal.base.Solution;
+import jmetal.base.variable.IReal;
 import jmetal.util.JMException;
 
 /**
@@ -16,7 +17,7 @@ import jmetal.util.JMException;
 * and 2 objectives
 * @param solutionType The solution type must "Real" or "BinaryReal".
 */
-public class WFG8 extends WFG{
+public class WFG8<V extends IReal> extends WFG<V> {
            
  private static final long serialVersionUID = 6207681530495208723L;
 
@@ -153,9 +154,9 @@ public class WFG8 extends WFG{
   * @param solution The solution to evaluate
    * @throws JMException 
   */     
-  public final void evaluate(Solution solution) throws JMException {
+  public final void evaluate(Solution<V> solution) throws JMException {
     float [] variables = new float[getNumberOfVariables()];
-    DecisionVariables dv = solution.getDecisionVariables();
+    DecisionVariables<V> dv = solution.getDecisionVariables();
         
     for (int i = 0; i < getNumberOfVariables(); i++) {
       variables[i] = (float)dv.variables_.get(i).getValue();    

@@ -21,32 +21,32 @@ import jmetal.base.variable.Real;
 /** 
  * This class contains the decision variables of a solution
  */
-public class DecisionVariables implements Serializable {  
+public class DecisionVariables<T extends Variable> implements Serializable {  
   private static final long serialVersionUID = 4466133386183087847L;
 
 	/**
    * Stores the decision variables of a solution
    */
-  public List<Variable> variables_;
+  public List<T> variables_;
   
   /**
    * The problem to solve
    */
-  private Problem problem_;
+  private Problem<T> problem_;
   
   /**
    * Constructor
    * @param problem The problem to solve
    */
-  public DecisionVariables(Problem problem){
+  public DecisionVariables(Problem<T> problem, Class<T> varType){
     problem_   = problem;
-    variables_ = new ArrayList<Variable>(problem_.getNumberOfVariables());
+    variables_ = new ArrayList<T>(problem_.getNumberOfVariables());
 
-    if (problem.solutionType_ == SolutionType_.Binary) {
+    if (varType.equals(Binary.class)) {
       for (int var = 0; var < problem_.getNumberOfVariables(); var++)
         variables_.set(var, new Binary(problem_.getLength(var)));       
     } 
-    else if (problem.solutionType_ == SolutionType_.Real) {
+    else if (varType.equals(Real.class)) {
       for (int var = 0; var < problem_.getNumberOfVariables(); var++)
       	variables_.set(var, new Real(problem_.getLowerLimit(var),
                                    problem_.getUpperLimit(var)));               
@@ -97,11 +97,11 @@ public class DecisionVariables implements Serializable {
    * Copy constructor
    * @param decisionVariables The <code>DecisionVariables<code> object to copy.
    */
-  public DecisionVariables(DecisionVariables decisionVariables){
+  public DecisionVariables(DecisionVariables<T> decisionVariables){
     problem_ = decisionVariables.problem_;
-    variables_ = new ArrayList<Variable>(decisionVariables.variables_.size());
+    variables_ = new ArrayList<T>(decisionVariables.variables_.size());
     for (int var = 0; var < decisionVariables.variables_.size(); var++) {
-      variables_.set(var, decisionVariables.variables_.get(var).deepCopy());
+      variables_.set(var, decisionVariables.variables_.get(var).clone());
     }
   } // DecisionVariable
     
@@ -120,7 +120,7 @@ public class DecisionVariables implements Serializable {
   public String toString() {
   	StringBuilder sb = new StringBuilder();
 
-  	for(Variable v : variables_)
+  	for(T v : variables_)
   		sb.append(v.toString());
 
   	return sb.toString();

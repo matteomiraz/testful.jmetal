@@ -8,12 +8,13 @@
 package jmetal.util;
 
 import jmetal.base.SolutionSet;
+import jmetal.base.Variable;
 
 /**
  * Class representing neighborhoods for a <code>Solution</code> into a
  * <code>SolutionSet</code>.
  */ 
-public class Neighborhood {    
+public class Neighborhood<T extends Variable> {    
   
   /**
    * Maximum rate considered
@@ -118,12 +119,12 @@ public class Neighborhood {
    * @param location The location.
    * @return a <code>SolutionSet</code> with the neighbors.
    */
-  public SolutionSet getFourNeighbors(SolutionSet solutionSet, int location){
+  public SolutionSet<T> getFourNeighbors(SolutionSet<T> solutionSet, int location){
     //SolutionSet that contains the neighbors (to return)
-    SolutionSet neighbors;
+    SolutionSet<T> neighbors;
         
     //instance the solutionSet to a non dominated li of individuals
-    neighbors = new SolutionSet(24);
+    neighbors = new SolutionSet<T>(24);
         
     //Gets the neighboords N, S, E, W
     int index;        
@@ -157,12 +158,12 @@ public class Neighborhood {
    * @param individual The individual.
    * @return a <code>SolutionSet</code> with the neighbors.
    */
-  public SolutionSet getEightNeighbors(SolutionSet population, int individual){
+  public SolutionSet<T> getEightNeighbors(SolutionSet<T> population, int individual){
     //SolutionSet that contains the neighbors (to return)
-    SolutionSet neighbors;
+    SolutionSet<T> neighbors;
 
     //instance the population to a non dominated li of individuals
-    neighbors = new SolutionSet(24);
+    neighbors = new SolutionSet<T>(24);
 
     //Gets the neighboords N, S, E, W
     int index;        

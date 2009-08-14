@@ -7,15 +7,15 @@
 
 package jmetal.metaheuristics.singleObjective.geneticAlgorithm;
 
-import jmetal.base.Algorithm;
 import jmetal.base.Problem;
 import jmetal.base.SolutionSet;
 import jmetal.base.operator.crossover.CrossoverFactory;
 import jmetal.base.operator.crossover.SBXCrossover;
 import jmetal.base.operator.mutation.MutationFactory;
 import jmetal.base.operator.mutation.PolynomialMutation;
-import jmetal.base.operator.selection.Selection;
+import jmetal.base.operator.selection.BinaryTournament;
 import jmetal.base.operator.selection.SelectionFactory;
+import jmetal.base.variable.Real;
 import jmetal.problems.singleObjective.Griewank;
 import jmetal.util.JMException;
 
@@ -26,12 +26,13 @@ import jmetal.util.JMException;
  */
 public class GA_main {
 
-  public static void main(String [] args) throws JMException {
-    Problem   problem   ;         // The problem to solve
-    Algorithm algorithm ;         // The algorithm to use
+  @SuppressWarnings("unchecked")
+	public static void main(String [] args) throws JMException {
+    Problem<Real>   problem   ;         // The problem to solve
+    GGA<Real> algorithm ;         // The algorithm to use
     SBXCrossover  crossover ;         // Crossover operator
-    PolynomialMutation  mutation  ;         // Mutation operator
-    Selection<?>  selection ;         // Selection operator
+    PolynomialMutation<Real>  mutation  ;         // Mutation operator
+    BinaryTournament<Real>  selection ;         // Selection operator
             
     //problem = new OneMax(bits);
     //problem = new Sphere(20, "Real") ;
@@ -39,7 +40,7 @@ public class GA_main {
     problem = new Griewank(20, "Real") ;
     
     // algorithm = new SSGA(problem);
-    algorithm = new GGA(problem) ;
+    algorithm = new GGA<Real>(problem) ;
     
     /* Algorithm parameters*/
     algorithm.setInputParameter("populationSize",100);
@@ -50,7 +51,7 @@ public class GA_main {
     crossover.setProbability(1.0);                   
     crossover.setDistributionIndex(10.0);
 
-    mutation = (PolynomialMutation) MutationFactory.getMutationOperator("PolynomialMutation");                    
+    mutation = (PolynomialMutation<Real>) MutationFactory.getMutationOperator("PolynomialMutation");                    
     mutation.setProbability(1.0/problem.getNumberOfVariables());
     mutation.setDistributionIndex(10.0);    
     
@@ -63,7 +64,7 @@ public class GA_main {
     */
     
     /* Selection Operator */
-    selection = SelectionFactory.getSelectionOperator("BinaryTournament") ;                            
+    selection = (BinaryTournament<Real>) SelectionFactory.getSelectionOperator("BinaryTournament") ;                            
     
     /* Add the operators to the algorithm*/
     algorithm.setCrossover(crossover);
@@ -72,7 +73,7 @@ public class GA_main {
  
     /* Execute the Algorithm */
     long initTime = System.currentTimeMillis();
-    SolutionSet population = algorithm.execute();
+    SolutionSet<Real> population = algorithm.execute();
     long estimatedTime = System.currentTimeMillis() - initTime;
     System.out.println("Total execution time: " + estimatedTime);
 

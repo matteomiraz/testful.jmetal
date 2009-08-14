@@ -10,6 +10,7 @@ import java.util.Random;
 import jmetal.base.Problem;
 import jmetal.base.Configuration.SolutionType_;
 import jmetal.base.Configuration.VariableType_;
+import jmetal.base.variable.IReal;
 
 /**
  * Implements a reference abstract class for all WFG test problems
@@ -19,7 +20,7 @@ import jmetal.base.Configuration.VariableType_;
  *            Third International Conference, EMO 2005. 
  *            Proceedings, volume 3410 of Lecture Notes in Computer Science
  */
-public abstract class WFG extends Problem{
+public abstract class WFG<V extends IReal> extends Problem<V> {
   
   private static final long serialVersionUID = -3511776882893579601L;
 

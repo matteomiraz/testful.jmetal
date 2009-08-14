@@ -11,9 +11,10 @@ import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.Configuration.SolutionType_;
 import jmetal.base.Configuration.VariableType_;
+import jmetal.base.variable.IReal;
 import jmetal.util.JMException;
 
-public class Griewank extends Problem {
+public class Griewank<T extends IReal> extends Problem<T> {
   private static final long serialVersionUID = -7795959989040731929L;
 
 	/** 
@@ -50,8 +51,8 @@ public class Griewank extends Problem {
   * @param solution The solution to evaluate
    * @throws JMException 
   */        
-  public void evaluate(Solution solution) throws JMException {
-    DecisionVariables decisionVariables  = solution.getDecisionVariables();
+  public void evaluate(Solution<T> solution) throws JMException {
+    DecisionVariables<T> decisionVariables  = solution.getDecisionVariables();
 
     double sum  = 0.0    ;
     double mult = 0.0    ;

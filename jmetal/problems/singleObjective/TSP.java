@@ -24,7 +24,7 @@ import jmetal.base.variable.Permutation;
 /**
  * Class representing a TSP (Traveling Salesman Problem) problem.
  */
-public class TSP extends Problem {
+public class TSP extends Problem<Permutation> {
 
   private static final long serialVersionUID = -7417724855350746012L;
 	public int         numberOfCities_ ; 
@@ -57,7 +57,7 @@ public class TSP extends Problem {
   * Evaluates a solution 
   * @param solution The solution to evaluate
   */      
-  public void evaluate(Solution solution) {
+  public void evaluate(Solution<Permutation> solution) {
     double fitness   ;
     
     fitness   = 0.0 ;

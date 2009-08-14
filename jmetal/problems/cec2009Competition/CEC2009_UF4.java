@@ -12,12 +12,13 @@ import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.Configuration.SolutionType_;
 import jmetal.base.Configuration.VariableType_;
+import jmetal.base.variable.IReal;
 import jmetal.util.JMException;
 
 /**
  * Class representing problem CEC2009_UF4
  */
-public class CEC2009_UF4 extends Problem {
+public class CEC2009_UF4<T extends IReal> extends Problem<T> {
     
  private static final long serialVersionUID = -8720068791055035309L;
 
@@ -66,8 +67,8 @@ public class CEC2009_UF4 extends Problem {
    * @param solution The solution to evaluate.
    * @throws JMException 
    */
-  public void evaluate(Solution solution) throws JMException {
-    DecisionVariables decisionVariables  = solution.getDecisionVariables();
+  public void evaluate(Solution<T> solution) throws JMException {
+    DecisionVariables<T> decisionVariables  = solution.getDecisionVariables();
     
     double [] x = new double[numberOfVariables_] ;
     for (int i = 0; i < numberOfVariables_; i++)

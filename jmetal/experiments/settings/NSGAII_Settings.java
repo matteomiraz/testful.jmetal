@@ -26,6 +26,7 @@ import jmetal.util.JMException;
 /**
  * @author Antonio J. Nebro
  */
+@SuppressWarnings("unchecked")
 public class NSGAII_Settings extends Settings {
   
   // Default settings
@@ -54,7 +55,7 @@ public class NSGAII_Settings extends Settings {
    */
   public Algorithm configure() throws JMException {
     Algorithm algorithm ;
-    Selection<?> selection ;
+    Selection selection ;
     SBXCrossover crossover ;
     PolynomialMutation mutation  ;
     

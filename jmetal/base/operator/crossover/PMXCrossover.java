@@ -7,9 +7,7 @@
 
 package jmetal.base.operator.crossover;
 
-import jmetal.base.Configuration;
 import jmetal.base.Solution;
-import jmetal.base.Configuration.VariableType_;
 import jmetal.base.variable.Permutation;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
@@ -20,7 +18,7 @@ import jmetal.util.PseudoRandom;
  * NOTE: the operator is applied to the first variable of the solutions, and 
  * the type of those variables must be VariableType_.Permutation.
  */
-  public class PMXCrossover extends Crossover {
+  public class PMXCrossover extends Crossover<Permutation> {
   private static final long serialVersionUID = 1572296934919082873L;
 
 	/**
@@ -37,17 +35,15 @@ import jmetal.util.PseudoRandom;
    * @return An array containig the two offsprings
    * @throws JMException 
    */
-  public Solution[] doCrossover(double   probability, 
-                                Solution parent1, 
-                                Solution parent2) throws JMException {
+  @SuppressWarnings("unchecked")
+	public Solution<Permutation>[] doCrossover(double   probability, 
+                                Solution<Permutation> parent1, 
+                                Solution<Permutation> parent2) throws JMException {
 
-    Solution [] offspring = new Solution[2];
+    Solution<Permutation> [] offspring = new Solution[2];
 
-    offspring[0] = new Solution(parent1);
-    offspring[1] = new Solution(parent2);
-
-    if (parent1.getDecisionVariables().variables_.get(0).getVariableType() ==
-      VariableType_.Permutation) {
+    offspring[0] = new Solution<Permutation>(parent1);
+    offspring[1] = new Solution<Permutation>(parent2);
 
       int permutationLength ;
 
@@ -112,13 +108,6 @@ import jmetal.util.PseudoRandom;
           offspring2Vector[i] = n2 ;
         } // for
       } // if
-      else {
-        String msg = "PMXCrossover.doCrossover: invalid type+" +
-            parent1.getDecisionVariables().variables_.get(0).getVariableType();
-				Configuration.logger_.severe(msg);
-	      throw new JMException(msg) ; 
-      } // else
-    } // if
     return offspring ;                                                                                      
   } // doCrossover
 
@@ -127,8 +116,8 @@ import jmetal.util.PseudoRandom;
    * @param object An object containing an array of two solutions 
    * @throws JMException 
    */
-  public Solution[] execute(Solution parent1, Solution parent2) throws JMException {
-    Solution [] offspring = doCrossover(probability, parent1, parent2);
+  public Solution<Permutation>[] execute(Solution<Permutation> parent1, Solution<Permutation> parent2) throws JMException {
+    Solution<Permutation> [] offspring = doCrossover(probability, parent1, parent2);
 
     return offspring; 
   } // execute

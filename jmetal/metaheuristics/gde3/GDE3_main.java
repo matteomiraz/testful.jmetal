@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 
-import jmetal.base.Algorithm;
 import jmetal.base.Configuration;
 import jmetal.base.Problem;
 import jmetal.base.SolutionSet;
@@ -18,6 +17,7 @@ import jmetal.base.operator.crossover.CrossoverFactory;
 import jmetal.base.operator.crossover.DifferentialEvolutionCrossover;
 import jmetal.base.operator.selection.DifferentialEvolutionSelection;
 import jmetal.base.operator.selection.SelectionFactory;
+import jmetal.base.variable.Real;
 import jmetal.problems.Kursawe;
 import jmetal.problems.ProblemFactory;
 import jmetal.util.JMException;
@@ -33,10 +33,11 @@ public class GDE3_main {
  * @throws IOException 
  * @throws SecurityException 
    */
-  public static void main(String [] args) throws JMException, SecurityException, IOException {
-    Problem   problem   ;         // The problem to solve
-    Algorithm algorithm ;         // The algorithm to use
-    DifferentialEvolutionSelection  selection ;
+  @SuppressWarnings("unchecked")
+	public static void main(String [] args) throws JMException, SecurityException, IOException {
+    Problem<Real>   problem   ;         // The problem to solve
+    GDE3<Real> algorithm ;         // The algorithm to use
+    DifferentialEvolutionSelection<Real>  selection ;
     DifferentialEvolutionCrossover crossover ;
     
     // Logger object and file to store log messages
@@ -46,7 +47,7 @@ public class GDE3_main {
     
     if (args.length == 1) {
       Object [] params = {"Real"};
-      problem = (new ProblemFactory()).getProblem(args[0],params);
+      problem = (Problem<Real>) ProblemFactory.getProblem(args[0],params);
     } // if
     else { // Default problem
       problem = new Kursawe(3, "Real"); 
@@ -59,7 +60,7 @@ public class GDE3_main {
     } // else
     
     //algorithm = new GDE3(problem);
-    algorithm = new GDE3(problem);
+    algorithm = new GDE3<Real>(problem);
     //algorithm = new aMOCellDE(problem);
     
     // Algorithm parameters
@@ -72,14 +73,14 @@ public class GDE3_main {
     crossover.setF(0.5);
     
     // Add the operators to the algorithm
-    selection = (DifferentialEvolutionSelection) SelectionFactory.getSelectionOperator("DifferentialEvolutionSelection") ;
+    selection = (DifferentialEvolutionSelection<Real>) SelectionFactory.getSelectionOperator("DifferentialEvolutionSelection") ;
 
     algorithm.setCrossover(crossover);
     algorithm.setSelection(selection);
     
     // Execute the Algorithm 
     long initTime = System.currentTimeMillis();
-    SolutionSet population = algorithm.execute();
+    SolutionSet<Real> population = algorithm.execute();
     long estimatedTime = System.currentTimeMillis() - initTime;
 
     /* Result messages */   

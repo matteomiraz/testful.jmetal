@@ -18,6 +18,7 @@ import jmetal.util.JMException;
 /**
  * @author Antonio J. Nebro
  */
+@SuppressWarnings("unchecked")
 public abstract class Settings {
   protected Problem problem_ ;
 

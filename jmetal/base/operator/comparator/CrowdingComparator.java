@@ -9,17 +9,18 @@ package jmetal.base.operator.comparator;
 import java.util.Comparator;
 
 import jmetal.base.Solution;
+import jmetal.base.Variable;
 
 /**
  * This class implements a <code>Comparator</code> (a method for comparing
  * <code>Solution</code> objects) based on the crowding distance, as in NSGA-II.
  */
-public class CrowdingComparator implements Comparator<Solution>{    
+public class CrowdingComparator<T extends Variable> implements Comparator<Solution<T>>{    
 
   /** 
    * stores a comparator for check the rank of solutions
    */
-  private static final Comparator<Solution> comparator = new RankComparator();
+  private final Comparator<Solution<T>> comparator = new RankComparator<T>();
   
  /**
   * Compare two solutions.
@@ -28,7 +29,7 @@ public class CrowdingComparator implements Comparator<Solution>{
   * @return -1, or 0, or 1 if o1 is less than, equal, or greater than o2,
   * respectively.
   */
-  public int compare(Solution o1, Solution o2) {
+  public int compare(Solution<T> o1, Solution<T> o2) {
     if (o1==null)
       return 1;
     else if (o2 == null)

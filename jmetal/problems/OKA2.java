@@ -11,12 +11,13 @@ import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.Configuration.SolutionType_;
 import jmetal.base.Configuration.VariableType_;
+import jmetal.base.variable.IReal;
 import jmetal.util.JMException;
 
 /**
  * Class representing problem Kursawe
  */
-public class OKA2 extends Problem {  
+public class OKA2<T extends IReal> extends Problem<T> {  
    
   
   private static final long serialVersionUID = 7492988214768375512L;
@@ -57,8 +58,8 @@ public class OKA2 extends Problem {
   * @param solution The solution to evaluate
    * @throws JMException 
   */
-  public void evaluate(Solution solution) throws JMException {
-    DecisionVariables decisionVariables  = solution.getDecisionVariables();
+  public void evaluate(Solution<T> solution) throws JMException {
+    DecisionVariables<T> decisionVariables  = solution.getDecisionVariables();
         
     double [] fx   = new double[numberOfObjectives_] ; // 2 functions
     double [] x    = new double[numberOfVariables_]  ; // 3 variables

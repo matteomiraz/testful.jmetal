@@ -17,7 +17,7 @@ import jmetal.util.JMException;
 /**
  * Abstract class representing a multiobjective optimization problem
  */
-public abstract class Problem implements Serializable {
+public abstract class Problem<T extends Variable> implements Serializable {
   
   private static final long serialVersionUID = -6033690904402492022L;
 
@@ -118,7 +118,7 @@ public abstract class Problem implements Serializable {
    * Evaluates a <code>Solution</code> object.
    * @param solution The <code>Solution</code> to evaluate.
    */    
-  public abstract void evaluate(Solution solution) throws JMException ;    
+  public abstract void evaluate(Solution<T> solution) throws JMException ;    
     
   /**
    * Gets the number of side constraints in the problem.
@@ -133,7 +133,7 @@ public abstract class Problem implements Serializable {
    * object.
    * @param solution The <code>Solution</code> to evaluate.
    */    
-  public void evaluateConstraints(Solution solution) throws JMException {
+  public void evaluateConstraints(Solution<T> solution) throws JMException {
     // The default behavior is to do nothing. Only constrained problems have to
     // re-define this method
   } // evaluateConstraints

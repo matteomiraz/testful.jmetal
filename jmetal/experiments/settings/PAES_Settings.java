@@ -23,6 +23,7 @@ import jmetal.util.JMException;
  *
  * @author Antonio
  */
+@SuppressWarnings("unchecked")
 public class PAES_Settings extends Settings{
   
   // Default settings

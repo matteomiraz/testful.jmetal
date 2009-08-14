@@ -9,6 +9,7 @@ package jmetal.base.operator.comparator;
 import java.util.Comparator;
 
 import jmetal.base.Solution;
+import jmetal.base.Variable;
 
 
 /**
@@ -16,7 +17,7 @@ import jmetal.base.Solution;
  * <code>Solution</code> objects) based on the fitness value returned by the
  * method <code>getFitness</code>.
  */
-public class FitnessComparator implements Comparator<Solution> {
+public class FitnessComparator<T extends Variable> implements Comparator<Solution<T>> {
    
  /**
   * Compares two solutions.
@@ -25,7 +26,7 @@ public class FitnessComparator implements Comparator<Solution> {
   * @return -1, or 0, or 1 if o1 is less than, equal, or greater than o2,
   * respectively.
   */
-  public int compare(Solution o1, Solution o2) {
+  public int compare(Solution<T> o1, Solution<T> o2) {
     if (o1==null)
       return 1;
     else if (o2 == null)

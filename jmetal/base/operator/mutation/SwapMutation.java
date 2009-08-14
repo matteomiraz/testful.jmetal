@@ -7,9 +7,7 @@
 
 package jmetal.base.operator.mutation;
 
-import jmetal.base.Configuration;
 import jmetal.base.Solution;
-import jmetal.base.Configuration.VariableType_;
 import jmetal.base.variable.Permutation;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
@@ -19,7 +17,7 @@ import jmetal.util.PseudoRandom;
  * NOTE: the operator is applied to the first variable of the solutions, and 
  * the type of those variables must be <code>VariableType_.Permutation</code>.
  */
-public class SwapMutation extends Mutation {
+public class SwapMutation extends Mutation<Permutation> {
   private static final long serialVersionUID = 7556625122222056318L;
 
 	/** 
@@ -34,13 +32,11 @@ public class SwapMutation extends Mutation {
    * @param solution The solution to mutate
    * @throws JMException 
    */
-  public void doMutation(double probability, Solution solution) throws JMException {   
+  public void doMutation(double probability, Solution<Permutation> solution) throws JMException {   
     int permutation[] ;
     int permutationLength ;
-    if (solution.getDecisionVariables().variables_.get(0).getVariableType() ==
-      VariableType_.Permutation) {
 
-      permutationLength = ((Permutation)solution.getDecisionVariables().variables_.get(0)).getLength() ;
+    	permutationLength = ((Permutation)solution.getDecisionVariables().variables_.get(0)).getLength() ;
       permutation = ((Permutation)solution.getDecisionVariables().variables_.get(0)).vector_ ;
 
       if (PseudoRandom.randDouble() < probability) {
@@ -61,13 +57,6 @@ public class SwapMutation extends Mutation {
         permutation[pos1] = permutation[pos2];
         permutation[pos2] = temp;    
       } // if
-    } // if
-    else  {
-      String msg = "SwapMutation.doMutation: invalid type. " +
-          solution.getDecisionVariables().variables_.get(0).getVariableType();
-			Configuration.logger_.severe(msg);
-      throw new JMException(msg) ;
-    } // catch               
   } // doMutation
 
   /**
@@ -77,9 +66,7 @@ public class SwapMutation extends Mutation {
    * @throws JMException 
    */
   @Override
-  public Solution execute(Solution parent) throws JMException {
+  public void execute(Solution<Permutation> parent) throws JMException {
     doMutation(probability, parent);
-    
-    return parent;
   } // execute  
 } // SwapMutation

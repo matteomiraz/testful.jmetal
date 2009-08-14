@@ -21,9 +21,13 @@ import jmetal.base.Configuration;
 import jmetal.base.Problem;
 import jmetal.base.SolutionSet;
 import jmetal.base.operator.crossover.CrossoverFactory;
+import jmetal.base.operator.crossover.DifferentialCrossover;
 import jmetal.base.operator.crossover.DifferentialEvolutionCrossover;
-import jmetal.base.operator.selection.Selection;
+import jmetal.base.operator.localSearch.LocalSearch;
+import jmetal.base.operator.mutation.Mutation;
+import jmetal.base.operator.selection.BinaryTournament;
 import jmetal.base.operator.selection.SelectionFactory;
+import jmetal.base.variable.Real;
 import jmetal.problems.Kursawe;
 import jmetal.problems.ProblemFactory;
 import jmetal.qualityIndicator.QualityIndicator;
@@ -40,14 +44,15 @@ public class CellDE_main {
    * @throws IOException 
    * @throws SecurityException 
    */
-  public static void main(String [] args) throws 
+  @SuppressWarnings("unchecked")
+	public static void main(String [] args) throws 
                                  JMException, SecurityException, IOException {
-    Problem   problem   ;         // The problem to solve
-    Algorithm algorithm ;         // The algorithm to use
-    Selection<?>  selection ;
+    Problem<Real>  problem   ;         // The problem to solve
+    BinaryTournament<Real>  selection ;
     DifferentialEvolutionCrossover  crossover ;
+    Algorithm<Real,DifferentialCrossover<Real>,Mutation<Real>,BinaryTournament<Real>,LocalSearch<Real>> algorithm ;         // The algorithm to use
     
-    QualityIndicator indicators ; // Object to get quality indicators
+    QualityIndicator<Real> indicators ; // Object to get quality indicators
 
     // Logger object and file to store log messages
     logger_      = Configuration.logger_ ;
@@ -57,12 +62,12 @@ public class CellDE_main {
     indicators = null ;
     if (args.length == 1) {
       Object [] params = {"Real"};
-      problem = (new ProblemFactory()).getProblem(args[0],params);
+      problem = (Problem<Real>) ProblemFactory.getProblem(args[0],params);
     } // if
     else if (args.length == 2) {
       Object [] params = {"Real"};
-      problem = (new ProblemFactory()).getProblem(args[0],params);
-      indicators = new QualityIndicator(problem, args[1]) ;
+      problem = (Problem<Real>) ProblemFactory.getProblem(args[0],params);
+      indicators = new QualityIndicator<Real>(problem, args[1]) ;
     } // if
     else { // Default problem
       problem = new Kursawe(3, "Real");
@@ -74,7 +79,7 @@ public class CellDE_main {
       //problem = new OKA2("Real") ;
     } // else
     
-    algorithm = new CellDE(problem);
+    algorithm = new CellDE<Real, BinaryTournament<Real>>(problem);
     
     // Algorithm parameters
     algorithm.setInputParameter("populationSize",100);
@@ -88,14 +93,14 @@ public class CellDE_main {
     crossover.setF(0.5);
     
     // Add the operators to the algorithm
-    selection = SelectionFactory.getSelectionOperator("BinaryTournament") ; 
+    selection = (BinaryTournament<Real>) SelectionFactory.getSelectionOperator("BinaryTournament") ; 
 
     algorithm.setCrossover(crossover);
     algorithm.setSelection(selection);
     
     // Execute the Algorithm 
     long initTime = System.currentTimeMillis();
-    SolutionSet population = algorithm.execute();
+    SolutionSet<Real> population = algorithm.execute();
     long estimatedTime = System.currentTimeMillis() - initTime;
     System.out.println("Total execution time: "+estimatedTime);
 

@@ -12,12 +12,13 @@ import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.Configuration.SolutionType_;
 import jmetal.base.Configuration.VariableType_;
+import jmetal.base.variable.IReal;
 import jmetal.util.JMException;
 
 /**
  * Class representing problem Oyczka2
  */
-public class Osyczka2 extends Problem{
+public class Osyczka2<T extends IReal> extends Problem<T>{
  private static final long serialVersionUID = 8049122475845401386L;
 
 /**
@@ -64,8 +65,8 @@ public class Osyczka2 extends Problem{
   * @param solution The solution to evaluate
    * @throws JMException 
   */  
-  public void evaluate(Solution solution) throws JMException {
-    DecisionVariables decisionVariables  = solution.getDecisionVariables();     
+  public void evaluate(Solution<T> solution) throws JMException {
+    DecisionVariables<T> decisionVariables  = solution.getDecisionVariables();     
   
     double [] f = new double[numberOfObjectives_];
     
@@ -93,9 +94,9 @@ public class Osyczka2 extends Problem{
    * @param solution The solution
    * @throws JMException 
    */  
- public void evaluateConstraints(Solution solution) throws JMException {
+ public void evaluateConstraints(Solution<T> solution) throws JMException {
     double [] constraint = new double[this.getNumberOfConstraints()];
-    DecisionVariables decisionVariables = solution.getDecisionVariables();
+    DecisionVariables<T> decisionVariables = solution.getDecisionVariables();
         
     double x1,x2,x3,x4,x5,x6;
     x1 = decisionVariables.variables_.get(0).getValue();

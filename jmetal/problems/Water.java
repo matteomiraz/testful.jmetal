@@ -10,12 +10,13 @@ import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.Configuration.SolutionType_;
 import jmetal.base.Configuration.VariableType_;
+import jmetal.base.variable.Real;
 import jmetal.util.JMException;
 
 /**
  * Class representing problem Water
  */
-public class Water extends Problem {
+public class Water<T extends Real> extends Problem<T> {
   
   private static final long serialVersionUID = 8970858463920311741L;
 	// defining the lower and upper limits
@@ -57,7 +58,7 @@ public class Water extends Problem {
    * @param solution The solution to evaluate
    * @throws JMException 
    */
-  public void evaluate(Solution solution) throws JMException {         
+  public void evaluate(Solution<T> solution) throws JMException {         
     double [] x = new double[3] ; // 3 decision variables
     double [] f = new double[5] ; // 5 functions
     x[0] = solution.getDecisionVariables().variables_.get(0).getValue();
@@ -88,7 +89,7 @@ public class Water extends Problem {
    * @param solution The solution
    * @throws JMException 
    */  
-  public void evaluateConstraints(Solution solution) throws JMException {
+  public void evaluateConstraints(Solution<T> solution) throws JMException {
     double [] constraint = new double[7]; // 7 constraints
     double [] x          = new double[3]; // 3 objectives
         

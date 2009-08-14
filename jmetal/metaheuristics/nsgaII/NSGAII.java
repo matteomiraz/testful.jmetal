@@ -9,6 +9,11 @@ import jmetal.base.Algorithm;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
+import jmetal.base.VariableValue;
+import jmetal.base.operator.crossover.Crossover;
+import jmetal.base.operator.localSearch.LocalSearch;
+import jmetal.base.operator.mutation.Mutation;
+import jmetal.base.operator.selection.Selection;
 import jmetal.qualityIndicator.QualityIndicator;
 import jmetal.util.Distance;
 import jmetal.util.JMException;
@@ -17,19 +22,20 @@ import jmetal.util.Ranking;
 /**
  * This class implements the NSGA-II algorithm. 
  */
-public class NSGAII extends Algorithm {
+public class NSGAII<V extends VariableValue>
+	extends Algorithm<V, Crossover<V>, Mutation<V>, Selection<V, Solution<V>>, LocalSearch<V>> {
 
   private static final long serialVersionUID = 4970928169851043408L;
 	/**
    * stores the problem  to solve
    */
-  private Problem problem_;
+  private Problem<V> problem_;
 
   /**
    * Constructor
    * @param problem Problem to solve
    */
-  public NSGAII(Problem problem) {
+  public NSGAII(Problem<V> problem) {
     this.problem_ = problem;
   } // NSGAII
 
@@ -39,36 +45,35 @@ public class NSGAII extends Algorithm {
    * as a result of the algorithm execution
    * @throws JMException 
    */
-  public SolutionSet execute() throws JMException {
+  @SuppressWarnings("unchecked")
+	public SolutionSet<V> execute() throws JMException {
     int populationSize;
     int maxEvaluations;
     int evaluations;
 
-    QualityIndicator indicators; // QualityIndicator object
+    QualityIndicator<V> indicators; // QualityIndicator object
     int requiredEvaluations; // Use in the example of use of the
     // indicators object (see below)
 
-    SolutionSet population;
-    SolutionSet offspringPopulation;
-    SolutionSet union;
-
-    Distance distance = new Distance();
+    SolutionSet<V> population;
+    SolutionSet<V> offspringPopulation;
+    SolutionSet<V> union;
 
     //Read the parameters
     populationSize = ((Integer) getInputParameter("populationSize")).intValue();
     maxEvaluations = ((Integer) getInputParameter("maxEvaluations")).intValue();
-    indicators = (QualityIndicator) getInputParameter("indicators");
+    indicators = (QualityIndicator<V>) getInputParameter("indicators");
 
     //Initialize the variables
-    population = new SolutionSet(populationSize);
+    population = new SolutionSet<V>(populationSize);
     evaluations = 0;
 
     requiredEvaluations = 0;
 
     // Create the initial solutionSet
-    Solution newSolution;
+    Solution<V> newSolution;
     for (int i = 0; i < populationSize; i++) {
-      newSolution = new Solution(problem_);
+      newSolution = new Solution<V>(problem_);
       problem_.evaluate(newSolution);
       problem_.evaluateConstraints(newSolution);
       evaluations++;
@@ -79,13 +84,13 @@ public class NSGAII extends Algorithm {
     while (evaluations < maxEvaluations) {
 
       // Create the offSpring solutionSet      
-      offspringPopulation = new SolutionSet(populationSize);
+      offspringPopulation = new SolutionSet<V>(populationSize);
       for (int i = 0; i < (populationSize / 2); i++) {
         if (evaluations < maxEvaluations) {
           //obtain parents
-        	Solution parent1 = (Solution) selectionOperator.execute(population);
-        	Solution parent2 = (Solution) selectionOperator.execute(population);
-          Solution[] offSpring = (Solution[]) crossoverOperator.execute(parent1, parent2);
+        	Solution<V> parent1 = selectionOperator.execute(population);
+        	Solution<V> parent2 = selectionOperator.execute(population);
+          Solution<V>[] offSpring = crossoverOperator.execute(parent1, parent2);
           mutationOperator.execute(offSpring[0]);
           mutationOperator.execute(offSpring[1]);
           problem_.evaluate(offSpring[0]);
@@ -100,14 +105,14 @@ public class NSGAII extends Algorithm {
 
 
       // Create the solutionSet union of solutionSet and offSpring
-      union = ((SolutionSet) population).union(offspringPopulation);
+      union = ((SolutionSet<V>) population).union(offspringPopulation);
 
       // Ranking the union
-      Ranking ranking = new Ranking(union);
+      Ranking<V> ranking = new Ranking<V>(union);
 
       int remain = populationSize;
       int index = 0;
-      SolutionSet front = null;
+      SolutionSet<V> front = null;
       population.clear();
 
       // Obtain the next front
@@ -115,7 +120,7 @@ public class NSGAII extends Algorithm {
 
       while ((remain > 0) && (remain >= front.size())) {
         //Assign crowding distance to individuals
-        distance.crowdingDistanceAssignment(front, problem_.getNumberOfObjectives());
+        Distance.crowdingDistanceAssignment(front, problem_.getNumberOfObjectives());
         //Add the individuals of this front
         for (int k = 0; k < front.size(); k++) {
           population.add(front.get(k));
@@ -133,8 +138,8 @@ public class NSGAII extends Algorithm {
 
       // Remain is less than front(index).size, insert only the best one
       if (remain > 0) {  // front contains individuals to insert                        
-        distance.crowdingDistanceAssignment(front, problem_.getNumberOfObjectives());
-        front.sort(new jmetal.base.operator.comparator.CrowdingComparator());
+        Distance.crowdingDistanceAssignment(front, problem_.getNumberOfObjectives());
+        front.sort(new jmetal.base.operator.comparator.CrowdingComparator<V>());
         for (int k = 0; k < remain; k++) {
           population.add(front.get(k));
         } // for
@@ -159,7 +164,7 @@ public class NSGAII extends Algorithm {
     setEvaluations(requiredEvaluations);
 
     // Return the first non-dominated front
-    Ranking ranking = new Ranking(population);
+    Ranking<V> ranking = new Ranking<V>(population);
     return ranking.getSubfront(0);
   } // execute
 } // NSGA-II

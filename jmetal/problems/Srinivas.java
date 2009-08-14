@@ -10,6 +10,7 @@ package jmetal.problems;
 import jmetal.base.DecisionVariables;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
+import jmetal.base.VariableValue;
 import jmetal.base.Configuration.SolutionType_;
 import jmetal.base.Configuration.VariableType_;
 import jmetal.util.JMException;
@@ -17,7 +18,7 @@ import jmetal.util.JMException;
 /**
  * Class representing problem Srinivas
  */
-public class Srinivas extends Problem{    
+public class Srinivas<T extends VariableValue> extends Problem<T> {    
     
  private static final long serialVersionUID = 2570357706582532681L;
 
@@ -55,8 +56,8 @@ public class Srinivas extends Problem{
   * @param solution The solution to evaluate
    * @throws JMException 
   */
-  public void evaluate(Solution solution) throws JMException {
-    DecisionVariables decisionVariables  = solution.getDecisionVariables();
+  public void evaluate(Solution<T> solution) throws JMException {
+    DecisionVariables<T> decisionVariables  = solution.getDecisionVariables();
     
     double [] f = new double[numberOfObjectives_];
     
@@ -75,7 +76,7 @@ public class Srinivas extends Problem{
    * @param solution The solution
    * @throws JMException 
    */  
-  public void evaluateConstraints(Solution solution) throws JMException {
+  public void evaluateConstraints(Solution<T> solution) throws JMException {
     double [] constraint = new double[this.getNumberOfConstraints()];
         
     double x1 = solution.getDecisionVariables().variables_.get(0).getValue();

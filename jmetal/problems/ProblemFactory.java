@@ -23,7 +23,7 @@ public class ProblemFactory {
    * @return The object representing the problem
    * @throws JMException 
    */
-  public Problem getProblem(String name, Object [] params) throws JMException {
+  public static Problem<?> getProblem(String name, Object [] params) throws JMException {
     // Params are the arguments
     // The number of argument must correspond with the problem constructor params
     
@@ -57,7 +57,7 @@ public class ProblemFactory {
         i++;
       }
       // constructors[i] is the selected one constructor
-      Problem problem = (Problem)constructors[i].newInstance(params);
+      Problem<?> problem = (Problem<?>)constructors[i].newInstance(params);
       return problem;      
     }// try
     catch(Exception e) {

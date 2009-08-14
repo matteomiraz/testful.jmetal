@@ -16,16 +16,15 @@ import java.io.IOException;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 
-import jmetal.base.Algorithm;
 import jmetal.base.Configuration;
 import jmetal.base.Problem;
 import jmetal.base.SolutionSet;
 import jmetal.base.operator.crossover.CrossoverFactory;
 import jmetal.base.operator.crossover.SBXCrossover;
-import jmetal.base.operator.localSearch.LocalSearch;
 import jmetal.base.operator.localSearch.MutationLocalSearch;
 import jmetal.base.operator.mutation.MutationFactory;
 import jmetal.base.operator.mutation.PolynomialMutation;
+import jmetal.base.variable.Real;
 import jmetal.problems.Kursawe;
 import jmetal.problems.ProblemFactory;
 import jmetal.util.JMException;
@@ -48,13 +47,14 @@ public class AbYSS_main {
    *             the problem to solve.
    * @throws JMException 
    */
-  public static void main(String [] args) throws 
+  @SuppressWarnings("unchecked")
+	public static void main(String [] args) throws 
                                  JMException, SecurityException, IOException {    
-    Problem   problem     ; // The problem to solve
-    Algorithm algorithm   ; // The algorithm to use
+    Problem<Real>   problem     ; // The problem to solve
     SBXCrossover crossover   ; // Crossover operator
     PolynomialMutation mutation    ; // Mutation operator
-    LocalSearch improvement ; // Operator for improvement
+    MutationLocalSearch<Real> improvement ; // Operator for improvement
+    AbYSS<Real> algorithm   ; // The algorithm to use
             
     // Logger object and file to store log messages
     logger_      = Configuration.logger_ ;
@@ -64,7 +64,7 @@ public class AbYSS_main {
     // STEP 1. Select the multiobjective optimization problem to solve
     if (args.length == 1) {
       Object [] params = {"Real"};
-      problem = (new ProblemFactory()).getProblem(args[0], params);
+      problem = (Problem<Real>) ProblemFactory.getProblem(args[0], params);
     } // if
     else { // Default problem
       problem = new Kursawe(3, "Real"); 
@@ -77,7 +77,7 @@ public class AbYSS_main {
     } // else
     
     // STEP 2. Select the algorithm (AbYSS)
-    algorithm = new AbYSS(problem) ;
+    algorithm = new AbYSS<Real>(problem) ;
     
     // STEP 3. Set the input parameters required by the metaheuristic
     algorithm.setInputParameter("populationSize", 20);
@@ -97,7 +97,7 @@ public class AbYSS_main {
     mutation = (PolynomialMutation) MutationFactory.getMutationOperator("PolynomialMutation");                    
     mutation.setProbability(1.0/problem.getNumberOfVariables());
     
-    improvement = new MutationLocalSearch(problem,mutation);
+    improvement = new MutationLocalSearch<Real>(problem,mutation);
     improvement.setImprovementRounds(1);
           
     // STEP 6. Add the operators to the algorithm
@@ -109,7 +109,7 @@ public class AbYSS_main {
     initTime = System.currentTimeMillis();
     
     // STEP 7. Run the algorithm 
-    SolutionSet population = algorithm.execute();
+    SolutionSet<Real> population = algorithm.execute();
     
     estimatedTime = System.currentTimeMillis() - initTime;
     logger_.info("Total execution time: "+ estimatedTime);

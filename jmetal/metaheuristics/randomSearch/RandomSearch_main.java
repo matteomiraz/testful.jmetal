@@ -11,9 +11,9 @@ import java.io.IOException;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 
-import jmetal.base.Algorithm;
 import jmetal.base.Problem;
 import jmetal.base.SolutionSet;
+import jmetal.base.variable.Real;
 import jmetal.problems.Kursawe;
 import jmetal.problems.ProblemFactory;
 import jmetal.util.JMException;
@@ -31,14 +31,15 @@ public class RandomSearch_main {
    *      - jmetal.metaheuristics.randomSearch.RandomSearch_main
    *      - jmetal.metaheuristics.randomSearch.RandomSearch_main problemName
    */
-  public static void main(String [] args) throws
+  @SuppressWarnings("unchecked")
+	public static void main(String [] args) throws
                                   JMException, SecurityException, IOException {
-    Problem   problem   ;         // The problem to solve
-    Algorithm algorithm ;         // The algorithm to use
+    Problem<Real>   problem   ;         // The problem to solve
+    RandomSearch<Real> algorithm ;         // The algorithm to use
 
     if (args.length == 1) {
       Object [] params = {"Real"};
-      problem = (new ProblemFactory()).getProblem(args[0],params);
+      problem = (Problem<Real>) ProblemFactory.getProblem(args[0],params);
     } // if
     else { // Default problem
       problem = new Kursawe(3, "Real");
@@ -50,14 +51,14 @@ public class RandomSearch_main {
       //problem = new OKA2("Real") ;
     } // else
 
-    algorithm = new RandomSearch(problem);
+    algorithm = new RandomSearch<Real>(problem);
 
     // Algorithm parameters
     algorithm.setInputParameter("maxEvaluations",25000);
 
     // Execute the Algorithm
     long initTime = System.currentTimeMillis();
-    SolutionSet population = algorithm.execute();
+    SolutionSet<Real> population = algorithm.execute();
     long estimatedTime = System.currentTimeMillis() - initTime;
 
     // Result messages

@@ -12,12 +12,13 @@ import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.Configuration.SolutionType_;
 import jmetal.base.Configuration.VariableType_;
+import jmetal.base.variable.IReal;
 import jmetal.util.JMException;
 
 /**
  * Class representing problem Viennet2
  */
-public class Viennet2 extends Problem{           
+public class Viennet2<T extends IReal> extends Problem<T> {           
   
  private static final long serialVersionUID = 3889655545570680639L;
 
@@ -56,7 +57,7 @@ public class Viennet2 extends Problem{
    * @param solution The solution to evaluate
    * @throws JMException 
    */
-  public void evaluate(Solution solution) throws JMException {                    
+  public void evaluate(Solution<T> solution) throws JMException {                    
     double [] x = new double[numberOfVariables_];
     double [] f = new double[numberOfObjectives_];
         

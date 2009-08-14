@@ -12,9 +12,14 @@ import jmetal.base.Algorithm;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
+import jmetal.base.Variable;
 import jmetal.base.archive.CrowdingArchive;
 import jmetal.base.operator.comparator.CrowdingComparator;
+import jmetal.base.operator.crossover.Crossover;
+import jmetal.base.operator.localSearch.LocalSearch;
+import jmetal.base.operator.mutation.Mutation;
 import jmetal.base.operator.selection.RankingAndCrowdingSelection;
+import jmetal.base.operator.selection.Selection;
 import jmetal.base.variable.Binary;
 import jmetal.util.JMException;
 
@@ -22,42 +27,43 @@ import jmetal.util.JMException;
  *
  * Class implementing the CHC algorithm.
  */
-public class MOCHC extends Algorithm {
+public class MOCHC <V extends Variable>
+	extends Algorithm<V, Crossover<V>, Mutation<V>, Selection<V, Solution<V>[]>, LocalSearch<V>> {
 
   private static final long serialVersionUID = 1543452947367589923L;
 	/**
-  * Stores the problem to solve
+  * Stores the Problem<V> to solve
   */
-  private Problem problem_;
-  private RankingAndCrowdingSelection newGenerationSelection;
+  private Problem<V> Problem_;
+  private RankingAndCrowdingSelection<V> newGenerationSelection;
   
   /**
   * Constructor
   * Creates a new instance of MOCHC 
   */
-  public MOCHC(Problem problem) {
-    problem_ = problem;
+  public MOCHC(Problem<V> Problem) {
+    Problem_ = Problem;
   }
   
-	public void setNewGenerationSelection(RankingAndCrowdingSelection newGenerationSelection) {
+	public void setNewGenerationSelection(RankingAndCrowdingSelection<V> newGenerationSelection) {
 		this.newGenerationSelection = newGenerationSelection;
 	}
   
   /** 
-  * Compares two solutionSets to determine if both are equals
-  * @param solutionSet A <code>SolutionSet</code>
-  * @param newSolutionSet A <code>SolutionSet</code>
-  * @return true if both are cotains the same solutions, false in other case
+  * Compares two SolutionSet<V>s to determine if both are equals
+  * @param SolutionSet<V> A <code>SolutionSet<V></code>
+  * @param newSolutionSet<V> A <code>SolutionSet<V></code>
+  * @return true if both are cotains the same Solution<V>s, false in other case
   */
-  public boolean equals(SolutionSet solutionSet, SolutionSet newSolutionSet) {
+  public boolean equals(SolutionSet<V> SolutionSet, SolutionSet<V> newSolutionSet) {
     boolean found;
-    for (int i = 0; i < solutionSet.size(); i++){
+    for (int i = 0; i < SolutionSet.size(); i++){
 
       int j = 0;
       found = false;
       while (j < newSolutionSet.size()) {
 
-        if (solutionSet.get(i).equals(newSolutionSet.get(j))) {
+        if (SolutionSet.get(i).equals(newSolutionSet.get(j))) {
           found = true;
         }
         j++;
@@ -70,17 +76,17 @@ public class MOCHC extends Algorithm {
   } // equals
 
   /**
-   * Calculate the hamming distance between two solutions
-   * @param solutionOne A <code>Solution</code>
-   * @param solutionTwo A <code>Solution</code>
-   * @return the hamming distance between solutions
+   * Calculate the hamming distance between two Solution<V>s
+   * @param Solution<V>One A <code>Solution<V></code>
+   * @param Solution<V>Two A <code>Solution<V></code>
+   * @return the hamming distance between Solution<V>s
    */
-  public int hammingDistance(Solution solutionOne, Solution solutionTwo) {
+  public int hammingDistance(Solution<V> SolutionOne, Solution<V> SolutionTwo) {
     int distance = 0;
-    for (int i = 0; i < problem_.getNumberOfVariables(); i++) {
+    for (int i = 0; i < Problem_.getNumberOfVariables(); i++) {
       distance += 
-        ((Binary)solutionOne.getDecisionVariables().variables_.get(i)).
-        hammingDistance((Binary)solutionTwo.getDecisionVariables().variables_.get(i));
+        ((Binary)SolutionOne.getDecisionVariables().variables_.get(i)).
+        hammingDistance((Binary)SolutionTwo.getDecisionVariables().variables_.get(i));
     }
     
     return distance;
@@ -88,10 +94,10 @@ public class MOCHC extends Algorithm {
 
   /**   
   * Runs of the MOCHC algorithm.
-  * @return a <code>SolutionSet</code> that is a set of non dominated solutions
+  * @return a <code>SolutionSet<V></code> that is a set of non dominated Solution<V>s
   * as a result of the algorithm execution  
   */  
-  public SolutionSet execute() throws JMException {
+  public SolutionSet<V> execute() throws JMException {
     int iterations       ;
     int populationSize   ;
     int convergenceValue ;
@@ -99,12 +105,12 @@ public class MOCHC extends Algorithm {
     int minimumDistance  ;
     int evaluations      ;
     
-    Comparator<Solution> crowdingComparator = new CrowdingComparator();
+    Comparator<Solution<V>> crowdingComparator = new CrowdingComparator<V>();
     
     double preservedPopulation     ;
     double initialConvergenceCount ;
     boolean condition = false;
-    SolutionSet solutionSet, offspringPopulation,newPopulation;
+    SolutionSet<V> SolutionSet, offspringPopulation,newPopulation;
 
     // Read parameters
     initialConvergenceCount = 
@@ -122,45 +128,45 @@ public class MOCHC extends Algorithm {
     iterations  = 0 ;
     evaluations = 0 ;
     
-    //Calculate the maximum problem sizes
-    Solution aux = new Solution(problem_);
+    //Calculate the maximum Problem<V> sizes
+    Solution<V> aux = new Solution<V>(Problem_);
     int size = 0;
-    for (int var = 0; var < problem_.getNumberOfVariables(); var++) {
+    for (int var = 0; var < Problem_.getNumberOfVariables(); var++) {
       size += ((Binary)aux.getDecisionVariables().variables_.get(var)).getNumberOfBits();
     }
     minimumDistance = (int) Math.floor(initialConvergenceCount * size);
 
-    solutionSet = new SolutionSet(populationSize);
+    SolutionSet = new SolutionSet<V>(populationSize);
     for (int i = 0; i < populationSize; i++) {
-      Solution solution = new Solution(problem_);
-      problem_.evaluate(solution);
-      problem_.evaluateConstraints(solution);
+      Solution<V> Solution = new Solution<V>(Problem_);
+      Problem_.evaluate(Solution);
+      Problem_.evaluateConstraints(Solution);
       evaluations++;        
-      solutionSet.add(solution);
+      SolutionSet.add(Solution);
     }      
 
     while (!condition) {
-      offspringPopulation = new SolutionSet(populationSize);
-      for (int i = 0; i < solutionSet.size()/2; i++) {
-        Solution [] parents   = (Solution [])selectionOperator.execute(solutionSet);         
+      offspringPopulation = new SolutionSet<V>(populationSize);
+      for (int i = 0; i < SolutionSet.size()/2; i++) {
+        Solution<V> [] parents   = selectionOperator.execute(SolutionSet);         
 
-        //Equality condition between solutions
+        //Equality condition between Solution<V>s
         if (hammingDistance(parents[0],parents[1]) >= (minimumDistance)) {
-          Solution [] offspring = (Solution [])crossoverOperator.execute(parents[0], parents[1]);
-          problem_.evaluate(offspring[0]);
-          problem_.evaluateConstraints(offspring[0]);
-          problem_.evaluate(offspring[1]);
-          problem_.evaluateConstraints(offspring[1]);
+          Solution<V> [] offspring = (Solution<V> [])crossoverOperator.execute(parents[0], parents[1]);
+          Problem_.evaluate(offspring[0]);
+          Problem_.evaluateConstraints(offspring[0]);
+          Problem_.evaluate(offspring[1]);
+          Problem_.evaluateConstraints(offspring[1]);
           evaluations += 2;
           offspringPopulation.add(offspring[0]);
           offspringPopulation.add(offspring[1]);
         }
       }
-      SolutionSet union = solutionSet.union(offspringPopulation);
+      SolutionSet<V> union = SolutionSet.union(offspringPopulation);
       newGenerationSelection.setPopulationSize(populationSize);
-      newPopulation = (SolutionSet)newGenerationSelection.execute(union);
+      newPopulation = (SolutionSet<V>)newGenerationSelection.execute(union);
 
-      if (equals(solutionSet,newPopulation)) {
+      if (equals(SolutionSet,newPopulation)) {
         minimumDistance--;
       }
       if (minimumDistance <= -convergenceValue) {
@@ -169,32 +175,32 @@ public class MOCHC extends Algorithm {
         //minimumDistance = (int) (0.35 * (1 - 0.35) * size);
 
         int preserve = (int)Math.floor(preservedPopulation*populationSize);
-        newPopulation = new SolutionSet(populationSize);
-        solutionSet.sort(crowdingComparator);
+        newPopulation = new SolutionSet<V>(populationSize);
+        SolutionSet.sort(crowdingComparator);
         for (int i = 0; i < preserve; i++) {
-          newPopulation.add(new Solution(solutionSet.get(i)));
+          newPopulation.add(new Solution<V>(SolutionSet.get(i)));
         }
         for (int i = preserve;i < populationSize; i++) {
-          Solution solution = new Solution(solutionSet.get(i));
-          mutationOperator.execute(solution);
-          problem_.evaluate(solution);
-          problem_.evaluateConstraints(solution);
-          newPopulation.add(solution);
+          Solution<V> Solution = new Solution<V>(SolutionSet.get(i));
+          mutationOperator.execute(Solution);
+          Problem_.evaluate(Solution);
+          Problem_.evaluateConstraints(Solution);
+          newPopulation.add(Solution);
         }                        
       }
       iterations++;
 
-      solutionSet = newPopulation;
+      SolutionSet = newPopulation;
       if (evaluations >= maxEvaluations) {
         condition = true;
       }
     }
     
     
-    CrowdingArchive archive;
-    archive = new CrowdingArchive(populationSize,problem_.getNumberOfObjectives()) ;
-    for (int i = 0; i < solutionSet.size(); i++) {
-      archive.add(solutionSet.get(i)) ;
+    CrowdingArchive<V> archive;
+    archive = new CrowdingArchive<V>(populationSize,Problem_.getNumberOfObjectives()) ;
+    for (int i = 0; i < SolutionSet.size(); i++) {
+      archive.add(SolutionSet.get(i)) ;
     }
 
     return archive;

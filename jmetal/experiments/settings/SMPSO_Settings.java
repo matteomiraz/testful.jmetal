@@ -21,6 +21,7 @@ import jmetal.util.JMException;
  *
  * @author Antonio
  */
+@SuppressWarnings("unchecked")
 public class SMPSO_Settings extends Settings{
   
   // Default settings

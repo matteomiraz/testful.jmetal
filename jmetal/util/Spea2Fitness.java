@@ -17,13 +17,14 @@ import java.util.List;
 
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
+import jmetal.base.Variable;
 import jmetal.base.operator.comparator.DominanceComparator;
 import jmetal.base.operator.comparator.FitnessComparator;
 
 /**
  * This class implements some facilities for calculating the Spea2Fitness
  */
-public class Spea2Fitness {
+public class Spea2Fitness<T extends Variable> {
     
   /**
    * Stores the distance between solutions
@@ -33,12 +34,7 @@ public class Spea2Fitness {
   /**
    * Stores the solutionSet to assign the fitness
    */
-  private SolutionSet solutionSet_ = null;
-  
-  /** 
-   * stores a <code>Distance</code> object
-   */
-  private static final Distance distance_ = new Distance();
+  private SolutionSet<T> solutionSet_ = null;
   
   /**
    * stores a <code>Comparator</code> for distance between nodes checking
@@ -48,15 +44,15 @@ public class Spea2Fitness {
   /**
    * stores a <code>Comparator</code> for dominance checking
    */
-  private static final Comparator<Solution> dominance_ = new DominanceComparator();
+  private final Comparator<Solution<T>> dominance_ = new DominanceComparator<T>();
   
   /** 
    * Constructor.
    * Creates a new instance of Spea2Fitness for a given <code>SolutionSet</code>.
    * @param solutionSet The <code>SolutionSet</code>
    */
-  public Spea2Fitness(SolutionSet solutionSet) {
-    distance     = distance_.distanceMatrix(solutionSet);        
+  public Spea2Fitness(SolutionSet<T> solutionSet) {
+    distance     = Distance.distanceMatrix(solutionSet);        
     solutionSet_ = solutionSet;
     for (int i = 0; i < solutionSet_.size(); i++) {
       solutionSet_.get(i).setLocation(i);
@@ -113,14 +109,14 @@ public class Spea2Fitness {
   *  using for this de enviromentalSelection truncation
   *  @param size The number of elements to get.
   */
-  public SolutionSet environmentalSelection(int size){        
+  public SolutionSet<T> environmentalSelection(int size){        
     
     if (solutionSet_.size() < size) {
       size = solutionSet_.size();
     }
         
     // Create a new auxiliar population for no alter the original population
-    SolutionSet aux = new SolutionSet(solutionSet_.size());
+    SolutionSet<T> aux = new SolutionSet<T>(solutionSet_.size());
                 
     int i = 0;
     while (i < solutionSet_.size()){
@@ -133,7 +129,7 @@ public class Spea2Fitness {
     } // while
                 
     if (aux.size() < size){
-      Comparator<Solution> comparator = new FitnessComparator();
+      Comparator<Solution<T>> comparator = new FitnessComparator<T>();
       solutionSet_.sort(comparator);
       int remain = size - aux.size();
       for (i = 0; i < remain; i++){
@@ -144,7 +140,7 @@ public class Spea2Fitness {
       return aux;            
     }        
                                                 
-    double [][] distance = distance_.distanceMatrix(aux);   
+    double [][] distance = Distance.distanceMatrix(aux);   
     List< List<DistanceNode> > distanceList = new LinkedList< List<DistanceNode> >();
     for (int pos = 0; pos < aux.size(); pos++) {
       aux.get(pos).setLocation(pos);

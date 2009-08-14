@@ -10,7 +10,7 @@ package jmetal.problems;
 import java.util.List;
 
 import jmetal.base.DecisionVariables;
-import jmetal.base.Problem;
+import jmetal.base.ProblemValue;
 import jmetal.base.Solution;
 import jmetal.base.variable.IReal;
 import jmetal.util.JMException;
@@ -20,7 +20,7 @@ import jmetal.util.JMException;
  * MAXIMIZED. As jMetal always minimizes, the rule Max(f(x)) = -Min(f(-x)) must
  * be applied.
  */
-public class Poloni<T extends IReal> extends Problem<T> {    
+public class Poloni<T extends IReal> extends ProblemValue<T> {    
     
  private static final long serialVersionUID = -8968373064444128659L;
 

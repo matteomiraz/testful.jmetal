@@ -8,7 +8,7 @@ package jmetal.problems.WFG;
 import java.util.List;
 import java.util.Random;
 
-import jmetal.base.Problem;
+import jmetal.base.ProblemValue;
 import jmetal.base.variable.IReal;
 
 /**
@@ -19,7 +19,7 @@ import jmetal.base.variable.IReal;
  *            Third International Conference, EMO 2005. 
  *            Proceedings, volume 3410 of Lecture Notes in Computer Science
  */
-public abstract class WFG<V extends IReal> extends Problem<V> {
+public abstract class WFG<V extends IReal> extends ProblemValue<V> {
   
   private static final long serialVersionUID = -3511776882893579601L;
 

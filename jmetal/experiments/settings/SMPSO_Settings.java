@@ -11,7 +11,7 @@ package jmetal.experiments.settings;
 import java.util.Properties;
 
 import jmetal.base.Algorithm;
-import jmetal.base.Problem;
+import jmetal.base.ProblemValue;
 import jmetal.experiments.Settings;
 import jmetal.metaheuristics.smpso.SMPSO;
 import jmetal.qualityIndicator.QualityIndicator;
@@ -36,7 +36,7 @@ public class SMPSO_Settings extends Settings{
   /**
    * Constructor
    */
-  public SMPSO_Settings(Problem problem) {
+  public SMPSO_Settings(ProblemValue problem) {
     super(problem) ;
   } // SMPSO_Settings
   
@@ -51,7 +51,7 @@ public class SMPSO_Settings extends Settings{
     QualityIndicator indicators ;
     
     // Creating the problem
-    algorithm = new SMPSO(problem_) ;
+    algorithm = new SMPSO((ProblemValue) problem_) ;
     
     // Algorithm parameters
     algorithm.setInputParameter("swarmSize", swarmSize_);

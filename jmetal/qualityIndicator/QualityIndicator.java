@@ -14,12 +14,12 @@ package jmetal.qualityIndicator;
 
 import jmetal.base.Problem;
 import jmetal.base.SolutionSet;
-import jmetal.base.VariableValue;
+import jmetal.base.Variable;
 
 /**
  * QualityIndicator class
  */
-public class QualityIndicator<T extends VariableValue> {
+public class QualityIndicator<T extends Variable> {
   SolutionSet<T> trueParetoFront_ ;
   double      trueParetoFrontHypervolume_ ;
   Problem<T>     problem_ ; 

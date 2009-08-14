@@ -8,14 +8,14 @@
 package jmetal.problems;
 
 import jmetal.base.DecisionVariables;
-import jmetal.base.Problem;
+import jmetal.base.ProblemValue;
 import jmetal.base.Solution;
 import jmetal.base.variable.Binary;
 
 /**
  * Class representing problem RadioNetworkDesign
  */
-public class RadioNetworkDesign extends Problem.ProblemBinary {
+public class RadioNetworkDesign extends ProblemValue.ProblemBinary {
   private static final long serialVersionUID = -8911628124069437164L;
 	final static  int MAXIMUM_UNCOVERAGE =   10;
   final static int MAXIMUM_ANTENNAE    =   60;

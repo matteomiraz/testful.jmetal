@@ -11,7 +11,7 @@ package jmetal.problems.ZDT;
 import java.util.List;
 
 import jmetal.base.DecisionVariables;
-import jmetal.base.Problem;
+import jmetal.base.ProblemValue;
 import jmetal.base.Solution;
 import jmetal.base.variable.IReal;
 import jmetal.util.JMException;
@@ -19,7 +19,7 @@ import jmetal.util.JMException;
 /**
  * Class representing problem ZDT1
  */
-public class ZDT1<T extends IReal> extends Problem<T> {
+public class ZDT1<T extends IReal> extends ProblemValue<T> {
     
  private static final long serialVersionUID = 6680347915034255781L;
 

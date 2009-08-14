@@ -7,7 +7,7 @@
 
 package jmetal.problems.singleObjective;
 
-import jmetal.base.Problem;
+import jmetal.base.ProblemValue;
 import jmetal.base.Solution;
 import jmetal.base.variable.Binary;
 
@@ -15,7 +15,7 @@ import jmetal.base.variable.Binary;
  * Class representing problem OneMax. The problem consist of maximizing the
  * number of '1's in a binary string.
  */
-public class OneMax extends Problem.ProblemBinary {
+public class OneMax extends ProblemValue.ProblemBinary {
 
   
  private static final long serialVersionUID = 2785137155554439680L;

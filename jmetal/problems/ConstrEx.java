@@ -10,7 +10,7 @@ package jmetal.problems;
 import java.util.List;
 
 import jmetal.base.DecisionVariables;
-import jmetal.base.Problem;
+import jmetal.base.ProblemValue;
 import jmetal.base.Solution;
 import jmetal.base.variable.IReal;
 import jmetal.util.JMException;
@@ -18,7 +18,7 @@ import jmetal.util.JMException;
 /**
  * Class representing problem Constr_Ex
  */
-public class ConstrEx<T extends IReal> extends Problem<T> {
+public class ConstrEx<T extends IReal> extends ProblemValue<T> {
   private static final long serialVersionUID = 810989642325732952L;
 
   private final Class<T> solutionType_;

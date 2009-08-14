@@ -11,7 +11,8 @@ package jmetal.experiments.settings;
 import java.util.Properties;
 
 import jmetal.base.Algorithm;
-import jmetal.base.Problem;
+import jmetal.base.ProblemValue;
+import jmetal.base.variable.Real;
 import jmetal.experiments.Settings;
 import jmetal.metaheuristics.omopso.OMOPSO;
 import jmetal.qualityIndicator.QualityIndicator;
@@ -35,7 +36,7 @@ public class OMOPSO_Settings extends Settings{
   /**
    * Constructor
    */
-  public OMOPSO_Settings(Problem problem) {
+  public OMOPSO_Settings(ProblemValue<Real> problem) {
     super(problem) ;
   } // OMOPSO_Settings
   
@@ -50,7 +51,7 @@ public class OMOPSO_Settings extends Settings{
     QualityIndicator indicators ;
     
     // Creating the problem
-    algorithm = new OMOPSO(problem_) ;
+    algorithm = new OMOPSO((ProblemValue<Real>) problem_) ;
     
     // Algorithm parameters
     algorithm.setInputParameter("swarmSize", swarmSize_);

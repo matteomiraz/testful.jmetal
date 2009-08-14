@@ -12,7 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jmetal.base.Algorithm;
-import jmetal.base.Problem;
+import jmetal.base.ProblemValue;
 import jmetal.experiments.settings.GDE3_Settings;
 import jmetal.experiments.settings.MOCell_Settings;
 import jmetal.experiments.settings.NSGAII_Settings;
@@ -31,7 +31,7 @@ public class StandardStudy extends Experiment {
    * @param problem The problem to solve
    * @param problemIndex
    */
-  public void algorithmSettings(Problem problem, int problemIndex, Algorithm[] algorithm) {
+  public void algorithmSettings(ProblemValue problem, int problemIndex, Algorithm[] algorithm) {
     try {
       int numberOfAlgorithms = algorithmNameList_.length;
 

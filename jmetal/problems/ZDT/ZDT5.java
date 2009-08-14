@@ -9,14 +9,14 @@
 package jmetal.problems.ZDT;
 
 import jmetal.base.DecisionVariables;
-import jmetal.base.Problem;
+import jmetal.base.ProblemValue;
 import jmetal.base.Solution;
 import jmetal.base.variable.Binary;
 
 /**
  * Class representing problem ZDT5
  */
-public class ZDT5 extends Problem.ProblemBinary {
+public class ZDT5 extends ProblemValue.ProblemBinary {
      
  private static final long serialVersionUID = -8358321326441479092L;
 

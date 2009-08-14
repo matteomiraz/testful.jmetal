@@ -17,7 +17,7 @@ import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 
 import jmetal.base.Configuration;
-import jmetal.base.Problem;
+import jmetal.base.ProblemValue;
 import jmetal.base.SolutionSet;
 import jmetal.base.operator.crossover.CrossoverFactory;
 import jmetal.base.operator.crossover.SBXCrossover;
@@ -50,7 +50,7 @@ public class AbYSS_main {
   @SuppressWarnings("unchecked")
 	public static void main(String [] args) throws 
                                  JMException, SecurityException, IOException {    
-    Problem<Real>   problem     ; // The problem to solve
+    ProblemValue<Real>   problem     ; // The problem to solve
     SBXCrossover crossover   ; // Crossover operator
     PolynomialMutation mutation    ; // Mutation operator
     MutationLocalSearch<Real> improvement ; // Operator for improvement
@@ -64,7 +64,7 @@ public class AbYSS_main {
     // STEP 1. Select the multiobjective optimization problem to solve
     if (args.length == 1) {
       Object [] params = {"Real"};
-      problem = (Problem<Real>) ProblemFactory.getProblem(args[0], params);
+      problem = (ProblemValue<Real>) ProblemFactory.getProblem(args[0], params);
     } // if
     else { // Default problem
       problem = new Kursawe(3, Real.class); 

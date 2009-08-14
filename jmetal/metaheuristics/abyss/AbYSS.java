@@ -9,7 +9,7 @@ package jmetal.metaheuristics.abyss;
 import java.util.Comparator;
 
 import jmetal.base.Algorithm;
-import jmetal.base.Problem;
+import jmetal.base.ProblemValue;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
 import jmetal.base.VariableValue;
@@ -37,7 +37,7 @@ public class AbYSS<V extends VariableValue>
 	/**
    * Stores the problem to solve
    */
-  private Problem<V> problem_;        
+  private ProblemValue<V> problem_;        
   
   /**
    * Stores the number of subranges in which each variable is divided. Used in
@@ -122,7 +122,7 @@ public class AbYSS<V extends VariableValue>
    * Constructor.
    * @param problem Problem to solve
    */
-  public AbYSS(Problem<V> problem){
+  public AbYSS(ProblemValue<V> problem){
     //Initialize the fields 
     problem_ = problem ;                  
        

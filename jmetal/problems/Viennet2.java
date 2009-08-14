@@ -10,7 +10,7 @@ package jmetal.problems;
 
 import java.util.List;
 
-import jmetal.base.Problem;
+import jmetal.base.ProblemValue;
 import jmetal.base.Solution;
 import jmetal.base.variable.IReal;
 import jmetal.util.JMException;
@@ -18,7 +18,7 @@ import jmetal.util.JMException;
 /**
  * Class representing problem Viennet2
  */
-public class Viennet2<T extends IReal> extends Problem<T> {           
+public class Viennet2<T extends IReal> extends ProblemValue<T> {           
   
  private static final long serialVersionUID = 3889655545570680639L;
 

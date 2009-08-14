@@ -10,7 +10,7 @@ import java.util.Comparator;
 
 import jmetal.base.Algorithm;
 import jmetal.base.DecisionVariables;
-import jmetal.base.Problem;
+import jmetal.base.ProblemValue;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
 import jmetal.base.archive.CrowdingArchive;
@@ -40,7 +40,7 @@ public class OMOPSO
 	/**
   * Stores the problem to solve
   */
-  private Problem<Real> problem_;
+  private ProblemValue<Real> problem_;
   
   /**
    * Stores the number of particles_ used
@@ -122,7 +122,7 @@ public class OMOPSO
   * Constructor
   * @param problem Problem to solve
   */    
-  public OMOPSO(Problem<Real> problem) {                
+  public OMOPSO(ProblemValue<Real> problem) {                
     problem_ = problem;        
   } // OMOPSO
   

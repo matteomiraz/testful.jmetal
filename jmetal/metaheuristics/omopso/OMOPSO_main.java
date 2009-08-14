@@ -12,7 +12,7 @@ import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 
 import jmetal.base.Configuration;
-import jmetal.base.Problem;
+import jmetal.base.ProblemValue;
 import jmetal.base.SolutionSet;
 import jmetal.base.variable.Real;
 import jmetal.problems.Kursawe;
@@ -30,7 +30,7 @@ public class OMOPSO_main {
    */
   @SuppressWarnings("unchecked")
 	public static void main(String [] args) throws JMException, IOException {
-    Problem<Real>   problem   ;         // The problem to solve
+    ProblemValue<Real>   problem   ;         // The problem to solve
     OMOPSO algorithm ;         // The algorithm to use
     
     // Logger object and file to store log messages
@@ -40,11 +40,11 @@ public class OMOPSO_main {
     
     if (args.length == 1) {
       Object [] params = {"Real"};
-      problem = (Problem<Real>) ProblemFactory.getProblem(args[0],params);
+      problem = (ProblemValue<Real>) ProblemFactory.getProblem(args[0],params);
     } // if
     else if (args.length == 2) {
       Object [] params = {"Real"};
-      problem = (Problem<Real>) ProblemFactory.getProblem(args[0],params);
+      problem = (ProblemValue<Real>) ProblemFactory.getProblem(args[0],params);
     } // if
     else { // Default problem
       problem = new Kursawe(3, Real.class); 

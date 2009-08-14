@@ -12,7 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jmetal.base.Algorithm;
-import jmetal.base.Problem;
+import jmetal.base.ProblemValue;
 import jmetal.experiments.settings.NSGAII_Settings;
 import jmetal.util.JMException;
 
@@ -27,7 +27,7 @@ public class NSGAIIStudy extends Experiment {
    * @param problem The problem to solve
    * @param problemIndex
    */
-  public synchronized void  algorithmSettings(Problem problem, int problemIndex, Algorithm[] algorithm) {
+  public synchronized void  algorithmSettings(ProblemValue problem, int problemIndex, Algorithm[] algorithm) {
     try {
       int numberOfAlgorithms = algorithmNameList_.length;
 

@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 
 import jmetal.base.Algorithm;
 import jmetal.base.DecisionVariables;
-import jmetal.base.Problem;
+import jmetal.base.ProblemValue;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
 import jmetal.base.archive.CrowdingArchive;
@@ -43,7 +43,7 @@ public class SMPSO<V extends Real>
 	/**
    * Stores the problem to solve
    */
-  private Problem<V> problem_;
+  private ProblemValue<V> problem_;
   /**
    * Stores the number of particles_ used
    */
@@ -126,7 +126,7 @@ public class SMPSO<V extends Real>
    * Constructor
    * @param problem Problem to solve
    */
-  public SMPSO(Problem<V> problem) {
+  public SMPSO(ProblemValue<V> problem) {
     problem_ = problem;
 
     r1Max_ = 1.0;
@@ -143,7 +143,7 @@ public class SMPSO<V extends Real>
     ChVel2_ = -1;
   } // Constructor
 
-  public SMPSO(Problem<V> problem,
+  public SMPSO(ProblemValue<V> problem,
     Vector<Double> variables,
     String trueParetoFront) throws FileNotFoundException {
     problem_ = problem;
@@ -179,7 +179,7 @@ public class SMPSO<V extends Real>
    * Constructor
    * @param problem Problem to solve
    */
-  public SMPSO(Problem<V> problem, String trueParetoFront) throws FileNotFoundException {
+  public SMPSO(ProblemValue<V> problem, String trueParetoFront) throws FileNotFoundException {
     problem_ = problem;
     //System.out.println("Pareto front file: " + trueParetoFront) ;
     hy_ = new Hypervolume();

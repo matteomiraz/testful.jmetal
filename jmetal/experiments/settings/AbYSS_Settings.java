@@ -11,7 +11,7 @@ package jmetal.experiments.settings;
 import java.util.Properties;
 
 import jmetal.base.Algorithm;
-import jmetal.base.Problem;
+import jmetal.base.ProblemValue;
 import jmetal.base.operator.crossover.CrossoverFactory;
 import jmetal.base.operator.crossover.SBXCrossover;
 import jmetal.base.operator.localSearch.LocalSearch;
@@ -44,7 +44,7 @@ public class AbYSS_Settings extends Settings {
   /**
    * Constructor
    */
-  public AbYSS_Settings(Problem problem) {
+  public AbYSS_Settings(ProblemValue problem) {
     super(problem);
   } // MOCell_Settings
 
@@ -62,7 +62,7 @@ public class AbYSS_Settings extends Settings {
     QualityIndicator indicators;
 
     // Creating the problem
-    algorithm = new AbYSS(problem_);
+    algorithm = new AbYSS((ProblemValue) problem_);
 
     // Algorithm parameters
     algorithm.setInputParameter("populationSize", 20);

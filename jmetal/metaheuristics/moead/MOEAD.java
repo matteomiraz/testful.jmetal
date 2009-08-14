@@ -11,17 +11,22 @@ import jmetal.base.Algorithm;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
+import jmetal.base.Variable;
 import jmetal.base.operator.crossover.DifferentialCrossover;
+import jmetal.base.operator.localSearch.LocalSearch;
+import jmetal.base.operator.mutation.Mutation;
+import jmetal.base.operator.selection.Selection;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
 
-public class MOEAD extends Algorithm {
+public class MOEAD <V extends Variable>
+	extends Algorithm<V, DifferentialCrossover<V>, Mutation<V>, Selection<V, Solution<V>>, LocalSearch<V>> {
 
   private static final long serialVersionUID = 5326954631038249285L;
 	/**
    * Problem to solve
    */
-  private Problem problem_;
+  private Problem<V> problem_;
   /**
    * Population size
    */
@@ -29,7 +34,7 @@ public class MOEAD extends Algorithm {
   /**
    * Stores the population
    */
-  private SolutionSet population_;
+  private SolutionSet<V> population_;
   /**
    * Z vector (ideal point)
    */
@@ -56,7 +61,7 @@ public class MOEAD extends Algorithm {
    */
   int nr_;
   int H_;
-  Solution[] indArray_;
+  Solution<V>[] indArray_;
   String functionType_;
   int evaluations_;
 
@@ -64,21 +69,22 @@ public class MOEAD extends Algorithm {
    * Constructor
    * @param problem Problem to solve
    */
-  public MOEAD(Problem problem) {
+  public MOEAD(Problem<V> problem) {
     problem_ = problem;
 
     functionType_ = "_TCHE1";
 
   } // DMOEA
 
-  public SolutionSet execute() throws JMException {
+  @SuppressWarnings("unchecked")
+	public SolutionSet<V> execute() throws JMException {
     int maxEvaluations;
 
     evaluations_ = 0;
     maxEvaluations = ((Integer) this.getInputParameter("maxEvaluations")).intValue();
     populationSize_ = ((Integer) this.getInputParameter("populationSize")).intValue();
 
-    population_ = new SolutionSet(populationSize_);
+    population_ = new SolutionSet<V>(populationSize_);
     indArray_ = new Solution[problem_.getNumberOfObjectives()];
 
     T_ = 20;
@@ -125,15 +131,15 @@ public class MOEAD extends Algorithm {
         matingSelection(p, n, 2, type);
 
         // STEP 2.2. Reproduction
-        Solution child;
-        Solution[] parents = new Solution[3];
+        Solution<V> child;
+        Solution<V>[] parents = new Solution[3];
 
         parents[0] = population_.get(p.get(0));
         parents[1] = population_.get(p.get(1));
         parents[2] = population_.get(n);
 
         // Apply DE crossover 
-        child = ((DifferentialCrossover)crossoverOperator).execute(population_.get(n), parents)[0];
+        child = crossoverOperator.execute(population_.get(n), parents);
         //diff_evo_xover2(population[n].indiv,population[p[0]].indiv,population[p[1]].indiv,child);
 
         // Apply mutation
@@ -214,7 +220,7 @@ public class MOEAD extends Algorithm {
    */
   public void initPopulation() throws JMException {
     for (int i = 0; i < populationSize_; i++) {
-      Solution newSolution = new Solution(problem_);
+      Solution<V> newSolution = new Solution<V>(problem_);
 
       problem_.evaluate(newSolution);
       problem_.evaluateConstraints(newSolution);
@@ -229,7 +235,7 @@ public class MOEAD extends Algorithm {
   void initIdealPoint() throws JMException {
     for (int i = 0; i < problem_.getNumberOfObjectives(); i++) {
       z_[i] = 1.0e+30;
-      indArray_[i] = new Solution(problem_);
+      indArray_[i] = new Solution<V>(problem_);
       problem_.evaluate(indArray_[i]);
       evaluations_++;
     } // for
@@ -280,7 +286,7 @@ public class MOEAD extends Algorithm {
    * 
    * @param individual
    */
-  void updateReference(Solution individual) {
+  void updateReference(Solution<V> individual) {
     for (int n = 0; n < problem_.getNumberOfObjectives(); n++) {
       if (individual.getObjective(n) < z_[n]) {
         z_[n] = individual.getObjective(n);
@@ -295,7 +301,7 @@ public class MOEAD extends Algorithm {
    * @param id
    * @param type
    */
-  void updateProblem(Solution indiv, int id, int type) {
+  void updateProblem(Solution<V> indiv, int id, int type) {
     // indiv: child solution
     // id:   the id of current subproblem
     // type: update solutions in - neighborhood (1) or whole population (otherwise)
@@ -326,7 +332,7 @@ public class MOEAD extends Algorithm {
       f2 = fitnessFunction(indiv, lambda_[k]);
 
       if (f2 < f1) {
-        population_.replace(k, new Solution(indiv));
+        population_.replace(k, new Solution<V>(indiv));
         //population[k].indiv = indiv;
         time++;
       }
@@ -338,7 +344,7 @@ public class MOEAD extends Algorithm {
 
   } // updateProblem
 
-  double fitnessFunction(Solution individual, double[] lambda) {
+  double fitnessFunction(Solution<V> individual, double[] lambda) {
     double fitness;
     fitness = 0.0;
 

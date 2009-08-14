@@ -12,12 +12,13 @@ import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.Configuration.SolutionType_;
 import jmetal.base.Configuration.VariableType_;
+import jmetal.base.variable.Real;
 import jmetal.util.JMException;
 
 /**
  * Class representing problem Kursawe
  */
-public class Kursawe extends Problem {  
+public class Kursawe extends Problem<Real> {  
     
   private static final long serialVersionUID = 6446864010464428543L;
 
@@ -65,8 +66,8 @@ public class Kursawe extends Problem {
   * @param solution The solution to evaluate
    * @throws JMException 
   */
-  public void evaluate(Solution solution) throws JMException {
-    DecisionVariables decisionVariables  = solution.getDecisionVariables();
+  public void evaluate(Solution<Real> solution) throws JMException {
+    DecisionVariables<Real> decisionVariables  = solution.getDecisionVariables();
         
     double aux, xi, xj           ; // auxiliar variables
     double [] fx = new double[2] ; // function values     

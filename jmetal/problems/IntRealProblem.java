@@ -12,13 +12,14 @@ import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.Configuration.SolutionType_;
 import jmetal.base.Configuration.VariableType_;
+import jmetal.base.variable.Int;
 import jmetal.util.JMException;
 
 /**
  * Class representing a problem having N integer and M real variables.
  * This is not a true problem; it is only intended as an example
  */
-public class IntRealProblem extends Problem {  
+public class IntRealProblem extends Problem<Int> {  
     
   private static final long serialVersionUID = -718542992273524814L;
 	int intVariables_  ;
@@ -80,8 +81,8 @@ public class IntRealProblem extends Problem {
   * @param solution The solution to evaluate
    * @throws JMException 
   */
-  public void evaluate(Solution solution) throws JMException {
-    DecisionVariables decisionVariables  = solution.getDecisionVariables();
+  public void evaluate(Solution<Int> solution) throws JMException {
+    DecisionVariables<Int> decisionVariables  = solution.getDecisionVariables();
         
     double [] fx = new double[2] ; // function values     
    

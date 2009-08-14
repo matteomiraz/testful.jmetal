@@ -22,6 +22,7 @@ import jmetal.util.JMException;
 /**
  * @author Antonio J. Nebro
  */
+@SuppressWarnings("unchecked")
 public class ConstrainedProblemsStudy extends Experiment {
 
   /**
@@ -29,7 +30,7 @@ public class ConstrainedProblemsStudy extends Experiment {
    * @param problem The problem to solve
    * @param problemIndex
    */
-  public void algorithmSettings(Problem problem, int problemIndex, Algorithm[] algorithm) {
+	public void algorithmSettings(Problem problem, int problemIndex, Algorithm[] algorithm) {
     try {
       int numberOfAlgorithms = algorithmNameList_.length;
 

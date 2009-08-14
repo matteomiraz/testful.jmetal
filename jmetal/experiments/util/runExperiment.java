@@ -24,6 +24,7 @@ import jmetal.util.JMException;
  *
  * @author antonio
  */
+@SuppressWarnings("unchecked")
 public class runExperiment extends Thread {
 
   public Experiment experiment_ ;
@@ -114,7 +115,7 @@ public class runExperiment extends Thread {
       Object[] params = {"Real"}; // Parameters of the problem
       try {
         // Parameters of the problem
-        problem = (new ProblemFactory()).getProblem(problemList_[problemId], params);
+        problem = ProblemFactory.getProblem(problemList_[problemId], params);
       } catch (JMException ex) {
         Logger.getLogger(Experiment.class.getName()).log(Level.SEVERE, null, ex);
       }

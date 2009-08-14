@@ -6,13 +6,12 @@
  */
 package jmetal.base.operator.crossover;
 
-import jmetal.base.Configuration;
 import jmetal.base.Solution;
-import jmetal.base.Configuration.SolutionType_;
+import jmetal.base.variable.Real;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
 
-public class DifferentialEvolutionCrossover extends DifferentialCrossover {
+public class DifferentialEvolutionCrossover extends DifferentialCrossover<Real> {
   private static final long serialVersionUID = -3210629965576501068L;
 
 	/**
@@ -52,29 +51,15 @@ public class DifferentialEvolutionCrossover extends DifferentialCrossover {
    * @return An object containing the offSprings
    */
   @Override
-  public Solution[] execute(Solution current, Solution [] parent) throws JMException {
-     Solution child ;
-     
-     if ((parent[0].getType() != SolutionType_.Real) ||
-         (parent[1].getType() != SolutionType_.Real)||
-         (parent[2].getType() != SolutionType_.Real) ) {
-
-       String msg = "DifferentialEvolutionCrossover.execute: the solutions " +
-					     "are not of the right type. The type should be 'Real', but " +
-					     parent[0].getType() + " and " + 
-					     parent[1].getType() + " and " + 
-					     parent[2].getType() + " are obtained";
-			Configuration.logger_.severe(msg);
-
-       throw new JMException(msg) ; 
-     } // if 
+  public Solution<Real> execute(Solution<Real> current, Solution<Real> [] parent) throws JMException {
+     Solution<Real> child ;
      
      int jrand ;
 
      int numberOfVariables = parent[0].getDecisionVariables().variables_.size() ;
      jrand = (int)(PseudoRandom.randInt(0, numberOfVariables - 1)) ;
      
-     child = new Solution(current) ;
+     child = new Solution<Real>(current) ;
      for (int j=0; j < numberOfVariables; j++) {
         if (PseudoRandom.randDouble(0, 1) < CR_ || j == jrand) {
           double value ;
@@ -96,6 +81,6 @@ public class DifferentialEvolutionCrossover extends DifferentialCrossover {
         } // else
      }
      
-     return new Solution[] { child };
+     return child;
    }
 }

@@ -11,9 +11,14 @@ import jmetal.base.Algorithm;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
+import jmetal.base.Variable;
 import jmetal.base.archive.CrowdingArchive;
 import jmetal.base.operator.comparator.CrowdingComparator;
 import jmetal.base.operator.comparator.DominanceComparator;
+import jmetal.base.operator.crossover.Crossover;
+import jmetal.base.operator.localSearch.LocalSearch;
+import jmetal.base.operator.mutation.Mutation;
+import jmetal.base.operator.selection.Selection;
 import jmetal.util.Distance;
 import jmetal.util.JMException;
 import jmetal.util.Neighborhood;
@@ -25,19 +30,20 @@ import jmetal.util.Ranking;
  * from the archive
  * 
  */
-public class sMOCell2 extends Algorithm{
+public class sMOCell2<V extends Variable>
+	extends Algorithm<V, Crossover<V>, Mutation<V>, Selection<V, Solution<V>>, LocalSearch<V>> {
 
   private static final long serialVersionUID = 5155649352719225604L;
 	/**
    * Stores the problem to solve 
    */
-  private Problem problem_;
+  private Problem<V> problem_;
 
   /** 
    * Constructor
    * @param problem Problem to solve
    */
-  public sMOCell2(Problem problem){
+  public sMOCell2(Problem<V> problem){
     problem_= problem;
   } //sMOCell2
 
@@ -47,15 +53,15 @@ public class sMOCell2 extends Algorithm{
    * as a result of the algorithm execution  
    * @throws JMException 
    */   
-  public SolutionSet execute() throws JMException {
+  @SuppressWarnings("unchecked")
+	public SolutionSet<V> execute() throws JMException {
     int populationSize, archiveSize, maxEvaluations, evaluations;
-    SolutionSet currentSolutionSet, newSolutionSet;
-    CrowdingArchive archive;
-    SolutionSet [] neighbors;    
-    Neighborhood neighborhood;
-    Comparator<Solution> dominance = new DominanceComparator(),
-    crowding  = new CrowdingComparator();  
-    Distance distance = new Distance();
+    SolutionSet<V> currentSolutionSet, newSolutionSet;
+    CrowdingArchive<V> archive;
+    SolutionSet<V> [] neighbors;    
+    Neighborhood<V> neighborhood;
+    Comparator<Solution<V>> dominance = new DominanceComparator<V>(),
+    crowding  = new CrowdingComparator<V>();  
 
     //Read the params
     populationSize    = ((Integer)getInputParameter("populationSize")).intValue();
@@ -63,16 +69,16 @@ public class sMOCell2 extends Algorithm{
     maxEvaluations    = ((Integer)getInputParameter("maxEvaluations")).intValue();                                
 
     //Initialize the variables    
-    currentSolutionSet  = new SolutionSet(populationSize);        
-    newSolutionSet     = new SolutionSet(populationSize);
-    archive            = new CrowdingArchive(archiveSize,problem_.getNumberOfObjectives());                
+    currentSolutionSet  = new SolutionSet<V>(populationSize);        
+    newSolutionSet     = new SolutionSet<V>(populationSize);
+    archive            = new CrowdingArchive<V>(archiveSize,problem_.getNumberOfObjectives());                
     evaluations        = 0;                        
-    neighborhood       = new Neighborhood(populationSize);
+    neighborhood       = new Neighborhood<V>(populationSize);
     neighbors          = new SolutionSet[populationSize];
 
     //Create the initial population
     for (int i = 0; i < populationSize; i++){
-      Solution solution = new Solution(problem_);
+      Solution<V> solution = new Solution<V>(problem_);
       problem_.evaluate(solution);           
       problem_.evaluateConstraints(solution);
       currentSolutionSet.add(solution);
@@ -81,27 +87,27 @@ public class sMOCell2 extends Algorithm{
     }       
 
     while (evaluations < maxEvaluations){                 
-      newSolutionSet = new SolutionSet(populationSize);
+      newSolutionSet = new SolutionSet<V>(populationSize);
       for (int ind = 0; ind < currentSolutionSet.size(); ind++){
-        Solution individual = new Solution(currentSolutionSet.get(ind));
+        Solution<V> individual = new Solution<V>(currentSolutionSet.get(ind));
 
-        Solution [] offSpring;
+        Solution<V> [] offSpring;
 
         //neighbors[ind] = neighborhood.getFourNeighbors(currentSolutionSet,ind);
         neighbors[ind] = neighborhood.getEightNeighbors(currentSolutionSet,ind);                                                           
         neighbors[ind].add(individual);
 
         //parents
-        Solution parent1 = (Solution)selectionOperator.execute(neighbors[ind]);
-        Solution parent2;
+        Solution<V> parent1 = selectionOperator.execute(neighbors[ind]);
+        Solution<V> parent2;
 				if (archive.size()>0) {
-          parent2 = (Solution)selectionOperator.execute(archive);
+          parent2 = selectionOperator.execute(archive);
         } else {
-          parent2 = (Solution)selectionOperator.execute(neighbors[ind]);
+          parent2 = selectionOperator.execute(neighbors[ind]);
         }
 
         //Create a new solution, using genetic operators mutation and crossover
-        offSpring = (Solution [])crossoverOperator.execute(parent1, parent2);               
+        offSpring = crossoverOperator.execute(parent1, parent2);               
         mutationOperator.execute(offSpring[0]);
 
         //->Evaluate solution an his constraints
@@ -113,21 +119,21 @@ public class sMOCell2 extends Algorithm{
         int flag = dominance.compare(individual,offSpring[0]);
 
         if (flag == -1) {
-          newSolutionSet.add(new Solution(currentSolutionSet.get(ind)));
+          newSolutionSet.add(new Solution<V>(currentSolutionSet.get(ind)));
         }
 
         if (flag == 1) {//The new indivudlas dominate
           offSpring[0].setLocation(individual.getLocation());                                      
           //currentSolutionSet.reemplace(offSpring[0].getLocation(),offSpring[0]);
           newSolutionSet.add(offSpring[0]);
-          archive.add(new Solution(offSpring[0]));                   
+          archive.add(new Solution<V>(offSpring[0]));                   
         } else if (flag == 0) { //The individuals are non-dominates
           neighbors[ind].add(offSpring[0]);
           //(new Spea2Fitness(neighbors[ind])).fitnessAssign();                   
           //neighbors[ind].sort(new FitnessAndCrowdingDistanceComparator()); //Create a new comparator;
-          Ranking rank = new Ranking(neighbors[ind]);
+          Ranking<V> rank = new Ranking<V>(neighbors[ind]);
           for (int j = 0; j < rank.getNumberOfSubfronts(); j++){
-            distance.crowdingDistanceAssignment(rank.getSubfront(j),problem_.getNumberOfObjectives());
+            Distance.crowdingDistanceAssignment(rank.getSubfront(j),problem_.getNumberOfObjectives());
           }
           boolean deleteMutant = true;
 
@@ -140,10 +146,10 @@ public class sMOCell2 extends Algorithm{
             offSpring[0].setLocation(individual.getLocation());
             //currentSolutionSet.reemplace(offSpring[0].getLocation(),offSpring[0]);
             newSolutionSet.add(offSpring[0]);
-            archive.add(new Solution(offSpring[0]));
+            archive.add(new Solution<V>(offSpring[0]));
           }else{
-            newSolutionSet.add(new Solution(currentSolutionSet.get(ind)));
-            archive.add(new Solution(offSpring[0]));    
+            newSolutionSet.add(new Solution<V>(currentSolutionSet.get(ind)));
+            archive.add(new Solution<V>(offSpring[0]));    
           }
         }                              
       }           

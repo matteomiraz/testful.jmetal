@@ -16,6 +16,7 @@ import java.util.StringTokenizer;
 
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
+import jmetal.base.VariableValue;
 import jmetal.util.NonDominatedSolutionList;
 
 /**
@@ -230,20 +231,20 @@ public class MetricsUtil {
    * @param path The path of the file containing the data
    * @return A solution set
    */
-  public SolutionSet readNonDominatedSolutionSet(String path) {
+  public <T extends VariableValue> SolutionSet<T> readNonDominatedSolutionSet(String path) {
     try {
       /* Open the file */
       FileInputStream fis   = new FileInputStream(path)     ;
       InputStreamReader isr = new InputStreamReader(fis)    ;
       BufferedReader br      = new BufferedReader(isr)      ;
       
-      SolutionSet solutionSet = new NonDominatedSolutionList();
+      SolutionSet<T> solutionSet = new NonDominatedSolutionList<T>();
       
       String aux = br.readLine();
       while (aux!= null) {
         StringTokenizer st = new StringTokenizer(aux);
         int i = 0;
-        Solution solution = new Solution(st.countTokens());
+        Solution<T> solution = new Solution<T>(st.countTokens());
         while (st.hasMoreTokens()) {
           double value = (new Double(st.nextToken())).doubleValue();
           solution.setObjective(i,value);

@@ -6,10 +6,8 @@
  */
 package jmetal.base.operator.mutation;
 
-import jmetal.base.Configuration;
 import jmetal.base.Solution;
-import jmetal.base.Configuration.SolutionType_;
-import jmetal.base.variable.Binary;
+import jmetal.base.variable.Int;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
 
@@ -18,7 +16,7 @@ import jmetal.util.PseudoRandom;
  * NOTE: the operator is applied to binary or integer solutions, considering the
  * whole solution as a single variable.
  */
-public class BitFlipMutation extends Mutation {
+public class BitFlipMutationInt extends Mutation<Int> {
 
   private static final long serialVersionUID = 7338668714477076348L;
 
@@ -26,7 +24,7 @@ public class BitFlipMutation extends Mutation {
    * Constructor
    * Creates a new instance of the Bit Flip mutation operator
    */
-  public BitFlipMutation() {
+  public BitFlipMutationInt() {
   } // BitFlipMutation
 
   /**
@@ -35,23 +33,8 @@ public class BitFlipMutation extends Mutation {
    * @param solution The solution to mutate
    * @throws JMException
    */
-  public void doMutation(double probability, Solution solution) throws JMException {
+  public void doMutation(double probability, Solution<Int> solution) throws JMException {
     try {
-      if ((solution.getType() == SolutionType_.Binary) ||
-              (solution.getType() == SolutionType_.BinaryReal)) {
-        for (int i = 0; i < solution.getDecisionVariables().size(); i++) {
-          for (int j = 0; j < ((Binary) solution.getDecisionVariables().variables_.get(i)).getNumberOfBits(); j++) {
-            if (PseudoRandom.randDouble() < probability) {
-              ((Binary) solution.getDecisionVariables().variables_.get(i)).bits_.flip(j);
-            }
-          }
-        }
-
-        for (int i = 0; i < solution.getDecisionVariables().size(); i++) {
-          ((Binary) solution.getDecisionVariables().variables_.get(i)).decode();
-        }
-      } // if
-      else { // Integer representation
          for (int i = 0; i < solution.getDecisionVariables().size(); i++)
             if (PseudoRandom.randDouble() < probability) {
               int value = (int) (PseudoRandom.randInt(
@@ -59,7 +42,6 @@ public class BitFlipMutation extends Mutation {
                        (int)solution.getDecisionVariables().variables_.get(i).getLowerBound()));
               solution.getDecisionVariables().variables_.get(i).setValue(value);
             } // if
-      } // else
     } catch (ClassCastException e1) {
       String msg = "BitFlipMutation.doMutation: ClassCastException error" + e1.getMessage();
       throw new JMException(msg);
@@ -72,19 +54,9 @@ public class BitFlipMutation extends Mutation {
    * @return An object containing the mutated solution
    * @throws JMException 
    */
-  public Solution execute(Solution solution) throws JMException {
-
-    if ((solution.getType() != SolutionType_.Binary) &&
-            (solution.getType() != SolutionType_.BinaryReal) &&
-            (solution.getType() != SolutionType_.Int)) {
-      String msg = "BitFlipMutation.execute: the solution " +
-							        "is not of the right type. The type should be 'Binary', " +
-							        "'BinaryReal' or 'Int', but " + solution.getType() + " is obtained";
-			Configuration.logger_.severe(msg);
-      throw new JMException(msg);
-    } // if 
+  public void execute(Solution<Int> solution) throws JMException {
 
     doMutation(probability, solution);
-    return solution;
+
   } // execute
 } // BitFlipMutation

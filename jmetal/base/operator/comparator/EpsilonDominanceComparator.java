@@ -9,12 +9,13 @@ package jmetal.base.operator.comparator;
 import java.util.Comparator;
 
 import jmetal.base.Solution;
+import jmetal.base.Variable;
 
 /**
  * This class implements a <code>Comparator</code> (a method for comparing
  * <code>Solution</code> objects) based on epsilon dominance.
  */
-public class EpsilonDominanceComparator implements Comparator<Solution>{
+public class EpsilonDominanceComparator<T extends Variable> implements Comparator<Solution<T>>{
    
   /**
    * Stores the value of eta, needed for epsilon-dominance.
@@ -24,8 +25,8 @@ public class EpsilonDominanceComparator implements Comparator<Solution>{
   /** 
    * stores a comparator for check the OverallConstraintComparator
    */
-	private static final Comparator<Solution> overallConstraintViolationComparator_ =
-                              new OverallConstraintViolationComparator();
+	private final Comparator<Solution<T>> overallConstraintViolationComparator_ =
+                              new OverallConstraintViolationComparator<T>();
   
   /**
    * Constructor.
@@ -42,7 +43,7 @@ public class EpsilonDominanceComparator implements Comparator<Solution>{
   * @return -1, or 0, or 1 if solution1 dominates solution2, both are 
   * non-dominated, or solution1 is dominated by solution2, respectively.
   */
-  public int compare(Solution solution1, Solution solution2) {
+  public int compare(Solution<T> solution1, Solution<T> solution2) {
     if (solution1==null)
       return 1;
     else if (solution2 == null)
@@ -64,7 +65,7 @@ public class EpsilonDominanceComparator implements Comparator<Solution>{
 
     double value1, value2;
     // Idem number of violated constraint. Apply a dominance Test
-    for (int i = 0; i < ((Solution)solution1).numberOfObjectives(); i++) {
+    for (int i = 0; i < solution1.numberOfObjectives(); i++) {
       value1 = solution1.getObjective(i);
       value2 = solution2.getObjective(i);
 

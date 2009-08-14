@@ -8,6 +8,7 @@ package jmetal.base.operator.comparator;
 import java.util.Comparator;
 
 import jmetal.base.Solution;
+import jmetal.base.Variable;
 
 /**
  * This class implements a <code>Comparator</code> (a method for comparing
@@ -15,7 +16,7 @@ import jmetal.base.Solution;
  * equal or not. A dominance test is applied to decide about what solution
  * is the best.
  */
-public class EqualSolutions implements Comparator<Solution>{        
+public class EqualSolutions<T extends Variable> implements Comparator<Solution<T>>{        
    
   /**
    * Compares two solutions.
@@ -25,7 +26,7 @@ public class EqualSolutions implements Comparator<Solution>{
    * and solution2 are equals, or solution1 is greater than solution2, 
    * respectively. 
    */
-  public int compare(Solution solution1, Solution solution2) {
+  public int compare(Solution<T> solution1, Solution<T> solution2) {
     if (solution1==null)
       return 1;
     else if (solution2 == null)
@@ -41,7 +42,7 @@ public class EqualSolutions implements Comparator<Solution>{
     int flag; 
     double value1, value2;
     for (int i = 0; i < solution1.numberOfObjectives(); i++) {
-      flag = (new ObjectiveComparator(i)).compare(solution1,solution2);
+      flag = (new ObjectiveComparator<T>(i)).compare(solution1,solution2);
       value1 = solution1.getObjective(i);
       value2 = solution2.getObjective(i);
       

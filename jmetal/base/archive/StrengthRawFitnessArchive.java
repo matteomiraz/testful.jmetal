@@ -11,6 +11,7 @@ import java.util.Comparator;
 
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
+import jmetal.base.Variable;
 import jmetal.base.operator.comparator.DominanceComparator;
 import jmetal.base.operator.comparator.EqualSolutions;
 import jmetal.base.operator.comparator.FitnessComparator;
@@ -20,7 +21,7 @@ import jmetal.util.Spea2Fitness;
  * This class implemens a bounded archive based on strength raw fitness (as
  * defined in SPEA2).
  */ 
- public class StrengthRawFitnessArchive extends SolutionSet {    
+ public class StrengthRawFitnessArchive<T extends Variable> extends SolutionSet<T> {    
   
   private static final long serialVersionUID = -800403635250139815L;
 
@@ -32,18 +33,18 @@ import jmetal.util.Spea2Fitness;
   /**
    * Stores a <code>Comparator</code> for dominance checking.
    */
-  private Comparator<Solution> dominance_;
+  private Comparator<Solution<T>> dominance_;
   
   /**
    * Stores a <code>Comparator</code> for fitness checking.
    */
-  private Comparator<Solution> fitnessComparator_;
+  private Comparator<Solution<T>> fitnessComparator_;
   
   /**
    * Stores a <code>Comparator</code> for equality checking (in the objective
    * space).
    */
-  private Comparator<Solution> equals_;  
+  private Comparator<Solution<T>> equals_;  
     
   /** 
   * Constructor.
@@ -52,9 +53,9 @@ import jmetal.util.Spea2Fitness;
   public StrengthRawFitnessArchive(int maxSize) {
     super(maxSize);
     maxSize_           = maxSize                   ;        
-    dominance_         = new DominanceComparator() ;
-    equals_            = new EqualSolutions()      ;
-    fitnessComparator_ = new FitnessComparator();
+    dominance_         = new DominanceComparator<T>() ;
+    equals_            = new EqualSolutions<T>()      ;
+    fitnessComparator_ = new FitnessComparator<T>();
   } // StrengthRawFitnessArchive
     
   /**
@@ -68,10 +69,10 @@ import jmetal.util.Spea2Fitness;
    * @return true if the <code>Solution</code> has been inserted, false
    * otherwise.
    */
-  public boolean add(Solution solution){
+  public boolean add(Solution<T> solution){
     int flag = 0;
     int i = 0;
-    Solution aux;
+    Solution<T> aux;
     while (i < solutionsList_.size()){
       aux = solutionsList_.get(i);                        
       flag = dominance_.compare(solution,aux);
@@ -90,7 +91,7 @@ import jmetal.util.Spea2Fitness;
     solutionsList_.add(solution);
 
     if (size() > maxSize_){ // The archive is full           
-      (new Spea2Fitness(this)).fitnessAssign();
+      (new Spea2Fitness<T>(this)).fitnessAssign();
       sort(fitnessComparator_);            
       //Remove the last
       remove(maxSize_);

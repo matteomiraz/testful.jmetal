@@ -12,12 +12,13 @@ import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.Configuration.SolutionType_;
 import jmetal.base.Configuration.VariableType_;
+import jmetal.base.variable.Real;
 import jmetal.util.JMException;
 
 /**
  * Class representing problem Viennet4
  */
-public class Viennet4 extends Problem{           
+public class Viennet4<T extends Real> extends Problem<T> {           
   
  private static final long serialVersionUID = -204356646191092787L;
 
@@ -56,7 +57,7 @@ public class Viennet4 extends Problem{
    * @param solution The solution to evaluate
    * @throws JMException 
    */  
-  public void evaluate(Solution solution) throws JMException {          
+  public void evaluate(Solution<T> solution) throws JMException {          
     double [] x = new double[numberOfVariables_];
     double [] f = new double[numberOfObjectives_];
         
@@ -85,7 +86,7 @@ public class Viennet4 extends Problem{
    * @param solution The solution
    * @throws JMException 
    */  
-  public void evaluateConstraints(Solution solution) throws JMException {
+  public void evaluateConstraints(Solution<T> solution) throws JMException {
     double [] constraint = new double[numberOfConstraints_];
         
     double x1 = solution.getDecisionVariables().variables_.get(0).getValue();

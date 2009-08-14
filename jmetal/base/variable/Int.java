@@ -7,15 +7,14 @@
 package jmetal.base.variable;
 
 import jmetal.base.Configuration;
-import jmetal.base.Variable;
-import jmetal.base.Configuration.VariableType_;
+import jmetal.base.VariableValue;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
 
 /**
  * This class implements an integer decision variable 
  */
-public class Int extends Variable {
+public class Int implements VariableValue {
   private static final long serialVersionUID = -4412966678388770277L;
 	private int value_;       //Stores the value of the variable
   private int lowerBound_;  //Stores the lower limit of the variable
@@ -25,8 +24,6 @@ public class Int extends Variable {
   * Constructor
   */
   public Int() {
-	setVariableType(VariableType_.Int) ;
-
 	lowerBound_ = java.lang.Integer.MIN_VALUE ;
     upperBound_ = java.lang.Integer.MAX_VALUE ;
     value_      = 0                           ;
@@ -38,8 +35,6 @@ public class Int extends Variable {
   * @param upperBound Variable upper bound
   */
   public Int(int lowerBound, int upperBound){
-    setVariableType(VariableType_.Int) ;
-    
     lowerBound_ = lowerBound;
 	upperBound_ = upperBound;
 	value_ = (int) (PseudoRandom.randDouble()*(upperBound-lowerBound)+
@@ -54,9 +49,7 @@ public class Int extends Variable {
   */
   public Int(int value, int lowerBound, int upperBound) {
     super();
-	setVariableType(VariableType_.Int) ;
-
-	value_      = value      ;
+    value_      = value      ;
     lowerBound_ = lowerBound ;
     upperBound_ = upperBound ;
   } // Int
@@ -66,9 +59,7 @@ public class Int extends Variable {
   * @param variable Variable to be copied.
    * @throws JMException 
   */
-  public Int(Variable variable) throws JMException{
-	setVariableType(VariableType_.Int) ;
-
+  public Int(VariableValue variable) throws JMException{
 	lowerBound_ = (int)variable.getLowerBound();
     upperBound_ = (int)variable.getUpperBound();
     value_ = (int)variable.getValue();        
@@ -94,7 +85,7 @@ public class Int extends Variable {
   * Creates an exact copy of the <code>Int</code> object.
   * @return the copy.
   */ 
-  public Variable deepCopy(){
+  public VariableValue clone(){
     try {
       return new Int(this);
     } catch (JMException e) {

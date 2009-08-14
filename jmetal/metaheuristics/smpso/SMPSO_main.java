@@ -11,10 +11,10 @@ import java.io.IOException;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 
-import jmetal.base.Algorithm;
 import jmetal.base.Configuration;
 import jmetal.base.Problem;
 import jmetal.base.SolutionSet;
+import jmetal.base.variable.Real;
 import jmetal.problems.Kursawe;
 import jmetal.problems.ProblemFactory;
 import jmetal.util.JMException;
@@ -28,9 +28,10 @@ public class SMPSO_main {
    *             the problem to solve.
    * @throws JMException 
    */
-  public static void main(String [] args) throws JMException, IOException {
-    Problem   problem   ;         // The problem to solve
-    Algorithm algorithm ;         // The algorithm to use
+  @SuppressWarnings("unchecked")
+	public static void main(String [] args) throws JMException, IOException {
+    Problem<Real>   problem   ;         // The problem to solve
+    SMPSO<Real> algorithm ;         // The algorithm to use
     
     // Logger object and file to store log messages
     logger_      = Configuration.logger_ ;
@@ -39,11 +40,11 @@ public class SMPSO_main {
     
     if (args.length == 1) {
       Object [] params = {"Real"};
-      problem = (new ProblemFactory()).getProblem(args[0],params);
+      problem = (Problem<Real>) ProblemFactory.getProblem(args[0],params);
     } // if
     else if (args.length == 2) {
       Object [] params = {"Real"};
-      problem = (new ProblemFactory()).getProblem(args[0],params);
+      problem = (Problem<Real>) ProblemFactory.getProblem(args[0],params);
     } // if
     else { // Default problem
       problem = new Kursawe(3, "Real"); 
@@ -55,7 +56,7 @@ public class SMPSO_main {
       //problem = new OKA2("Real") ;
     }
     
-    algorithm = new SMPSO(problem) ;
+    algorithm = new SMPSO<Real>(problem) ;
     
     // Algorithm parameters
     algorithm.setInputParameter("swarmSize",100);
@@ -66,7 +67,7 @@ public class SMPSO_main {
     
     // Execute the Algorithm 
     long initTime = System.currentTimeMillis();
-    SolutionSet population = algorithm.execute();
+    SolutionSet<Real> population = algorithm.execute();
     long estimatedTime = System.currentTimeMillis() - initTime;
     
     // Result messages 

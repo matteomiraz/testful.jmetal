@@ -11,15 +11,21 @@ import jmetal.base.Algorithm;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
+import jmetal.base.Variable;
 import jmetal.base.operator.comparator.ObjectiveComparator;
+import jmetal.base.operator.crossover.Crossover;
+import jmetal.base.operator.localSearch.LocalSearch;
+import jmetal.base.operator.mutation.Mutation;
+import jmetal.base.operator.selection.Selection;
 import jmetal.util.JMException;
 
 /** 
  * Class implementing a generational genetic algorithm
  */
-public class GGA extends Algorithm {
+public class GGA<V extends Variable>
+	extends Algorithm<V, Crossover<V>, Mutation<V>, Selection<V, Solution<V>>, LocalSearch<V>> {
   private static final long serialVersionUID = -6298837211531862606L;
-	private Problem           problem_;        
+	private Problem<V>           problem_;        
   
  /**
   *
@@ -27,7 +33,7 @@ public class GGA extends Algorithm {
   * Create a new GGA instance.
   * @param problem Problem to solve.
   */
-  public GGA(Problem problem){
+  public GGA(Problem<V> problem){
     this.problem_ = problem;                        
   } // GGA
   
@@ -35,32 +41,32 @@ public class GGA extends Algorithm {
   * Execute the GGA algorithm
  * @throws JMException 
   */
-  public SolutionSet execute() throws JMException {
+  public SolutionSet<V> execute() throws JMException {
     int populationSize ;
     int maxEvaluations ;
     int evaluations    ;
 
-    SolutionSet population          ;
-    SolutionSet offspringPopulation ;
+    SolutionSet<V> population          ;
+    SolutionSet<V> offspringPopulation ;
 
-    Comparator<Solution>  comparator        ;
+    Comparator<Solution<V>>  comparator        ;
     
-    comparator = new ObjectiveComparator(0) ; // Single objective comparator
+    comparator = new ObjectiveComparator<V>(0) ; // Single objective comparator
     
     // Read the params
     populationSize = ((Integer)this.getInputParameter("populationSize")).intValue();
     maxEvaluations = ((Integer)this.getInputParameter("maxEvaluations")).intValue();                
    
     // Initialize the variables
-    population          = new SolutionSet(populationSize) ;   
-    offspringPopulation = new SolutionSet(populationSize) ;
+    population          = new SolutionSet<V>(populationSize) ;   
+    offspringPopulation = new SolutionSet<V>(populationSize) ;
     
     evaluations  = 0;                
 
     // Create the initial population
-    Solution newIndividual;
+    Solution<V> newIndividual;
     for (int i = 0; i < populationSize; i++) {
-      newIndividual = new Solution(problem_);                    
+      newIndividual = new Solution<V>(problem_);                    
       problem_.evaluate(newIndividual);            
       evaluations++;
       population.add(newIndividual);
@@ -81,18 +87,18 @@ public class GGA extends Algorithm {
       //}      
       
       // Copy the best two individuals to the offspring population
-      offspringPopulation.add(new Solution(population.get(0))) ;	
-      offspringPopulation.add(new Solution(population.get(1))) ;	
+      offspringPopulation.add(new Solution<V>(population.get(0))) ;	
+      offspringPopulation.add(new Solution<V>(population.get(1))) ;	
         
       // Reproductive cycle
       for (int i = 0 ; i < (populationSize / 2 - 1) ; i ++) {
         // Selection
 
-        Solution parent1 = (Solution)selectionOperator.execute(population);
-        Solution parent2 = (Solution)selectionOperator.execute(population);
+        Solution<V> parent1 = (Solution<V>)selectionOperator.execute(population);
+        Solution<V> parent2 = (Solution<V>)selectionOperator.execute(population);
  
         // Crossover
-        Solution [] offspring = (Solution []) crossoverOperator.execute(parent1, parent2);                
+        Solution<V> [] offspring = (Solution<V> []) crossoverOperator.execute(parent1, parent2);                
           
         // Mutation
         mutationOperator.execute(offspring[0]);
@@ -120,7 +126,7 @@ public class GGA extends Algorithm {
     } // while
     
     // Return a population with the best individual
-    SolutionSet resultPopulation = new SolutionSet(1) ;
+    SolutionSet<V> resultPopulation = new SolutionSet<V>(1) ;
     resultPopulation.add(population.get(0)) ;
     
     System.out.println("Evaluations: " + evaluations ) ;

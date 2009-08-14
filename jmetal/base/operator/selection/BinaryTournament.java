@@ -10,27 +10,28 @@ import java.util.Comparator;
 
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
+import jmetal.base.Variable;
 import jmetal.base.operator.comparator.BinaryTournamentComparator;
 import jmetal.util.PseudoRandom;
 
 /**
  * This class implements an opertor for binary selections
  */
-public class BinaryTournament extends Selection<Solution>{
+public class BinaryTournament<T extends Variable> extends Selection<T, Solution<T>>{
 
   private static final long serialVersionUID = -6155510776793236308L;
 	/**
    * Stores the <code>Comparator</code> used to compare two
    * solutions
    */
-  private Comparator<Solution> comparator_;
+  private Comparator<Solution<T>> comparator_;
 
   /**
    * Constructor
    * Creates a new Binary tournament operator using a BinaryTournamentComparator
    */
   public BinaryTournament(){
-    comparator_ = new BinaryTournamentComparator();
+    comparator_ = new BinaryTournamentComparator<T>();
   } // BinaryTournament
 
   
@@ -39,7 +40,7 @@ public class BinaryTournament extends Selection<Solution>{
   * Creates a new Binary tournament with a specific <code>Comparator</code>
   * @param comparator The comparator
   */
-  public BinaryTournament(Comparator<Solution> comparator) {
+  public BinaryTournament(Comparator<Solution<T>> comparator) {
     comparator_ = comparator;
   } // Constructor
 
@@ -49,8 +50,8 @@ public class BinaryTournament extends Selection<Solution>{
   * @param object Object representing a SolutionSet
   * @return the selected solution
   */
-  public Solution execute(SolutionSet population) throws jmetal.util.JMException {
-    Solution solution1,solution2;
+  public Solution<T> execute(SolutionSet<T> population) throws jmetal.util.JMException {
+    Solution<T> solution1,solution2;
     solution1 = population.get(PseudoRandom.randInt(0,population.size()-1));
     solution2 = population.get(PseudoRandom.randInt(0,population.size()-1));
 

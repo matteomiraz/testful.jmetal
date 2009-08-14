@@ -10,6 +10,7 @@ import java.util.Comparator;
 
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
+import jmetal.base.Variable;
 import jmetal.base.operator.comparator.CrowdingDistanceComparator;
 import jmetal.base.operator.comparator.DominanceComparator;
 import jmetal.base.operator.comparator.EqualSolutions;
@@ -19,7 +20,7 @@ import jmetal.util.Distance;
  * This class implements a bounded archive based on crowding distances (as
  * defined in NSGA-II).
  */
-public class CrowdingArchive extends SolutionSet {    
+public class CrowdingArchive<T extends Variable> extends SolutionSet<T> {    
   
   private static final long serialVersionUID = -4121763871161850908L;
 
@@ -36,24 +37,19 @@ public class CrowdingArchive extends SolutionSet {
   /**
    * Stores a <code>Comparator</code> for dominance checking.
    */
-  private Comparator<Solution> dominance_;
+  private Comparator<Solution<T>> dominance_;
   
   /**
    * Stores a <code>Comparator</code> for equality checking (in the objective
    * space).
    */
-  private Comparator<Solution> equals_; 
+  private Comparator<Solution<T>> equals_; 
 
   /**
    * Stores a <code>Comparator</code> for checking crowding distances.
    */
-  private Comparator<Solution> crowdingDistance_; 
+  private Comparator<Solution<T>> crowdingDistance_; 
   
-  /**
-   * Stores a <code>Distance</code> object, for distances utilities
-   */
-  private Distance distance_; 
-    
   /**
    * Constructor. 
    * @param maxSize The maximum size of the archive.
@@ -63,13 +59,10 @@ public class CrowdingArchive extends SolutionSet {
     super(maxSize);
     maxSize_          = maxSize;
     objectives_       = numberOfObjectives;        
-    dominance_        = new DominanceComparator();
-    equals_           = new EqualSolutions();
-    crowdingDistance_ = new CrowdingDistanceComparator();
-    distance_         = new Distance();
-    
+    dominance_        = new DominanceComparator<T>();
+    equals_           = new EqualSolutions<T>();
+    crowdingDistance_ = new CrowdingDistanceComparator<T>();
   } // CrowdingArchive
-    
   
   /**
    * Adds a <code>Solution</code> to the archive. If the <code>Solution</code>
@@ -82,10 +75,10 @@ public class CrowdingArchive extends SolutionSet {
    * @return true if the <code>Solution</code> has been inserted, false 
    * otherwise.
    */
-  public boolean add(Solution solution){
+  public boolean add(Solution<T> solution){
     int flag = 0;
     int i = 0;
-    Solution aux; //Store an solution temporally
+    Solution<T> aux; //Store an solution temporally
     while (i < solutionsList_.size()){
       aux = solutionsList_.get(i);            
             
@@ -105,7 +98,7 @@ public class CrowdingArchive extends SolutionSet {
     // Insert the solution into the archive
     solutionsList_.add(solution);        
     if (size() > maxSize_) { // The archive is full
-      distance_.crowdingDistanceAssignment(this,objectives_);
+      Distance.crowdingDistanceAssignment(this,objectives_);
       sort(crowdingDistance_);
       //Remove the last
       remove(maxSize_);

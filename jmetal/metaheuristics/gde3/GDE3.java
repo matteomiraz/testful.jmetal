@@ -11,8 +11,12 @@ import jmetal.base.Algorithm;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
+import jmetal.base.operator.crossover.Crossover;
 import jmetal.base.operator.crossover.DifferentialCrossover;
+import jmetal.base.operator.localSearch.LocalSearch;
+import jmetal.base.operator.mutation.Mutation;
 import jmetal.base.operator.selection.DifferentialEvolutionSelection;
+import jmetal.base.variable.Real;
 import jmetal.util.Distance;
 import jmetal.util.JMException;
 import jmetal.util.Ranking;
@@ -20,19 +24,20 @@ import jmetal.util.Ranking;
 /**
  * This class implements the NSGA-II algorithm. 
  */
-public class GDE3 extends Algorithm {
+public class GDE3<V extends Real>
+	extends Algorithm<V, Crossover<V>, Mutation<V>, DifferentialEvolutionSelection<V>, LocalSearch<V>> {
   
   private static final long serialVersionUID = 7776463559880778310L;
 	/**
    * stores the problem  to solve
    */
-  private Problem  problem_;        
+  private Problem<V>  problem_;        
   
   /**
   * Constructor
   * @param problem Problem to solve
   */
-  public GDE3(Problem problem){
+  public GDE3(Problem<V> problem){
     this.problem_ = problem;                        
   } // GDE3
   
@@ -42,36 +47,33 @@ public class GDE3 extends Algorithm {
   * as a result of the algorithm execution  
    * @throws JMException 
   */  
-  public SolutionSet execute() throws JMException {
+  public SolutionSet<V> execute() throws JMException {
     int populationSize ;
     int maxIterations  ;
     int evaluations    ;
     int iterations     ;
     
-    SolutionSet population          ;
-    SolutionSet offspringPopulation ;
+    SolutionSet<V> population          ;
+    SolutionSet<V> offspringPopulation ;
     
-    Distance   distance  ;
-    Comparator<Solution> dominance ;
+    Comparator<Solution<V>> dominance ;
+    dominance = new jmetal.base.operator.comparator.DominanceComparator<V>(); 
     
-    distance  = new Distance()  ;               
-    dominance = new jmetal.base.operator.comparator.DominanceComparator(); 
-    
-    Solution parent[] ;
+    Solution<V> parent[] ;
     
     //Read the parameters
     populationSize = ((Integer)this.getInputParameter("populationSize")).intValue();
     maxIterations  = ((Integer)this.getInputParameter("maxIterations")).intValue();                             
    
     //Initialize the variables
-    population  = new SolutionSet(populationSize);        
+    population  = new SolutionSet<V>(populationSize);        
     evaluations = 0;                
     iterations  = 0 ;
 
     // Create the initial solutionSet
-    Solution newSolution;
+    Solution<V> newSolution;
     for (int i = 0; i < populationSize; i++) {
-      newSolution = new Solution(problem_);                    
+      newSolution = new Solution<V>(problem_);                    
       problem_.evaluate(newSolution);            
       problem_.evaluateConstraints(newSolution);
       evaluations++;
@@ -81,18 +83,18 @@ public class GDE3 extends Algorithm {
     // Generations ...
     while (iterations < maxIterations) {
       // Create the offSpring solutionSet      
-      offspringPopulation  = new SolutionSet(populationSize * 2);        
+      offspringPopulation  = new SolutionSet<V>(populationSize * 2);        
 
       for (int i = 0; i < (populationSize); i++){   
         // Obtain parents. Two parameters are required: the population and the 
         //                 index of the current individual
-      	((DifferentialEvolutionSelection)selectionOperator).setIndex(i);
-        parent = (Solution [])selectionOperator.execute(population);
+      	selectionOperator.setIndex(i);
+        parent = selectionOperator.execute(population);
 
-        Solution child ;
+        Solution<V> child ;
         // Crossover. Two parameters are required: the current individual and the 
         //            array of parents
-        child = ((DifferentialCrossover)crossoverOperator).execute(population.get(i), parent)[0];
+        child = ((DifferentialCrossover<V>)crossoverOperator).execute(population.get(i), parent);
 
         problem_.evaluate(child) ;
         problem_.evaluateConstraints(child);
@@ -114,11 +116,11 @@ public class GDE3 extends Algorithm {
       } // for           
 
       // Ranking the offspring population
-      Ranking ranking = new Ranking(offspringPopulation);                        
+      Ranking<V> ranking = new Ranking<V>(offspringPopulation);                        
 
       int remain = populationSize;
       int index  = 0;
-      SolutionSet front = null;
+      SolutionSet<V> front = null;
       population.clear();
 
       // Obtain the next front
@@ -126,7 +128,7 @@ public class GDE3 extends Algorithm {
 
       while ((remain > 0) && (remain >= front.size())){                
         //Assign crowding distance to individuals
-        distance.crowdingDistanceAssignment(front,problem_.getNumberOfObjectives());                
+        Distance.crowdingDistanceAssignment(front,problem_.getNumberOfObjectives());                
         //Add the individuals of this front
         for (int k = 0; k < front.size(); k++ ) {
           population.add(front.get(k));
@@ -150,8 +152,8 @@ public class GDE3 extends Algorithm {
         //  population.add(front.get(k));
         //} // for
         while (front.size() > remain) {
-           distance.crowdingDistanceAssignment(front,problem_.getNumberOfObjectives());
-           front.sort(new jmetal.base.operator.comparator.CrowdingComparator());
+           Distance.crowdingDistanceAssignment(front,problem_.getNumberOfObjectives());
+           front.sort(new jmetal.base.operator.comparator.CrowdingComparator<V>());
            front.remove(front.size()-1);
         }
         for (int k = 0; k < front.size(); k++) {
@@ -165,7 +167,7 @@ public class GDE3 extends Algorithm {
     } // while
     
     // Return the first non-dominated front
-    Ranking ranking = new Ranking(population);        
+    Ranking<V> ranking = new Ranking<V>(population);        
     return ranking.getSubfront(0);
   } // execute
 } // GDE3-II

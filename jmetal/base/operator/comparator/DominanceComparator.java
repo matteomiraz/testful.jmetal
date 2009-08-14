@@ -9,19 +9,20 @@ package jmetal.base.operator.comparator;
 import java.util.Comparator;
 
 import jmetal.base.Solution;
+import jmetal.base.Variable;
 
 /**
  * This class implements a <code>Comparator</code> (a method for comparing
  * <code>Solution</code> objects) based on a constraint violation test + 
  * dominance checking, as in NSGA-II.
  */
-public class DominanceComparator implements Comparator<Solution>{
+public class DominanceComparator<T extends Variable> implements Comparator<Solution<T>>{
  
   /** 
    * stores a comparator for check the OverallConstraintComparator
    */
-  private static final Comparator<Solution> overallConstraintViolationComparator_ =
-                              new OverallConstraintViolationComparator();
+  private final Comparator<Solution<T>> overallConstraintViolationComparator_ =
+                              new OverallConstraintViolationComparator<T>();
  /**
   * Compares two solutions.
   * @param solution1 Object representing the first <code>Solution</code>.
@@ -29,7 +30,7 @@ public class DominanceComparator implements Comparator<Solution>{
   * @return -1, or 0, or 1 if solution1 dominates solution2, both are 
   * non-dominated, or solution1  is dominated by solution22, respectively.
   */
-  public int compare(Solution solution1, Solution solution2) {
+  public int compare(Solution<T> solution1, Solution<T> solution2) {
     if (solution1==null)
       return 1;
     else if (solution2 == null)

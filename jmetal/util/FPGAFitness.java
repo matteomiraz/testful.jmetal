@@ -11,18 +11,19 @@ import java.util.Comparator;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
+import jmetal.base.Variable;
 import jmetal.base.operator.comparator.DominanceComparator;
 
 /**
  * This class implements facilities for calculating the fitness for the
  * FPGA algorithm
  */
-public class FPGAFitness {
+public class FPGAFitness<T extends Variable> {
   /**
   * Need the population to assign the fitness, this population may contain
   * solutions in the population and the archive
   */
-  private SolutionSet solutionSet_ = null;
+  private SolutionSet<T> solutionSet_ = null;
   
 //  /**
 //   * problem to solve
@@ -32,7 +33,7 @@ public class FPGAFitness {
   /**
    * stores a <code>Comparator</code> for dominance checking
    */
-  private static final Comparator<Solution> dominance_ = new DominanceComparator();
+  private final Comparator<Solution<T>> dominance_ = new DominanceComparator<T>();
   
   /**
    * Constructor.
@@ -40,7 +41,7 @@ public class FPGAFitness {
    * @param solutionSet The solutionSet to assign the fitness
    * @param problem The problem to solve
    */
-  public FPGAFitness(SolutionSet solutionSet, Problem problem) {   
+  public FPGAFitness(SolutionSet<T> solutionSet, Problem<T> problem) {   
     solutionSet_ = solutionSet;
 //    problem_    = problem;
     for (int i = 0; i < solutionSet_.size(); i++) {

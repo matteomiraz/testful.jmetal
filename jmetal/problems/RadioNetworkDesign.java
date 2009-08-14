@@ -17,7 +17,7 @@ import jmetal.base.variable.Binary;
 /**
  * Class representing problem RadioNetworkDesign
  */
-public class RadioNetworkDesign extends Problem {
+public class RadioNetworkDesign extends Problem<Binary> {
   private static final long serialVersionUID = -8911628124069437164L;
 	final static  int MAXIMUM_UNCOVERAGE =   10;
   final static int MAXIMUM_ANTENNAE    =   60;
@@ -70,8 +70,8 @@ public class RadioNetworkDesign extends Problem {
 
   
 
-  public void evaluate(Solution individual) {
-     DecisionVariables gen  = individual.getDecisionVariables();
+  public void evaluate(Solution<Binary> individual) {
+     DecisionVariables<Binary> gen  = individual.getDecisionVariables();
 
      int[]  trans_location= {20,20,61,20,102,20,143,20,184,20,225,20,266,20,
                           20,61,61,61,102,61,143,61,184,61,225,61,266,61,
@@ -159,7 +159,7 @@ public class RadioNetworkDesign extends Problem {
    * must calculate the overall constraint violation and the number of
    * violated constraints.   * @param individual The individual to be evaluated
    */
-  public void evaluateConstraints(Solution  individual) {
+  public void evaluateConstraints(Solution<Binary>  individual) {
     double[] constraintValue = new double[2] ;
     individual.setNumberOfViolatedConstraint(0);
     individual.setOverallConstraintViolation(0);
@@ -186,7 +186,7 @@ public class RadioNetworkDesign extends Problem {
    * @param individual The individual to be evaluated
    */
 
-  public boolean isOptimum(Solution  individual) {
+  public boolean isOptimum(Solution<Binary>  individual) {
     if ((individual.getObjective(0)==49)&&(individual.getObjective(1)==0))
       return true;
     else

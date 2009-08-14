@@ -21,6 +21,7 @@ import jmetal.util.JMException;
  *
  * @author Antonio
  */
+@SuppressWarnings("unchecked")
 public class OMOPSO_Settings extends Settings{
   
   // Default settings

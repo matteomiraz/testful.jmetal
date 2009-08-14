@@ -27,6 +27,7 @@ import jmetal.util.JMException;
  *
  * @author Antonio
  */
+@SuppressWarnings("unchecked")
 public class CellDE_Settings extends Settings{
   
   // Default settings
@@ -58,7 +59,7 @@ public class CellDE_Settings extends Settings{
    */
   public Algorithm configure() throws JMException {
     Algorithm algorithm ;
-    Selection<?> selection ;
+    Selection selection ;
     DifferentialEvolutionCrossover  crossover ;
     PolynomialMutation mutation  ;
     

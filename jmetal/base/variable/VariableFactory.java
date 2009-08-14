@@ -7,7 +7,7 @@
 package jmetal.base.variable;
 
 import jmetal.base.Configuration;
-import jmetal.base.Variable;
+import jmetal.base.VariableValue;
 import jmetal.util.JMException;
 
 /**
@@ -21,12 +21,12 @@ public class VariableFactory {
    * object
    * @throws JMException 
    */
-  public static Variable getVariable(String name) throws JMException{
-    Variable variable   = null;
+  public static VariableValue getVariable(String name) throws JMException{
+    VariableValue variable   = null;
     String baseLocation = "jmetal.base.variable.";
     try {
       Class<?> c = Class.forName(baseLocation + name);
-      variable = (Variable) c.newInstance();
+      variable = (VariableValue) c.newInstance();
       return variable;
     } catch (ClassNotFoundException e1) {
       Configuration.logger_.severe("VariableFactory.getVariable: ClassNotFoundException ");

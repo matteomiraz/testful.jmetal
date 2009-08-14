@@ -19,6 +19,7 @@ import jmetal.problems.ProblemFactory;
 import jmetal.qualityIndicator.QualityIndicator;
 import jmetal.util.JMException;
 
+@SuppressWarnings("unchecked")
 public class Main {
   public static Logger      logger_ ;      // Logger object
   public static FileHandler fileHandler_ ; // FileHandler object
@@ -60,7 +61,7 @@ public class Main {
     else if (args.length == 1) { // algorithmName
       algorithmName = args[0] ;
       Object [] problemParams = {"Real"};
-      problem = (new ProblemFactory()).getProblem(problemName, problemParams);
+      problem = ProblemFactory.getProblem(problemName, problemParams);
       Object [] settingsParams = {problem} ;
       settings = (new SettingsFactory()).getSettingsObject(algorithmName, settingsParams) ;
     } // if
@@ -68,7 +69,7 @@ public class Main {
       algorithmName = args[0] ;
       problemName = args[1] ;
       Object [] problemParams = {"Real"};
-      problem = (new ProblemFactory()).getProblem(problemName, problemParams);
+      problem = ProblemFactory.getProblem(problemName, problemParams);
       Object [] settingsParams = {problem} ;
       settings = (new SettingsFactory()).getSettingsObject(algorithmName, settingsParams) ;
     } // if    
@@ -77,7 +78,7 @@ public class Main {
       problemName = args[1] ;
       paretoFrontFile = args[2] ;
       Object [] problemParams = {"Real"};
-      problem = (new ProblemFactory()).getProblem(problemName, problemParams);
+      problem = ProblemFactory.getProblem(problemName, problemParams);
       Object [] settingsParams = {problem} ;
       settings = (new SettingsFactory()).getSettingsObject(algorithmName, settingsParams) ;
             

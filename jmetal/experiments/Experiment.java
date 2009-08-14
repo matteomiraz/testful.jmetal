@@ -32,6 +32,7 @@ import jmetal.util.JMException;
  *
  * @author antonio
  */
+@SuppressWarnings("unchecked")
 public abstract class Experiment {
 
   String experimentName_;
@@ -178,7 +179,6 @@ public abstract class Experiment {
 
   ;
 
-  @SuppressWarnings("unchecked")
 	public void generateLatexTables() throws FileNotFoundException, IOException {
     latexDirectory_ = experimentBaseDirectory_ + "/" + latexDirectory_;
     System.out.println("latex directory: " + latexDirectory_);

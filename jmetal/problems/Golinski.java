@@ -11,12 +11,13 @@ import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.Configuration.SolutionType_;
 import jmetal.base.Configuration.VariableType_;
+import jmetal.base.variable.IReal;
 import jmetal.util.JMException;
 
 /** 
  * Class representing problem Golinski.
  */
-public class Golinski extends Problem{
+public class Golinski<T extends IReal> extends Problem<T>{
 
   private static final long serialVersionUID = 7529477649719646295L;
 	// defining lowerLimits and upperLimits for the problem
@@ -56,7 +57,7 @@ public class Golinski extends Problem{
    * @param solution The solution to evaluate.
    * @throws JMException 
    */
-  public void evaluate(Solution solution) throws JMException {         
+  public void evaluate(Solution<T> solution) throws JMException {         
     double x1,x2,x3,x4,x5,x6,x7;
     x1 = solution.getDecisionVariables().variables_.get(0).getValue();
     x2 = solution.getDecisionVariables().variables_.get(1).getValue();
@@ -82,7 +83,7 @@ public class Golinski extends Problem{
    * @param solution The solution
    * @throws JMException 
    */  
- public void evaluateConstraints(Solution solution) throws JMException {
+ public void evaluateConstraints(Solution<T> solution) throws JMException {
     double [] constraint = new double[numberOfConstraints_];
     double x1,x2,x3,x4,x5,x6,x7;
         

@@ -14,6 +14,7 @@ import java.util.List;
 
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
+import jmetal.base.Variable;
 import jmetal.base.operator.comparator.DominanceComparator;
 import jmetal.base.operator.comparator.OverallConstraintViolationComparator;
 
@@ -26,35 +27,35 @@ import jmetal.base.operator.comparator.OverallConstraintViolationComparator;
  * solutions, subset 1 contains the non-dominated solutions after removing those
  * belonging to subset 0, and so on.
  */
-public class Ranking {
+public class Ranking<T extends Variable> {
   
   /**
    * The <code>SolutionSet</code> to rank
    */
-  private SolutionSet   solutionSet_ ;
+  private SolutionSet<T>   solutionSet_ ;
   
   /**
    * An array containing all the fronts found during the search
    */
-  private SolutionSet[] ranking_  ;
+  private SolutionSet<T>[] ranking_  ;
   
   /**
    * stores a <code>Comparator</code> for dominance checking
    */
-  private static final Comparator<Solution> dominance_ = new DominanceComparator();
+  private final Comparator<Solution<T>> dominance_ = new DominanceComparator<T>();
   
   /**
    * stores a <code>Comparator</code> for Overal Constraint Violation Comparator
    * checking
    */
-  private static final Comparator<Solution> constraint_ = new OverallConstraintViolationComparator();
+  private final Comparator<Solution<T>> constraint_ = new OverallConstraintViolationComparator<T>();
     
   /** 
    * Constructor.
    * @param solutionSet The <code>SolutionSet</code> to be ranked.
    */       
   @SuppressWarnings("unchecked")
-	public Ranking(SolutionSet solutionSet) {        
+	public Ranking(SolutionSet<T> solutionSet) {        
     solutionSet_ = solutionSet ;
 
     // dominateMe[i] contains the number of solutions dominating i        
@@ -137,7 +138,7 @@ public class Ranking {
    * @param rank The rank
    * @return Object representing the <code>SolutionSet</code>.
    */
-  public SolutionSet getSubfront(int rank) {
+  public SolutionSet<T> getSubfront(int rank) {
     return ranking_[rank];
   } // getSubFront
 

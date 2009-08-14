@@ -27,6 +27,7 @@ import jmetal.util.JMException;
  *
  * @author Antonio
  */
+@SuppressWarnings("unchecked")
 public class MOCell_Settings extends Settings{
   
   // Default settings
@@ -57,7 +58,7 @@ public class MOCell_Settings extends Settings{
    */
   public Algorithm configure() throws JMException {
     Algorithm algorithm ;
-    Selection<?> selection ;
+    Selection selection ;
     SBXCrossover crossover ;
     PolynomialMutation  mutation  ;
     

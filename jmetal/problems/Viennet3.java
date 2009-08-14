@@ -10,6 +10,7 @@ package jmetal.problems;
 
 import jmetal.base.Problem;
 import jmetal.base.Solution;
+import jmetal.base.VariableValue;
 import jmetal.base.Configuration.SolutionType_;
 import jmetal.base.Configuration.VariableType_;
 import jmetal.util.JMException;
@@ -17,7 +18,7 @@ import jmetal.util.JMException;
 /**
  * Class representing problem Viennet3
  */
-public class Viennet3 extends Problem{           
+public class Viennet3<T extends VariableValue> extends Problem<T> {           
   
  private static final long serialVersionUID = 4453468598271961362L;
 
@@ -27,7 +28,7 @@ public class Viennet3 extends Problem{
   * Creates a default instance of the Viennet3 problem.
   * @param solutionType The solution type must "Real" or "BinaryReal".
   */
-  public Viennet3(String solutionType) {
+  public Viennet3(String solutionType, Class<T> type) {
     numberOfVariables_   = 2 ;
     numberOfObjectives_  = 3 ;
     numberOfConstraints_ = 0;
@@ -56,7 +57,7 @@ public class Viennet3 extends Problem{
    * @param solution The solution to evaluate.
    * @throws JMException 
    */
-  public void evaluate(Solution solution) throws JMException {                
+  public void evaluate(Solution<T> solution) throws JMException {                
     double [] x = new double[numberOfVariables_];
     double [] f = new double[numberOfObjectives_];
         

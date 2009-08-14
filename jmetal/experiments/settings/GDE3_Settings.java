@@ -25,6 +25,7 @@ import jmetal.util.JMException;
  *
  * @author Antonio
  */
+@SuppressWarnings("unchecked")
 public class GDE3_Settings extends Settings {
   // Default settings
   double CR_ = 0.1;
@@ -47,7 +48,7 @@ public class GDE3_Settings extends Settings {
    */
   public Algorithm configure() throws JMException {
     Algorithm algorithm;
-    Selection<?> selection;
+    Selection selection;
     DifferentialEvolutionCrossover crossover;
     //Operator mutation;
 

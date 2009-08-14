@@ -17,7 +17,7 @@ import jmetal.base.variable.Binary;
  * Class representing problem OneMax. The problem consist of maximizing the
  * number of '1's in a binary string.
  */
-public class OneMax extends Problem {
+public class OneMax extends Problem<Binary> {
 
   
  private static final long serialVersionUID = 2785137155554439680L;
@@ -45,11 +45,11 @@ public class OneMax extends Problem {
   * Evaluates a solution 
   * @param solution The solution to evaluate
   */      
-  public void evaluate(Solution solution) {
+  public void evaluate(Solution<Binary> solution) {
     Binary variable ;
     int    counter  ;
     
-    variable = ((Binary)solution.getDecisionVariables().variables_.get(0)) ;
+    variable = solution.getDecisionVariables().variables_.get(0);
     
     counter = 0 ;
 

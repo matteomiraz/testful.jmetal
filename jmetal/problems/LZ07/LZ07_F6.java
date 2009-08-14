@@ -15,12 +15,13 @@ import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.Configuration.SolutionType_;
 import jmetal.base.Configuration.VariableType_;
+import jmetal.base.variable.IReal;
 import jmetal.util.JMException;
 
 /** 
  * Class representing problem DTLZ1 
  */
-public class LZ07_F6 extends Problem {   
+public class LZ07_F6<V extends IReal>  extends Problem<V> {   
 	private static final long serialVersionUID = 7225210732452769143L;
 	LZ07 lz07_ ; 
  /** 
@@ -78,8 +79,8 @@ public class LZ07_F6 extends Problem {
     * @param solution The solution to evaluate
      * @throws JMException 
     */    
-    public void evaluate(Solution solution) throws JMException {
-      DecisionVariables gen  = solution.getDecisionVariables();
+    public void evaluate(Solution<V> solution) throws JMException {
+      DecisionVariables<V> gen  = solution.getDecisionVariables();
       
       Vector<Double> x = new Vector<Double>(numberOfVariables_) ;
       Vector<Double> y = new Vector<Double>(numberOfObjectives_);

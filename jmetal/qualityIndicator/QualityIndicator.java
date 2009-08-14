@@ -14,21 +14,22 @@ package jmetal.qualityIndicator;
 
 import jmetal.base.Problem;
 import jmetal.base.SolutionSet;
+import jmetal.base.VariableValue;
 
 /**
  * QualityIndicator class
  */
-public class QualityIndicator {
-  SolutionSet trueParetoFront_ ;
+public class QualityIndicator<T extends VariableValue> {
+  SolutionSet<T> trueParetoFront_ ;
   double      trueParetoFrontHypervolume_ ;
-  Problem     problem_ ; 
+  Problem<T>     problem_ ; 
   jmetal.qualityIndicator.util.MetricsUtil utilities_  ;
   
   /**
    * Constructor
    * @param paretoFrontFile
    */
-  public QualityIndicator(Problem problem, String paretoFrontFile) {
+  public QualityIndicator(Problem<T> problem, String paretoFrontFile) {
     problem_ = problem ;
     utilities_ = new jmetal.qualityIndicator.util.MetricsUtil() ;
     trueParetoFront_ = utilities_.readNonDominatedSolutionSet(paretoFrontFile);
@@ -43,7 +44,7 @@ public class QualityIndicator {
    * @param solutionSet
    * @return The value of the hypervolume indicator
    */
-  public double getHypervolume(SolutionSet solutionSet) {
+  public double getHypervolume(SolutionSet<T> solutionSet) {
     return new Hypervolume().hypervolume(solutionSet.writeObjectivesToMatrix(),
                                          trueParetoFront_.writeObjectivesToMatrix(),
                                          problem_.getNumberOfObjectives());
@@ -63,7 +64,7 @@ public class QualityIndicator {
    * @param solutionSet
    * @return The value of the hypervolume indicator
    */
-  public double getIGD(SolutionSet solutionSet) {
+  public double getIGD(SolutionSet<T> solutionSet) {
     return new InvertedGenerationalDistance().invertedGenerationalDistance(
                     solutionSet.writeObjectivesToMatrix(),
                     trueParetoFront_.writeObjectivesToMatrix(),
@@ -75,7 +76,7 @@ public class QualityIndicator {
    * @param solutionSet
    * @return The value of the hypervolume indicator
    */
-  public double getGD(SolutionSet solutionSet) {
+  public double getGD(SolutionSet<T> solutionSet) {
     return new GenerationalDistance().generationalDistance(
                     solutionSet.writeObjectivesToMatrix(),
                     trueParetoFront_.writeObjectivesToMatrix(),
@@ -87,7 +88,7 @@ public class QualityIndicator {
    * @param solutionSet
    * @return The value of the hypervolume indicator
    */
-  public double getSpread(SolutionSet solutionSet) {
+  public double getSpread(SolutionSet<T> solutionSet) {
     return new Spread().spread(solutionSet.writeObjectivesToMatrix(),
                                trueParetoFront_.writeObjectivesToMatrix(),
                                problem_.getNumberOfObjectives());
@@ -98,7 +99,7 @@ public class QualityIndicator {
    * @param solutionSet
    * @return The value of the hypervolume indicator
    */
-  public double getEpsilon(SolutionSet solutionSet) {
+  public double getEpsilon(SolutionSet<T> solutionSet) {
     return new Epsilon().epsilon(solutionSet.writeObjectivesToMatrix(),
                                  trueParetoFront_.writeObjectivesToMatrix(),
                                  problem_.getNumberOfObjectives());

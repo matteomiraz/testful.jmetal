@@ -10,6 +10,8 @@ package jmetal.util;
 import jmetal.base.DecisionVariables;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
+import jmetal.base.Variable;
+import jmetal.base.VariableValue;
 import jmetal.base.operator.comparator.ObjectiveComparator;
 
 /**
@@ -31,8 +33,8 @@ public class Distance {
   * @param solutionSet The <code>SolutionSet</code>.
   * @return a matrix with distances.
   */
-  public double [][] distanceMatrix(SolutionSet solutionSet) {
-    Solution solutionI, solutionJ;
+  public static <T extends Variable> double[][] distanceMatrix(SolutionSet<T> solutionSet) {
+    Solution<T> solutionI, solutionJ;
 
     //The matrix of distances
     double [][] distance = new double [solutionSet.size()][solutionSet.size()];        
@@ -42,7 +44,7 @@ public class Distance {
       solutionI = solutionSet.get(i);
       for (int j = i + 1; j < solutionSet.size(); j++){
         solutionJ = solutionSet.get(j);
-        distance[i][j] = this.distanceBetweenObjectives(solutionI,solutionJ);                
+        distance[i][j] = distanceBetweenObjectives(solutionI,solutionJ);                
         distance[j][i] = distance[i][j];            
       } // for
     } // for        
@@ -58,14 +60,14 @@ public class Distance {
   * @return The minimum distance between solution and the set.
  * @throws JMException 
   */  
-  public double distanceToSolutionSet(Solution    solution, 
-		                              SolutionSet solutionSet) throws JMException{
+  public static <J extends VariableValue> double distanceToSolutionSet(Solution<J> solution, 
+		                              SolutionSet<J> solutionSet) throws JMException{
     //At start point the distance is the max
     double distance = Double.MAX_VALUE;    
         
     // found the min distance respect to population
     for (int i = 0; i < solutionSet.size();i++){            
-      double aux = this.distanceBetweenSolutions(solution,solutionSet.get(i));
+      double aux = distanceBetweenSolutions(solution,solutionSet.get(i));
       if (aux < distance)
         distance = aux;
     } // for
@@ -81,11 +83,11 @@ public class Distance {
   *  @return the distance between solutions.
  * @throws JMException 
   */
-  public double distanceBetweenSolutions(Solution solutionI, Solution solutionJ) 
+  public static <J extends VariableValue> double distanceBetweenSolutions(Solution<J> solutionI, Solution<J> solutionJ) 
   throws JMException{                
     //->Obtain his decision variables
-    DecisionVariables decisionVariableI = solutionI.getDecisionVariables();
-    DecisionVariables decisionVariableJ = solutionJ.getDecisionVariables();    
+    DecisionVariables<J> decisionVariableI = solutionI.getDecisionVariables();
+    DecisionVariables<J> decisionVariableJ = solutionJ.getDecisionVariables();    
     
     double diff;    //Auxiliar var
     double distance = 0.0;
@@ -105,7 +107,7 @@ public class Distance {
   *  @param solutionJ The second <code>Solution</code>.
   *  @return the distance between solutions in objective space.
   */
-  public double distanceBetweenObjectives(Solution solutionI, Solution solutionJ){                
+  public static <T extends Variable> double distanceBetweenObjectives(Solution<T> solutionI, Solution<T> solutionJ){                
     double diff;    //Auxiliar var
     double distance = 0.0;
     //-> Calculate the euclidean distance
@@ -122,7 +124,7 @@ public class Distance {
   * @param solutionSet The <code>SolutionSet</code>.
   * @param nObjs Number of objectives.
   */
-  public void crowdingDistanceAssignment(SolutionSet solutionSet, int nObjs) {
+  public static <T extends Variable> void crowdingDistanceAssignment(SolutionSet<T> solutionSet, int nObjs) {
     int size = solutionSet.size();        
                 
     if (size == 0)
@@ -140,7 +142,7 @@ public class Distance {
     } // if       
         
     //Use a new SolutionSet to evite alter original solutionSet
-    SolutionSet front = new SolutionSet(size);
+    SolutionSet<T> front = new SolutionSet<T>(size);
     for (int i = 0; i < size; i++){
       front.add(solutionSet.get(i));
     }
@@ -154,7 +156,7 @@ public class Distance {
                 
     for (int i = 0; i<nObjs; i++) {          
       // Sort the population by Obj n            
-      front.sort(new ObjectiveComparator(i));
+      front.sort(new ObjectiveComparator<T>(i));
       objetiveMinn = front.get(0).getObjective(i);      
       objetiveMaxn = front.get(front.size()-1).getObjective(i);      
       

@@ -9,25 +9,31 @@ import jmetal.base.Algorithm;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
+import jmetal.base.VariableValue;
+import jmetal.base.operator.crossover.Crossover;
+import jmetal.base.operator.localSearch.LocalSearch;
+import jmetal.base.operator.mutation.Mutation;
+import jmetal.base.operator.selection.Selection;
 import jmetal.util.JMException;
 import jmetal.util.NonDominatedSolutionList;
 
 /**
  * This class implements the NSGA-II algorithm.
  */
-public class RandomSearch extends Algorithm {
+public class RandomSearch<V extends VariableValue>
+	extends Algorithm<V, Crossover<V>, Mutation<V>, Selection<V, Solution<V>>, LocalSearch<V>> {
 
   private static final long serialVersionUID = -1156000276724123322L;
 	/**
    * stores the problem  to solve
    */
-  private Problem  problem_;
+  private Problem<V>  problem_;
 
   /**
   * Constructor
   * @param problem Problem to solve
   */
-  public RandomSearch(Problem problem){
+  public RandomSearch(Problem<V> problem){
     this.problem_ = problem;
   } // RandomSearch
 
@@ -37,7 +43,7 @@ public class RandomSearch extends Algorithm {
   * as a result of the algorithm execution
    * @throws JMException
   */
-  public SolutionSet execute() throws JMException {
+  public SolutionSet<V> execute() throws JMException {
     int maxEvaluations ;
     int evaluations    ;
 
@@ -46,12 +52,12 @@ public class RandomSearch extends Algorithm {
     //Initialize the variables
     evaluations = 0;
 
-    NonDominatedSolutionList ndl = new NonDominatedSolutionList();
+    NonDominatedSolutionList<V> ndl = new NonDominatedSolutionList<V>();
 
     // Create the initial solutionSet
-    Solution newSolution;
+    Solution<V> newSolution;
     for (int i = 0; i < maxEvaluations; i++) {
-      newSolution = new Solution(problem_);
+      newSolution = new Solution<V>(problem_);
       problem_.evaluate(newSolution);
       problem_.evaluateConstraints(newSolution);
       evaluations++;

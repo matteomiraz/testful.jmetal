@@ -21,15 +21,20 @@ import jmetal.util.JMException;
  *  and their names, and another mapping between the operators and their names. 
  *  The class declares an abstract method called <code>execute</code>, which 
  *  defines the behavior of the algorithm.
+ *  @param <V> the type of the variable
+ *  @param <C> the type of the crossover operator
+ *  @param <M> the type of the mutation operator
+ *  @param <S> the type of the selection operator
+ *  @param <I> the type of the improvement operator
  */ 
-public abstract class Algorithm implements Serializable {
+public abstract class Algorithm<V extends Variable, C extends Crossover<V>, M extends Mutation<V>, S extends Selection<V,?>, I extends LocalSearch<V>> implements Serializable {
    
  private static final long serialVersionUID = 170011594278842840L;
 
- protected Crossover crossoverOperator;
- protected Mutation mutationOperator;
- protected Selection<?> selectionOperator;
- protected LocalSearch improvement;
+ protected C crossoverOperator;
+ protected M mutationOperator;
+ protected S selectionOperator;
+ protected I improvement;
 
  // output parameters
  private int evaluations = -1;
@@ -56,7 +61,7 @@ public abstract class Algorithm implements Serializable {
   * @return a <code>SolutionSet</code> that is a set of non dominated solutions
   * as a result of the algorithm execution  
   */
-  public abstract SolutionSet execute() throws JMException ;   
+  public abstract SolutionSet<V> execute() throws JMException ;   
   
   
  /**
@@ -86,19 +91,19 @@ public abstract class Algorithm implements Serializable {
     return inputParameters_.get(name);
   } // getInputParameter
   
-  public void setCrossover(Crossover crossover) {
+  public void setCrossover(C crossover) {
   	this.crossoverOperator = crossover;
   }
   
-	public void setMutation(Mutation mutation) {
+	public void setMutation(M mutation) {
 		this.mutationOperator = mutation;
 	}
 
-	public void setSelection(Selection<?> selection) {
+	public void setSelection(S selection) {
 		this.selectionOperator = selection;
 	}
 	
-	public void setImprovement(LocalSearch improvement) {
+	public void setImprovement(I improvement) {
 		this.improvement = improvement;
 	}
 } // Algorithm

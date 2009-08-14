@@ -6,12 +6,13 @@
 package jmetal.base.operator.localSearch;
 
 import jmetal.base.Solution;
+import jmetal.base.Variable;
 import jmetal.util.JMException;
 
 /**
  * Abstract class representing a generic local search operator
  */
-public abstract class LocalSearch { 
+public abstract class LocalSearch<T extends Variable> { 
   private static final long serialVersionUID = -3243846293089587688L;
 
   protected int improvementRounds;
@@ -26,6 +27,6 @@ public abstract class LocalSearch {
    */
   public abstract int getEvaluations();
 
-	public abstract Solution execute(Solution solution) throws JMException;
+	public abstract Solution<T> execute(Solution<T> solution) throws JMException;
 	
 } // LocalSearch

@@ -1,9 +1,10 @@
 package jmetal.base.operator.mutation;
 
 import jmetal.base.Solution;
+import jmetal.base.Variable;
 import jmetal.util.JMException;
 
-public abstract class Mutation {
+public abstract class Mutation<T extends Variable> {
 
 	protected double probability;
 
@@ -15,5 +16,5 @@ public abstract class Mutation {
 		return probability;
 	}
 
-	public abstract Solution execute(Solution parent) throws JMException;
+	public abstract void execute(Solution<T> parent) throws JMException;
 }

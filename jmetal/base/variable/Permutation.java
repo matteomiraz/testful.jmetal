@@ -7,13 +7,13 @@
 
 package jmetal.base.variable;
 
-import jmetal.base.Variable;
-import jmetal.base.Configuration.VariableType_;
+import jmetal.base.VariableValue;
+import jmetal.util.JMException;
 
 /**
  * Implements a permutation of integer decision variable
  */
-public class Permutation extends Variable {
+public class Permutation implements VariableValue {
   
   private static final long serialVersionUID = 207056540852484629L;
 
@@ -31,7 +31,6 @@ public class Permutation extends Variable {
    * Constructor
    */
   public Permutation() {
-	setVariableType(VariableType_.Permutation) ;
     size_   = 0;
     vector_ = null;
 
@@ -79,7 +78,6 @@ public class Permutation extends Variable {
   * This constructor has been contributed by Madan Sathe
   */
   public Permutation(int size) {
-    setVariableType(VariableType_.Permutation);
 		size_   = size;
 		vector_ = new int[size_];
 
@@ -101,7 +99,6 @@ public class Permutation extends Variable {
    * @param permutation The permutation to copy
    */
   public Permutation(Permutation permutation) {
-    setVariableType(VariableType_.Permutation) ;
     size_   = permutation.size_;
     vector_ = new int[size_];
     
@@ -115,7 +112,7 @@ public class Permutation extends Variable {
    * Create an exact copy of the <code>Permutation</code> object.
    * @return An exact copy of the object.
    */
-  public Variable deepCopy() {
+  public VariableValue clone() {
     return new Permutation(this);
   } //deepCopy
   
@@ -140,5 +137,29 @@ public class Permutation extends Variable {
       
     return string ;
   } // toString  
+
+	public double getLowerBound() throws JMException {
+		throw new JMException("Not Implemented");
+	}
+
+	public double getUpperBound() throws JMException {
+		throw new JMException("Not Implemented");
+	}
+
+	public double getValue() throws JMException {
+		throw new JMException("Not Implemented");
+	}
+
+	public void setLowerBound(double lowerBound) throws JMException {
+		throw new JMException("Not Implemented");
+	}
+
+	public void setUpperBound(double upperBound) throws JMException {
+		throw new JMException("Not Implemented");
+	}
+
+	public void setValue(double value) throws JMException {
+		throw new JMException("Not Implemented");
+	}
 
 }

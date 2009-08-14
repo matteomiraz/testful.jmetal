@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 
-import jmetal.base.Algorithm;
 import jmetal.base.Configuration;
 import jmetal.base.Problem;
 import jmetal.base.SolutionSet;
@@ -20,7 +19,7 @@ import jmetal.base.operator.crossover.SBXCrossover;
 import jmetal.base.operator.mutation.MutationFactory;
 import jmetal.base.operator.mutation.PolynomialMutation;
 import jmetal.base.operator.selection.BinaryTournament;
-import jmetal.base.operator.selection.Selection;
+import jmetal.base.variable.Real;
 import jmetal.problems.ProblemFactory;
 import jmetal.problems.ZDT.ZDT1;
 import jmetal.util.JMException;
@@ -34,12 +33,13 @@ public class IBEA_main {
    *             the problem to solve.
    * @throws JMException
    */
-  public static void main(String [] args) throws JMException, IOException {
-    Problem   problem   ;         // The problem to solve
-    Algorithm algorithm ;         // The algorithm to use
+  @SuppressWarnings("unchecked")
+	public static void main(String [] args) throws JMException, IOException {
+    Problem<Real>   problem   ;         // The problem to solve
+    IBEA<Real> algorithm ;         // The algorithm to use
     SBXCrossover  crossover ;         // Crossover operator
     PolynomialMutation  mutation  ;         // Mutation operator
-    Selection<?> selection ;         // Selection operator
+    BinaryTournament<Real> selection ;         // Selection operator
 
     // Logger object and file to store log messages
     logger_      = Configuration.logger_ ;
@@ -48,7 +48,7 @@ public class IBEA_main {
 
     if (args.length == 1) {
       Object [] params = {"Real"};
-      problem = (new ProblemFactory()).getProblem(args[0],params);
+      problem = (ZDT1) ProblemFactory.getProblem(args[0],params);
     } // if
     else { // Default problem
       //problem = new Kursawe(3, "Real");
@@ -60,7 +60,7 @@ public class IBEA_main {
       //problem = new OKA2("Real") ;
     } // else
 
-    algorithm = new IBEA(problem);
+    algorithm = new IBEA<Real>(problem);
 
     // Algorithm params
     algorithm.setInputParameter("populationSize",100);
@@ -84,7 +84,7 @@ public class IBEA_main {
     */
 
     /* Selection Operator */
-    selection = new BinaryTournament(new FitnessComparator());
+    selection = new BinaryTournament<Real>(new FitnessComparator<Real>());
 
     // Add the operators to the algorithm
     algorithm.setCrossover(crossover);
@@ -93,7 +93,7 @@ public class IBEA_main {
 
     // Execute the Algorithm
     long initTime = System.currentTimeMillis();
-    SolutionSet population = algorithm.execute();
+    SolutionSet<Real> population = algorithm.execute();
     long estimatedTime = System.currentTimeMillis() - initTime;
 
        // Result messages

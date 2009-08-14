@@ -11,9 +11,10 @@ import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.Configuration.SolutionType_;
 import jmetal.base.Configuration.VariableType_;
+import jmetal.base.variable.IReal;
 import jmetal.util.JMException;
 
-public class Sphere extends Problem {
+public class Sphere<V extends IReal>  extends Problem<V> {
   private static final long serialVersionUID = -5021029656925462284L;
 
 	/** 
@@ -50,8 +51,8 @@ public class Sphere extends Problem {
   * @param solution The solution to evaluate
    * @throws JMException 
   */        
-  public void evaluate(Solution solution) throws JMException {
-    DecisionVariables decisionVariables  = solution.getDecisionVariables();
+  public void evaluate(Solution<V> solution) throws JMException {
+    DecisionVariables<V> decisionVariables  = solution.getDecisionVariables();
 
     double sum = 0.0;
     for (int var = 0; var < numberOfVariables_; var++) {

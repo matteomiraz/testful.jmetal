@@ -12,6 +12,7 @@ import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.Configuration.SolutionType_;
 import jmetal.base.Configuration.VariableType_;
+import jmetal.base.variable.IReal;
 import jmetal.util.JMException;
 
 /**
@@ -19,7 +20,7 @@ import jmetal.util.JMException;
  * MAXIMIZED. As jMetal always minimizes, the rule Max(f(x)) = -Min(f(-x)) must
  * be applied.
  */
-public class Poloni extends Problem{    
+public class Poloni<T extends IReal> extends Problem<T> {    
     
  private static final long serialVersionUID = -8968373064444128659L;
 
@@ -56,13 +57,13 @@ public class Poloni extends Problem{
   * @param solution The solution to evaluate
    * @throws JMException 
   */
-  public void evaluate(Solution solution) throws JMException {
+  public void evaluate(Solution<T> solution) throws JMException {
     final double A1 = 0.5 * Math.sin(1.0) - 2 * Math.cos(1.0) + 
                       Math.sin(2.0) - 1.5 * Math.cos(2.0) ; //!< Constant A1
     final double A2 = 1.5 * Math.sin(1.0) - Math.cos(1.0) + 
                       2 * Math.sin(2.0) - 0.5 * Math.cos(2.0) ; //!< Constant A2
     
-    DecisionVariables decisionVariables  = solution.getDecisionVariables();
+    DecisionVariables<T> decisionVariables  = solution.getDecisionVariables();
     
     double [] x = new double[numberOfVariables_] ;
     double [] f = new double[numberOfObjectives_];

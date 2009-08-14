@@ -18,7 +18,7 @@ import jmetal.base.variable.Binary;
 /**
  * Class representing problem ZDT5
  */
-public class ZDT5 extends Problem{
+public class ZDT5 extends Problem<Binary> {
      
  private static final long serialVersionUID = -8358321326441479092L;
 
@@ -60,7 +60,7 @@ public class ZDT5 extends Problem{
   * Evaluates a solution 
   * @param solution The solution to evaluate
   */    
-  public void evaluate(Solution solution) {        
+  public void evaluate(Solution<Binary> solution) {        
     double [] f = new double[numberOfObjectives_] ; 
     f[0]        = 1 + u((Binary)solution.getDecisionVariables().variables_.get(0));
     double g    = evalG(solution.getDecisionVariables())                 ;
@@ -76,7 +76,7 @@ public class ZDT5 extends Problem{
   * @param decisionVariables The decision variables of the solution to 
   * evaluate.
   */
-  public double evalG(DecisionVariables decisionVariables) {
+  public double evalG(DecisionVariables<Binary> decisionVariables) {
     double res = 0.0;
     for (int var = 1; var < numberOfVariables_; var++) {
       res += evalV(u((Binary)decisionVariables.variables_.get(var)));

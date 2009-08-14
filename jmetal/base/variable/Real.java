@@ -7,8 +7,7 @@
 package jmetal.base.variable;
 
 import jmetal.base.Configuration;
-import jmetal.base.Variable;
-import jmetal.base.Configuration.VariableType_;
+import jmetal.base.VariableValue;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
 
@@ -16,7 +15,7 @@ import jmetal.util.PseudoRandom;
 /**
  * This class implements a Real value decision variable
  */
-public class Real extends Variable{
+public class Real implements IReal {
 
   private static final long serialVersionUID = -5286666692378861514L;
 
@@ -39,7 +38,6 @@ public class Real extends Variable{
    * Constructor
    */
   public Real() {
-    setVariableType(VariableType_.Real) ;
   } // Real
     
   
@@ -49,7 +47,6 @@ public class Real extends Variable{
    * @param upperBound Upper limit for the variable
    */
   public Real(double lowerBound, double upperBound){
-    setVariableType(VariableType_.Real) ;
     lowerBound_ = lowerBound;
     upperBound_ = upperBound;
     value_ = PseudoRandom.randDouble()*(upperBound-lowerBound)+lowerBound;        
@@ -61,8 +58,7 @@ public class Real extends Variable{
    * @param variable The variable to copy.
    * @throws JMException 
    */
-  public Real(Variable variable) throws JMException{
-    setVariableType(VariableType_.Real) ;
+  public Real(VariableValue variable) throws JMException{
     lowerBound_ = variable.getLowerBound();
     upperBound_ = variable.getUpperBound();
     value_ = variable.getValue();        
@@ -88,7 +84,7 @@ public class Real extends Variable{
    * Returns a exact copy of the <code>Real</code> variable
    * @return the copy
    */
-  public Variable deepCopy(){
+  public VariableValue clone(){
     try {
       return new Real(this);
     } catch (JMException e) {

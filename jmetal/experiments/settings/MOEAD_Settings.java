@@ -25,6 +25,7 @@ import jmetal.util.JMException;
  *
  * @author Antonio
  */
+@SuppressWarnings("unchecked")
 public class MOEAD_Settings extends Settings {
   // Default settings
   double CR_ = 0.1;

@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 
-import jmetal.base.Algorithm;
 import jmetal.base.Configuration;
 import jmetal.base.Problem;
 import jmetal.base.SolutionSet;
@@ -25,8 +24,9 @@ import jmetal.base.operator.crossover.CrossoverFactory;
 import jmetal.base.operator.crossover.SBXCrossover;
 import jmetal.base.operator.mutation.MutationFactory;
 import jmetal.base.operator.mutation.PolynomialMutation;
-import jmetal.base.operator.selection.Selection;
+import jmetal.base.operator.selection.BinaryTournament2;
 import jmetal.base.operator.selection.SelectionFactory;
+import jmetal.base.variable.Real;
 import jmetal.problems.Kursawe;
 import jmetal.problems.ProblemFactory;
 import jmetal.qualityIndicator.QualityIndicator;
@@ -46,15 +46,16 @@ public class NSGAII_main {
    *      - jmetal.metaheuristics.nsgaII.NSGAII_main problemName
    *      - jmetal.metaheuristics.nsgaII.NSGAII_main problemName paretoFrontFile
    */
-  public static void main(String [] args) throws 
+  @SuppressWarnings("unchecked")
+	public static void main(String [] args) throws 
                                   JMException, SecurityException, IOException {
-    Problem   problem   ;         // The problem to solve
-    Algorithm algorithm ;         // The algorithm to use
+    Problem<Real>   problem   ;         // The problem to solve
+    NSGAII<Real> algorithm ;         // The algorithm to use
     SBXCrossover  crossover ;         // Crossover operator
     PolynomialMutation mutation  ;         // Mutation operator
-    Selection<?> selection ;         // Selection operator
+    BinaryTournament2<Real> selection ;         // Selection operator
     
-    QualityIndicator indicators ; // Object to get quality indicators
+    QualityIndicator<Real> indicators ; // Object to get quality indicators
 
     // Logger object and file to store log messages
     logger_      = Configuration.logger_ ;
@@ -64,12 +65,12 @@ public class NSGAII_main {
     indicators = null ;
     if (args.length == 1) {
       Object [] params = {"Real"};
-      problem = (new ProblemFactory()).getProblem(args[0],params);
+      problem = (Problem<Real>) ProblemFactory.getProblem(args[0],params);
     } // if
     else if (args.length == 2) {
       Object [] params = {"Real"};
-      problem = (new ProblemFactory()).getProblem(args[0],params);
-      indicators = new QualityIndicator(problem, args[1]) ;
+      problem = (Problem<Real>) ProblemFactory.getProblem(args[0],params);
+      indicators = new QualityIndicator<Real>(problem, args[1]) ;
     } // if
     else { // Default problem
       problem = new Kursawe(3, "Real"); 
@@ -81,7 +82,7 @@ public class NSGAII_main {
       //problem = new OKA2("Real") ;
     } // else
     
-    algorithm = new NSGAII(problem);
+    algorithm = new NSGAII<Real>(problem);
 
     // Algorithm parameters
     algorithm.setInputParameter("populationSize",100);
@@ -97,7 +98,7 @@ public class NSGAII_main {
     mutation.setDistributionIndex(20.0);    
 
     // Selection Operator 
-    selection = SelectionFactory.getSelectionOperator("BinaryTournament2") ;                           
+    selection = (BinaryTournament2<Real>) SelectionFactory.getSelectionOperator("BinaryTournament2") ;                           
 
     // Add the operators to the algorithm
     algorithm.setCrossover(crossover);
@@ -109,7 +110,7 @@ public class NSGAII_main {
     
     // Execute the Algorithm
     long initTime = System.currentTimeMillis();
-    SolutionSet population = algorithm.execute();
+    SolutionSet<Real> population = algorithm.execute();
     long estimatedTime = System.currentTimeMillis() - initTime;
     
     // Result messages 

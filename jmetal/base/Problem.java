@@ -40,6 +40,9 @@ public abstract class Problem<T extends Variable> implements Serializable {
    */
   protected String problemName_;
   
+  /** Stores the current generation */ 
+  protected int currentGeneration = -1;
+  
   /** 
    * Constructor. 
    */
@@ -107,4 +110,13 @@ public abstract class Problem<T extends Variable> implements Serializable {
   }
 
 	public abstract List<T> generateNewDecisionVariable() ;
+	
+	public void setCurrentGeneration(int currentGeneration) {
+		System.out.println("Evaluating generation " + currentGeneration);
+		this.currentGeneration = currentGeneration;
+	}
+	
+	public int getCurrentGeneration() {
+		return currentGeneration;
+	}
 } // Problem

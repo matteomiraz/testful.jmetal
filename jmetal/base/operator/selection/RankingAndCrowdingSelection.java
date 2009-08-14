@@ -96,9 +96,8 @@ public class RankingAndCrowdingSelection<T extends Variable> extends Selection<T
       //Asign crowding distance to individuals
       Distance.crowdingDistanceAssignment(front,problem_.getNumberOfObjectives());                
       //Add the individuals of this front
-      for (int k = 0; k < front.size(); k++ ) {
-        result.add(front.get(k));
-      } // for
+      for(Solution<T> s : front) 
+      	result.add(s);
 
       //Decrement remaint
       remain = remain - front.size();

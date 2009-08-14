@@ -76,9 +76,8 @@ public class PESA2<V extends Variable>
     //<-                
         
     // Incorporate non-dominated solution to the archive
-    for (int i = 0; i < solutionSet.size();i++){
-      archive.add(solutionSet.get(i)); // Only non dominated are accepted by 
-                                      // the archive
+    for(Solution<V> sol : solutionSet) {
+      archive.add(sol); // Only non dominated are accepted by the archive
     }
     
     // Clear the init solutionSet
@@ -99,8 +98,8 @@ public class PESA2<V extends Variable>
         solutionSet.add(offSpring[0]);                
       }
             
-      for (int i = 0; i < solutionSet.size(); i++)
-        archive.add(solutionSet.get(i));
+      for(Solution<V> sol : solutionSet)
+        archive.add(sol);
       
       // Clear the solutionSet
       solutionSet.clear();

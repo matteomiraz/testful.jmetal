@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -76,9 +77,6 @@ public class SolutionSet<T extends Variable> implements Serializable, Iterable<S
    * @throws IndexOutOfBoundsException.
    */
   public Solution<T> get(int i){
-    if (i >= solutionsList_.size()) {
-      throw new IndexOutOfBoundsException("Index out of Bound "+i);
-    }
     return solutionsList_.get(i);
   } // get
       
@@ -227,16 +225,16 @@ public class SolutionSet<T extends Variable> implements Serializable, Iterable<S
    * @return A matrix containing the objectives
    */
   public double [][] writeObjectivesToMatrix() {
-    if (this.size() == 0) {
+    if (this.size() == 0)
       return null;
-    }
-    double [][] objectives;
-    objectives = new double[size()][get(0).numberOfObjectives()];
-    for (int i = 0; i < size(); i++) {
-      for (int j = 0; j < get(0).numberOfObjectives(); j++) {
-        objectives[i][j] = get(i).getObjective(j);
-      }
-    }
+    
+    int i = 0;
+		double [][] objectives = new double[size()][];
+		for(Solution<T> s : this) {
+			double[] solObjs = s.getObjectives();
+			objectives[i++] = Arrays.copyOf(solObjs, solObjs.length);
+		}
+		
     return objectives;
   } // writeObjectivesMatrix
 } // SolutionSet

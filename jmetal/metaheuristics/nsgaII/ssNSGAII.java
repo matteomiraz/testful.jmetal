@@ -123,8 +123,8 @@ public class ssNSGAII<V extends Variable>
         //Assign crowding distance to individuals
         Distance.crowdingDistanceAssignment(front, problem_.getNumberOfObjectives());
         //Add the individuals of this front
-        for (int k = 0; k < front.size(); k++) {
-          population.add(front.get(k));
+        for(Solution<V> s : front) {
+          population.add(s);
         } // for
 
         //Decrement remain

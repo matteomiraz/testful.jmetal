@@ -110,9 +110,13 @@ public class Distance {
   public static <T extends Variable> double distanceBetweenObjectives(Solution<T> solutionI, Solution<T> solutionJ){                
     double diff;    //Auxiliar var
     double distance = 0.0;
+    
+    double[] solIObj = solutionI.getObjectives();
+    double[] solJObj = solutionJ.getObjectives();
+
     //-> Calculate the euclidean distance
-    for (int nObj = 0; nObj < solutionI.numberOfObjectives();nObj++){
-      diff = solutionI.getObjective(nObj) - solutionJ.getObjective(nObj);
+    for (int nObj = 0; nObj < solIObj.length;nObj++){
+			diff = solIObj[nObj] - solJObj[nObj];
       distance += Math.pow(diff,2.0);           
     } // for   
         

@@ -24,7 +24,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jmetal.base.Algorithm;
-import jmetal.base.Problem;
+import jmetal.base.ProblemValue;
 import jmetal.experiments.util.runExperiment;
 import jmetal.util.JMException;
 
@@ -172,7 +172,7 @@ public abstract class Experiment {
    * @param problemId Index of the problem in problemList_
    * @param algorithm Array containing the algorithms to execute
    */
-  public abstract void algorithmSettings(Problem problem, int problemId, Algorithm[] algorithm);
+  public abstract void algorithmSettings(ProblemValue problem, int problemId, Algorithm[] algorithm);
 
   public static void main(String[] args) throws JMException, IOException {
   }

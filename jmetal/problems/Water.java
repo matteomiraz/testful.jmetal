@@ -8,7 +8,7 @@ package jmetal.problems;
 
 import java.util.List;
 
-import jmetal.base.Problem;
+import jmetal.base.ProblemValue;
 import jmetal.base.Solution;
 import jmetal.base.variable.Real;
 import jmetal.util.JMException;
@@ -16,7 +16,7 @@ import jmetal.util.JMException;
 /**
  * Class representing problem Water
  */
-public class Water<T extends Real> extends Problem<T> {
+public class Water<T extends Real> extends ProblemValue<T> {
   
   private static final long serialVersionUID = 8970858463920311741L;
 	// defining the lower and upper limits

@@ -9,7 +9,7 @@ import jmetal.base.Algorithm;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
-import jmetal.base.VariableValue;
+import jmetal.base.Variable;
 import jmetal.base.operator.crossover.Crossover;
 import jmetal.base.operator.localSearch.LocalSearch;
 import jmetal.base.operator.mutation.Mutation;
@@ -22,7 +22,7 @@ import jmetal.util.Ranking;
 /**
  * This class implements the NSGA-II algorithm. 
  */
-public class NSGAII<V extends VariableValue>
+public class NSGAII<V extends Variable>
 	extends Algorithm<V, Crossover<V>, Mutation<V>, Selection<V, Solution<V>>, LocalSearch<V>> {
 
   private static final long serialVersionUID = 4970928169851043408L;

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Vector;
 
 import jmetal.base.DecisionVariables;
-import jmetal.base.Problem;
+import jmetal.base.ProblemValue;
 import jmetal.base.Solution;
 import jmetal.base.variable.IReal;
 import jmetal.util.JMException;
@@ -20,7 +20,7 @@ import jmetal.util.JMException;
 /** 
  * Class representing problem DTLZ1 
  */
-public class LZ07_F5<V extends IReal>  extends Problem<V> {   
+public class LZ07_F5<V extends IReal>  extends ProblemValue<V> {   
 	private static final long serialVersionUID = -5086587493019594056L;
   private final Class<V> solutionType_;
 

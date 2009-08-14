@@ -11,7 +11,7 @@ package jmetal.problems.LZ06;
 import java.util.List;
 
 import jmetal.base.DecisionVariables;
-import jmetal.base.Problem;
+import jmetal.base.ProblemValue;
 import jmetal.base.Solution;
 import jmetal.base.variable.IReal;
 import jmetal.util.JMException;
@@ -19,7 +19,7 @@ import jmetal.util.JMException;
 /** 
 * Class representing problem LZ06_F2
 */
-public class LZ06_F2<V extends IReal>  extends Problem<V> {
+public class LZ06_F2<V extends IReal>  extends ProblemValue<V> {
   
  private static final long serialVersionUID = 5825380420784925762L;
 

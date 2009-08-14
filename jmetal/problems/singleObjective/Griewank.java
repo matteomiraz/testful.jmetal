@@ -9,12 +9,12 @@ package jmetal.problems.singleObjective;
 import java.util.List;
 
 import jmetal.base.DecisionVariables;
-import jmetal.base.Problem;
+import jmetal.base.ProblemValue;
 import jmetal.base.Solution;
 import jmetal.base.variable.IReal;
 import jmetal.util.JMException;
 
-public class Griewank<T extends IReal> extends Problem<T> {
+public class Griewank<T extends IReal> extends ProblemValue<T> {
   private static final long serialVersionUID = -7795959989040731929L;
 
   private final Class<T> solutionType_;

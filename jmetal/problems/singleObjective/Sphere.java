@@ -9,12 +9,12 @@ package jmetal.problems.singleObjective;
 import java.util.List;
 
 import jmetal.base.DecisionVariables;
-import jmetal.base.Problem;
+import jmetal.base.ProblemValue;
 import jmetal.base.Solution;
 import jmetal.base.variable.IReal;
 import jmetal.util.JMException;
 
-public class Sphere<V extends IReal>  extends Problem<V> {
+public class Sphere<V extends IReal>  extends ProblemValue<V> {
   private static final long serialVersionUID = -5021029656925462284L;
 
   private final Class<V> solutionType_;

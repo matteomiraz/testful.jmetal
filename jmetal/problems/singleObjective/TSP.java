@@ -15,14 +15,14 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StreamTokenizer;
 
-import jmetal.base.Problem;
+import jmetal.base.ProblemValue;
 import jmetal.base.Solution;
 import jmetal.base.variable.Permutation;
 
 /**
  * Class representing a TSP (Traveling Salesman Problem) problem.
  */
-public class TSP extends Problem.ProblemPermutation {
+public class TSP extends ProblemValue.ProblemPermutation {
 
   private static final long serialVersionUID = -7417724855350746012L;
 	public int         numberOfCities_ ; 

@@ -11,7 +11,7 @@ package jmetal.problems.DTLZ;
 import java.util.List;
 
 import jmetal.base.DecisionVariables;
-import jmetal.base.Problem;
+import jmetal.base.ProblemValue;
 import jmetal.base.Solution;
 import jmetal.base.variable.IReal;
 import jmetal.util.JMException;
@@ -19,7 +19,7 @@ import jmetal.util.JMException;
 /**
  * Class representing problem DTLZ7
  */
-public class DTLZ7<T extends IReal> extends Problem<T>{
+public class DTLZ7<T extends IReal> extends ProblemValue<T>{
    
  private static final long serialVersionUID = -1722944559338505767L;
 

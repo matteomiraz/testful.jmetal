@@ -10,7 +10,7 @@ package jmetal.problems.cec2009Competition;
 import java.util.List;
 
 import jmetal.base.DecisionVariables;
-import jmetal.base.Problem;
+import jmetal.base.ProblemValue;
 import jmetal.base.Solution;
 import jmetal.base.variable.IReal;
 import jmetal.util.JMException;
@@ -18,7 +18,7 @@ import jmetal.util.JMException;
 /**
  * Class representing problem CEC2009_UF7
  */
-public class CEC2009_UF7<T extends IReal> extends Problem<T> {
+public class CEC2009_UF7<T extends IReal> extends ProblemValue<T> {
     
  private static final long serialVersionUID = -5015954647805240258L;
 

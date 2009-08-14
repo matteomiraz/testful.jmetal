@@ -16,7 +16,7 @@ import java.util.StringTokenizer;
 
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
-import jmetal.base.VariableValue;
+import jmetal.base.Variable;
 import jmetal.util.NonDominatedSolutionList;
 
 /**
@@ -231,7 +231,7 @@ public class MetricsUtil {
    * @param path The path of the file containing the data
    * @return A solution set
    */
-  public <T extends VariableValue> SolutionSet<T> readNonDominatedSolutionSet(String path) {
+  public <T extends Variable> SolutionSet<T> readNonDominatedSolutionSet(String path) {
     try {
       /* Open the file */
       FileInputStream fis   = new FileInputStream(path)     ;

@@ -12,14 +12,14 @@ import java.util.Iterator;
 
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
-import jmetal.base.VariableValue;
+import jmetal.base.Variable;
 import jmetal.base.operator.comparator.DominanceComparator;
 import jmetal.base.operator.comparator.SolutionComparator;
 
 /** 
  * This class implements an unbound list of non-dominated solutions
  */
-public class NonDominatedSolutionList<T extends VariableValue> extends SolutionSet<T>{
+public class NonDominatedSolutionList<T extends Variable> extends SolutionSet<T>{
         
   private static final long serialVersionUID = 1449431460880062530L;
 

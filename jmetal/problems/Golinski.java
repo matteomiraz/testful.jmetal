@@ -9,7 +9,7 @@ package jmetal.problems;
 
 import java.util.List;
 
-import jmetal.base.Problem;
+import jmetal.base.ProblemValue;
 import jmetal.base.Solution;
 import jmetal.base.variable.IReal;
 import jmetal.util.JMException;
@@ -17,7 +17,7 @@ import jmetal.util.JMException;
 /** 
  * Class representing problem Golinski.
  */
-public class Golinski<T extends IReal> extends Problem<T>{
+public class Golinski<T extends IReal> extends ProblemValue<T>{
 
   private static final long serialVersionUID = 7529477649719646295L;
 	// defining lowerLimits and upperLimits for the problem

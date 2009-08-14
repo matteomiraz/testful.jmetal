@@ -13,7 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jmetal.base.Algorithm;
-import jmetal.base.Problem;
+import jmetal.base.ProblemValue;
 import jmetal.base.SolutionSet;
 import jmetal.experiments.Experiment;
 import jmetal.experiments.Settings;
@@ -108,14 +108,14 @@ public class runExperiment extends Thread {
     
         
     for (int problemId = first_; problemId <= last_; problemId++) {
-      Problem problem;   // The problem to solve
+      ProblemValue problem;   // The problem to solve
 
       problem = null ;
       // STEP 2: get the problem from the list
       Object[] params = {"Real"}; // Parameters of the problem
       try {
         // Parameters of the problem
-        problem = ProblemFactory.getProblem(problemList_[problemId], params);
+        problem = (ProblemValue) ProblemFactory.getProblem(problemList_[problemId], params);
       } catch (JMException ex) {
         Logger.getLogger(Experiment.class.getName()).log(Level.SEVERE, null, ex);
       }

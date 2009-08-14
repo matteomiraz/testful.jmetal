@@ -104,23 +104,19 @@ public class PolynomialMutation extends Operator {
     Solution solution = (Solution)object;
 
     if (solution.getType() != SolutionType_.Real) {
-      Configuration.logger_.severe("PolynomialMutation.execute: the solution " +
+      String msg = "PolynomialMutation.execute: the solution " +
           "is not of the right type. The type should be 'Real', but " +
-          solution.getType() + " is obtained");
-
-      Class cls = java.lang.String.class;
-      String name = cls.getName(); 
-      throw new JMException("Exception in " + name + ".execute()") ;
+          solution.getType() + " is obtained";
+			Configuration.logger_.severe(msg);
+      throw new JMException(msg) ;
     } // if 
     
     Double probability = (Double)getParameter("probability");       
     if (probability == null)
     {
-      Configuration.logger_.severe("PolynomialMutation.execute: probability " +
-      "not specified");
-      Class cls = java.lang.String.class;
-      String name = cls.getName(); 
-      throw new JMException("Exception in " + name + ".execute()") ;  
+      String msg = "PolynomialMutation.execute: probability not specified";
+			Configuration.logger_.severe(msg);
+      throw new JMException(msg) ;  
     }
         
     Double distributionIndex = (Double)getParameter("distributionIndex");

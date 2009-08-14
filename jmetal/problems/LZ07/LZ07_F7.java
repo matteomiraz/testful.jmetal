@@ -77,9 +77,10 @@ public class LZ07_F7 extends Problem {
     public void evaluate(Solution solution) throws JMException {
       DecisionVariables gen  = solution.getDecisionVariables();
       
-      Vector<Double> x = new Vector(numberOfVariables_) ;
-      Vector<Double> y = new Vector(numberOfObjectives_);
-      int k = numberOfVariables_ - numberOfObjectives_ + 1;
+      Vector<Double> x = new Vector<Double>(numberOfVariables_) ;
+      Vector<Double> y = new Vector<Double>(numberOfObjectives_);
+      @SuppressWarnings("unused")
+			int k = numberOfVariables_ - numberOfObjectives_ + 1;
           
       for (int i = 0; i < numberOfVariables_; i++) {
       	x.addElement(gen.variables_[i].getValue());

@@ -29,8 +29,8 @@ public class SettingsFactory {
     String base = "jmetal.experiments.settings." + algorithmName + "_Settings";
 
     try {
-      Class problemClass = Class.forName(base);
-      Constructor [] constructors = problemClass.getConstructors();
+      Class<?> problemClass = Class.forName(base);
+      Constructor<?> [] constructors = problemClass.getConstructors();
       int i = 0;
       //find the constructor
       while ((i < constructors.length) && 

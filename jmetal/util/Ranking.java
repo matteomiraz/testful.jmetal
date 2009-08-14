@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
 import jmetal.base.operator.comparator.DominanceComparator;
 import jmetal.base.operator.comparator.OverallConstraintViolationComparator;
@@ -40,19 +41,20 @@ public class Ranking {
   /**
    * stores a <code>Comparator</code> for dominance checking
    */
-  private static final Comparator dominance_ = new DominanceComparator();
+  private static final Comparator<Solution> dominance_ = new DominanceComparator();
   
   /**
    * stores a <code>Comparator</code> for Overal Constraint Violation Comparator
    * checking
    */
-  private static final Comparator constraint_ = new OverallConstraintViolationComparator();
+  private static final Comparator<Solution> constraint_ = new OverallConstraintViolationComparator();
     
   /** 
    * Constructor.
    * @param solutionSet The <code>SolutionSet</code> to be ranked.
    */       
-  public Ranking(SolutionSet solutionSet) {        
+  @SuppressWarnings("unchecked")
+	public Ranking(SolutionSet solutionSet) {        
     solutionSet_ = solutionSet ;
 
     // dominateMe[i] contains the number of solutions dominating i        

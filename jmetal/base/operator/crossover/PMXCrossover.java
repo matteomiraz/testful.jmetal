@@ -114,11 +114,10 @@ import jmetal.util.PseudoRandom;
         } // for
       } // if
       else {
-        Configuration.logger_.severe("PMXCrossover.doCrossover: invalid type+" +
-            ""+ parent1.getDecisionVariables().variables_[0].getVariableType());
-        Class cls = java.lang.String.class;
-        String name = cls.getName(); 
-        throw new JMException("Exception in " + name + ".doCrossover()") ; 
+        String msg = "PMXCrossover.doCrossover: invalid type+" +
+            parent1.getDecisionVariables().variables_[0].getVariableType();
+				Configuration.logger_.severe(msg);
+	      throw new JMException(msg) ; 
       } // else
     } // if
     return offspring ;                                                                                      
@@ -137,19 +136,15 @@ import jmetal.util.PseudoRandom;
     
     if (parents.length < 2)
     {
-      Configuration.logger_.severe("PMXCrossover.execute: operator needs two " +
-          "parents");
-      Class cls = java.lang.String.class;
-      String name = cls.getName(); 
-      throw new JMException("Exception in " + name + ".execute()") ;      
+      String msg = "PMXCrossover.execute: operator needs two parents";
+			Configuration.logger_.severe(msg);
+      throw new JMException(msg) ; 
     }
     else if (crossoverProbability == null)
     {
-      Configuration.logger_.severe("PMXCrossover.execute: probability not " +
-      "specified");
-      Class cls = java.lang.String.class;
-      String name = cls.getName(); 
-      throw new JMException("Exception in " + name + ".execute()") ;  
+      String msg = "PMXCrossover.execute: probability not specified";
+			Configuration.logger_.severe(msg);
+      throw new JMException(msg) ; 
     }          
     
     Solution [] offspring = doCrossover(crossoverProbability.doubleValue(),

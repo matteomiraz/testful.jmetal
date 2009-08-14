@@ -76,11 +76,9 @@ public class HUXCrossover extends Operator{
       }          
     }catch (ClassCastException e1) {
       
-      Configuration.logger_.severe("HUXCrossover.doCrossover: Cannot perfom " +
-          "SinglePointCrossover ") ;
-      Class cls = java.lang.String.class;
-      String name = cls.getName(); 
-      throw new JMException("Exception in " + name + ".doCrossover()") ;
+      String msg = "HUXCrossover.doCrossover: Cannot perfom SinglePointCrossover ";
+			Configuration.logger_.severe(msg) ;
+      throw new JMException(msg) ; 
     }        
     return offSpring;                                                                                      
   } // doCrossover
@@ -99,34 +97,28 @@ public class HUXCrossover extends Operator{
          ((parents[0].getType() != SolutionType_.BinaryReal) ||
           (parents[1].getType() != SolutionType_.BinaryReal))) {
       
-      Configuration.logger_.severe("HUXCrossover.execute: the solutions " +
-          "are not of the right type. The type should be 'Binary' of " +
-          "'BinaryReal', but " +
-          parents[0].getType() + " and " + 
-          parents[1].getType() + " are obtained");
-
-      Class cls = java.lang.String.class;
-      String name = cls.getName(); 
-      throw new JMException("Exception in " + name + ".execute()") ;
+      String msg = "HUXCrossover.execute: the solutions " +
+						    "are not of the right type. The type should be 'Binary' of " +
+						    "'BinaryReal', but " +
+						    parents[0].getType() + " and " + 
+						    parents[1].getType() + " are obtained";
+			Configuration.logger_.severe(msg);
+      throw new JMException(msg) ; 
 
     } // if 
     
     Double probability = (Double)getParameter("probability");
     if (parents.length < 2)
     {
-      Configuration.logger_.severe("HUXCrossover.execute: operator needs two " +
-          "parents");
-      Class cls = java.lang.String.class;
-      String name = cls.getName(); 
-      throw new JMException("Exception in " + name + ".execute()") ;      
+      String msg = "HUXCrossover.execute: operator needs two parents";
+			Configuration.logger_.severe(msg);
+      throw new JMException(msg) ; 
     }
     else if (probability == null)
     {
-      Configuration.logger_.severe("HUXCrossover.execute: probability not " +
-      "specified");
-      Class cls = java.lang.String.class;
-      String name = cls.getName(); 
-      throw new JMException("Exception in " + name + ".execute()") ;  
+      String msg = "HUXCrossover.execute: probability not specified";
+			Configuration.logger_.severe(msg);
+      throw new JMException(msg) ; 
     }         
     
     Solution [] offSpring = doCrossover(probability.doubleValue(),

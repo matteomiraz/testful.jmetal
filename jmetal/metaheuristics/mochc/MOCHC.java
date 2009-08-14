@@ -94,7 +94,7 @@ public class MOCHC extends Algorithm {
     int minimumDistance  ;
     int evaluations      ;
     
-    Comparator crowdingComparator = new CrowdingComparator();
+    Comparator<Solution> crowdingComparator = new CrowdingComparator();
     
     Operator crossover              ;
     Operator parentSelection        ;

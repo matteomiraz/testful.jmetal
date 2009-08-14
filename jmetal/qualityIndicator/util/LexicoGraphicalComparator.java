@@ -15,7 +15,7 @@ import java.util.Comparator;
  * to compare points given as <code>double</code>.
  * The order used is the lexicograhphical.
  */
-public class LexicoGraphicalComparator implements Comparator{
+public class LexicoGraphicalComparator implements Comparator<double[]>{
   
   /** 
    * The compare method compare the objects o1 and o2.
@@ -23,10 +23,7 @@ public class LexicoGraphicalComparator implements Comparator{
    * @param o2 An object that reference a double[]
    * @return -1 if o1 < o1, 1 if o1 > o2 or 0 in other case.
    */
-  public int compare(Object o1, Object o2) {
-    //Cast to double [] o1 and o2.
-    double [] pointOne = (double [])o1;
-    double [] pointTwo = (double [])o2;
+  public int compare(double[] pointOne, double[] pointTwo) {
     
     //To determine the first i, that pointOne[i] != pointTwo[i];
     int index = 0;

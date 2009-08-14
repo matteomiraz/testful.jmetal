@@ -169,32 +169,26 @@ public class SBXCrossover extends Operator {
     if ((parents[0].getType() != SolutionType_.Real) ||
         (parents[1].getType() != SolutionType_.Real)) {
 
-      Configuration.logger_.severe("SBXCrossover.execute: the solutions " +
-          "are not of the right type. The type should be 'Real', but " +
-          parents[0].getType() + " and " + 
-          parents[1].getType() + " are obtained");
-
-      Class cls = java.lang.String.class;
-      String name = cls.getName(); 
-      throw new JMException("Exception in " + name + ".execute()") ;
+      String msg = "SBXCrossover.execute: the solutions " +
+					    "are not of the right type. The type should be 'Real', but " +
+					    parents[0].getType() + " and " + 
+					    parents[1].getType() + " are obtained";
+			Configuration.logger_.severe(msg);
+      throw new JMException(msg) ; 
     } // if 
     
     Double probability = (Double)getParameter("probability");
     if (parents.length < 2)
     {
-      Configuration.logger_.severe("SBXCrossover.execute: operator needs two " +
-          "parents");
-      Class cls = java.lang.String.class;
-      String name = cls.getName(); 
-      throw new JMException("Exception in " + name + ".execute()") ;      
+      String msg = "SBXCrossover.execute: operator needs two parents";
+			Configuration.logger_.severe(msg);
+      throw new JMException(msg) ; 
     }
     else if (probability == null)
     {
-      Configuration.logger_.severe("SBXCrossover.execute: probability not " +
-      "specified");
-      Class cls = java.lang.String.class;
-      String name = cls.getName(); 
-      throw new JMException("Exception in " + name + ".execute()") ;  
+      String msg = "SBXCrossover.execute: probability not specified";
+			Configuration.logger_.severe(msg);
+      throw new JMException(msg) ; 
     }
  
     Double distributionIndex = (Double)getParameter("distributionIndex");

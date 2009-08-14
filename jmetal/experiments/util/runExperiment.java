@@ -147,7 +147,7 @@ synchronized(experiment_) {
 
           experimentDirectory = new File(directory);
           if (!experimentDirectory.exists()) {
-            boolean result = new File(directory).mkdirs();
+            new File(directory).mkdirs();
             System.out.println("Creating " + directory);
           }
 

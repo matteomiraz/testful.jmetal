@@ -25,27 +25,20 @@ public class VariableFactory {
     Variable variable   = null;
     String baseLocation = "jmetal.base.variable.";
     try {
-      Class c = Class.forName(baseLocation + name);
+      Class<?> c = Class.forName(baseLocation + name);
       variable = (Variable) c.newInstance();
       return variable;
     } catch (ClassNotFoundException e1) {
-      Configuration.logger_.severe("VariableFactory.getVariable: " +
-      "ClassNotFoundException ");
-      Class cls = java.lang.String.class;
-      String name2 = cls.getName() ;    
-      throw new JMException("Exception in " + name2 + ".getVariable()") ;
+      Configuration.logger_.severe("VariableFactory.getVariable: ClassNotFoundException ");
+      throw new JMException(e1) ;
     } catch (InstantiationException e2) {
       Configuration.logger_.severe("VariableFactory.getVariable: " +
       "InstantiationException ");
-      Class cls = java.lang.String.class;
-      String name2 = cls.getName() ;    
-      throw new JMException("Exception in " + name2 + ".getVariable()") ;
+      throw new JMException(e2) ;
     } catch (IllegalAccessException e3) {
       Configuration.logger_.severe("VariableFactory.getVariable: " +
       "IllegalAccessException ");
-      Class cls = java.lang.String.class;
-      String name2 = cls.getName() ;    
-      throw new JMException("Exception in " + name2 + ".getVariable()") ;
+      throw new JMException(e3) ;
     }
   } // getVariable      
 } //VariabeFactory

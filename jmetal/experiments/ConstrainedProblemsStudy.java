@@ -76,7 +76,7 @@ public class ConstrainedProblemsStudy extends Experiment {
     exp.independentRuns_ = 100;
 
     // Run the experiments
-    int numberOfThreads ;
+    //int numberOfThreads ;
     //exp.runExperiment(numberOfThreads = 4) ;
     
     // Generate latex tables
@@ -87,7 +87,7 @@ public class ConstrainedProblemsStudy extends Experiment {
     int columns  ;
     String prefix ;
     String [] problems ;
-    boolean notch ;
+    boolean notch  = true;
 
 
     // Configuring scripts for ZDT
@@ -95,7 +95,7 @@ public class ConstrainedProblemsStudy extends Experiment {
     columns = 2 ;
     prefix = new String("Constrained");
     problems = new String[]{"ConstrEx", "Golinski", "Srinivas","Tanaka"} ;
-    exp.generateRBoxplotScripts(rows, columns, problems, prefix, notch=true) ;
+    exp.generateRBoxplotScripts(rows, columns, problems, prefix, notch) ;
     exp.generateRWilcoxonScripts(problems, prefix) ;
   }
 } // ConstrainedProblemsStudy

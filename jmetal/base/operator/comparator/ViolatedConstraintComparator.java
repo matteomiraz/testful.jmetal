@@ -14,7 +14,7 @@ import jmetal.base.Solution;
  * This class implements a <code>Comparator</code> (a method for comparing
  * <code>Solution</code> objects) based on the number of violated constraints.
  */
-public class ViolatedConstraintComparator implements Comparator{
+public class ViolatedConstraintComparator implements Comparator<Solution> {
     
  /**
   * Compares two solutions.
@@ -23,10 +23,7 @@ public class ViolatedConstraintComparator implements Comparator{
   * @return -1, or 0, or 1 if o1 is less than, equal, or greater than o2,
   * respectively.
   */
-  public int compare(Object o1, Object o2) {
-    Solution solution1 = (Solution) o1;
-    Solution solution2 = (Solution) o2;
-    
+  public int compare(Solution solution1, Solution solution2) {
     if (solution1.getNumberOfViolatedConstraint() < 
         solution2.getNumberOfViolatedConstraint()) {
       return -1;

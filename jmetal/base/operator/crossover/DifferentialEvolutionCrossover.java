@@ -54,16 +54,14 @@ public class DifferentialEvolutionCrossover extends Operator {
          (parent[1].getType() != SolutionType_.Real)||
          (parent[2].getType() != SolutionType_.Real) ) {
 
-       Configuration.logger_.severe("DifferentialEvolutionCrossover.execute: " +
-       		" the solutions " +
-           "are not of the right type. The type should be 'Real', but " +
-           parent[0].getType() + " and " + 
-           parent[1].getType() + " and " + 
-           parent[2].getType() + " are obtained");
+       String msg = "DifferentialEvolutionCrossover.execute: the solutions " +
+					     "are not of the right type. The type should be 'Real', but " +
+					     parent[0].getType() + " and " + 
+					     parent[1].getType() + " and " + 
+					     parent[2].getType() + " are obtained";
+			Configuration.logger_.severe(msg);
 
-       Class cls = java.lang.String.class;
-       String name = cls.getName(); 
-       throw new JMException("Exception in " + name + ".execute()") ;
+       throw new JMException(msg) ; 
      } // if 
      
      Double CR = (Double)getParameter("CR");

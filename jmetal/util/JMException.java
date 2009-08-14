@@ -15,6 +15,11 @@ public class JMException extends Exception implements Serializable {
   
   private static final long serialVersionUID = 4288481737365385068L;
 
+  
+	public JMException(Throwable e) {
+		super(e);
+	}
+  
 	/**
    * Constructor
    * @param Error message

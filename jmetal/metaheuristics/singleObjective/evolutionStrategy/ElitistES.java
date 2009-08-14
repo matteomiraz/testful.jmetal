@@ -49,7 +49,7 @@ public class ElitistES extends Algorithm {
     SolutionSet offspringPopulation ;  
 
     Operator   mutationOperator ;
-    Comparator comparator       ;
+    Comparator<Solution> comparator       ;
     
     comparator = new ObjectiveComparator(0) ; // Single objective comparator
     

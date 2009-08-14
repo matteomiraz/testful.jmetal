@@ -25,7 +25,7 @@ public class BinaryTournament2 extends Operator{
 	/**
    * dominance_ store the <code>Comparator</code> for check dominance_
    */
-  private Comparator dominance_;
+  private Comparator<Solution> dominance_;
   
   /**
    * a_ stores a permutation of the solutions in the solutionSet used

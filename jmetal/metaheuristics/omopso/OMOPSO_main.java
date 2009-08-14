@@ -17,7 +17,6 @@ import jmetal.base.Problem;
 import jmetal.base.SolutionSet;
 import jmetal.problems.Kursawe;
 import jmetal.problems.ProblemFactory;
-import jmetal.qualityIndicator.QualityIndicator;
 import jmetal.util.JMException;
 
 public class OMOPSO_main {
@@ -33,14 +32,11 @@ public class OMOPSO_main {
     Problem   problem   ;         // The problem to solve
     Algorithm algorithm ;         // The algorithm to use
     
-    QualityIndicator indicators ; // Object to get quality indicators
-        
     // Logger object and file to store log messages
     logger_      = Configuration.logger_ ;
     fileHandler_ = new FileHandler("OMOPSO_main.log"); 
     logger_.addHandler(fileHandler_) ;
     
-    indicators = null ;
     if (args.length == 1) {
       Object [] params = {"Real"};
       problem = (new ProblemFactory()).getProblem(args[0],params);
@@ -48,7 +44,6 @@ public class OMOPSO_main {
     else if (args.length == 2) {
       Object [] params = {"Real"};
       problem = (new ProblemFactory()).getProblem(args[0],params);
-      indicators = new QualityIndicator(problem, args[1]) ;
     } // if
     else { // Default problem
       problem = new Kursawe(3, "Real"); 

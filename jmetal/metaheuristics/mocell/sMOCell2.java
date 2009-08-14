@@ -49,13 +49,13 @@ public class sMOCell2 extends Algorithm{
    * @throws JMException 
    */   
   public SolutionSet execute() throws JMException {
-    int populationSize, archiveSize, maxEvaluations, evaluations, feedBack;
+    int populationSize, archiveSize, maxEvaluations, evaluations;
     Operator mutationOperator, crossoverOperator, selectionOperator;
     SolutionSet currentSolutionSet, newSolutionSet;
     CrowdingArchive archive;
     SolutionSet [] neighbors;    
     Neighborhood neighborhood;
-    Comparator dominance = new DominanceComparator(),
+    Comparator<Solution> dominance = new DominanceComparator(),
     crowding  = new CrowdingComparator();  
     Distance distance = new Distance();
 
@@ -86,8 +86,6 @@ public class sMOCell2 extends Algorithm{
       solution.setLocation(i);
       evaluations++;
     }       
-    //
-    int iterations = 0;
 
     while (evaluations < maxEvaluations){                 
       newSolutionSet = new SolutionSet(populationSize);

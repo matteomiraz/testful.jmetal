@@ -43,13 +43,12 @@ public class GGA extends Algorithm {
 
     SolutionSet population          ;
     SolutionSet offspringPopulation ;
-    SolutionSet swapPopulation      ;    
 
     Operator    mutationOperator  ;
     Operator    crossoverOperator ;
     Operator    selectionOperator ;
     
-    Comparator  comparator        ;
+    Comparator<Solution>  comparator        ;
     
     comparator = new ObjectiveComparator(0) ; // Single objective comparator
     

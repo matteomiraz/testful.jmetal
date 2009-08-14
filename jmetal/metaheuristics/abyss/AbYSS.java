@@ -109,10 +109,10 @@ public class AbYSS extends Algorithm {
   /**
    * Stores the comparators for dominance and equality, respectively
    */
-  private Comparator dominance_ ;
-  private Comparator equal_     ;
-  private Comparator fitness_   ;
-  private Comparator crowdingDistance_;
+  private Comparator<Solution> dominance_ ;
+  private Comparator<Solution> equal_     ;
+  private Comparator<Solution> fitness_   ;
+  private Comparator<Solution> crowdingDistance_;
   
   /**
    * Stores the crossover operator

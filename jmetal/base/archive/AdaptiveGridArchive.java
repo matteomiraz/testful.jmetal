@@ -34,7 +34,7 @@ public class AdaptiveGridArchive extends SolutionSet {
   /**
    * Stores a <code>Comparator</code> for dominance checking
    */
-  private Comparator dominance_;
+  private Comparator<Solution> dominance_;
     
   /**
    * Constructor.

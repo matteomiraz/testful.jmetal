@@ -88,8 +88,8 @@ public class StandardStudy extends Experiment {
     exp.independentRuns_ = 100;
 
     // Run the experiments
-    int numberOfThreads ;
-    exp.runExperiment(numberOfThreads = 1) ;
+    int numberOfThreads = 1;
+    exp.runExperiment(numberOfThreads) ;
 
     // Generate latex tables
     exp.generateLatexTables() ;
@@ -99,7 +99,7 @@ public class StandardStudy extends Experiment {
     int columns  ;
     String prefix ;
     String [] problems ;
-    boolean notch ;
+    boolean notch = true ;
 
     // Configuring scripts for ZDT
     rows = 3 ;
@@ -107,7 +107,7 @@ public class StandardStudy extends Experiment {
     prefix = new String("ZDT");
     problems = new String[]{"ZDT1", "ZDT2","ZDT3", "ZDT4","ZDT6"} ;
 
-    exp.generateRBoxplotScripts(rows, columns, problems, prefix, notch = true) ;
+    exp.generateRBoxplotScripts(rows, columns, problems, prefix, notch) ;
     exp.generateRWilcoxonScripts(problems, prefix) ;
 
     // Configure scripts for DTLZ

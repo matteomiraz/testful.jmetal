@@ -67,11 +67,9 @@ public class PESA2Selection extends Operator{
       }        
       return archive.get((base + cnt) % archive.size());
     } catch (ClassCastException e) {
-      Configuration.logger_.severe("PESA2Selection.execute: ClassCastException. " +
-          "Found" + object.getClass() + "Expected: AdaptativeGridArchive") ;
-      Class cls = java.lang.String.class;
-      String name = cls.getName(); 
-      throw new JMException("Exception in " + name + ".execute()") ;  
+      String msg = "PESA2Selection.execute: ClassCastException. Found" + object.getClass() + "Expected: AdaptativeGridArchive";
+			Configuration.logger_.severe(msg) ;
+      throw new JMException(msg) ; 
     }
   } //execute
 } // PESA2Selection

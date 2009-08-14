@@ -32,10 +32,9 @@ public class MutationFactory {
       return new SwapMutation();
     else
     {
-      Configuration.logger_.severe("Operator '" + name + "' not found ");
-      Class cls = java.lang.String.class;
-      String name2 = cls.getName() ;    
-      throw new JMException("Exception in " + name2 + ".getMutationOperator()") ;
+      String msg = "Operator '" + name + "' not found ";
+			Configuration.logger_.severe(msg);
+      throw new JMException(msg) ;
     }        
   } // getMutationOperator
 } // MutationFactory

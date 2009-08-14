@@ -47,7 +47,7 @@ public class SSGA extends Algorithm {
     Operator    crossoverOperator ;
     Operator    selectionOperator ;
     
-    Comparator  comparator        ;
+    Comparator<Solution>  comparator        ;
     
     comparator = new ObjectiveComparator(0) ; // Single objective comparator
     

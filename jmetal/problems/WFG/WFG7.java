@@ -133,7 +133,8 @@ public class WFG7 extends WFG{
       result[i-1] = (new Transformations()).r_sum(subZ,subW);            
     }
         
-    int l = z.length - k;
+    @SuppressWarnings("unused")
+		int l = z.length - k;
     int head = k + 1;
     int tail = z.length;              
     float [] subZ = subVector(z,head-1,tail-1);      

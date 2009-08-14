@@ -112,10 +112,8 @@ public class Main {
       logger_.info("Spread     : " + indicators.getSpread(population)) ;
       logger_.info("Epsilon    : " + indicators.getEpsilon(population)) ;  
 
-      if (algorithm.getOutputParameter("evaluations") != null) { 
-        Integer evals = (Integer)algorithm.getOutputParameter("evaluations") ;
-        int evaluations = (Integer)evals.intValue();
-        logger_.info("Speed      : " + evaluations + " evaluations") ;      
+      if (algorithm.getEvaluations() >= 0) { 
+        logger_.info("Speed      : " + algorithm.getEvaluations() + " evaluations") ;      
       } // if
     } // if
   } //main

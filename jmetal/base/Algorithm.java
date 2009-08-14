@@ -30,6 +30,19 @@ public abstract class Algorithm implements Serializable {
  protected Mutation mutationOperator;
  protected Selection<?> selectionOperator;
  protected LocalSearch improvement;
+
+ // output parameters
+ private int evaluations = -1;
+ 
+ 
+ public void setEvaluations(int evaluations) {
+	 this.evaluations = evaluations;
+ }
+
+
+ public int getEvaluations() {
+	 return evaluations;
+ }
  
  /** 
   * Stores algorithm specific parameters. For example, in NSGA-II these
@@ -37,12 +50,6 @@ public abstract class Algorithm implements Serializable {
   * evaluations.
   */
   protected Map<String,Object> inputParameters_ = null;  
-  
-  /** 
-   * Stores output parameters, which are retrieved by Main object to 
-   * obtain information from an algorithm.
-   */
-  protected Map<String,Object> outPutParameters_ = null;
   
  /**   
   * Launches the execution of an specific algorithm.
@@ -79,35 +86,6 @@ public abstract class Algorithm implements Serializable {
     return inputParameters_.get(name);
   } // getInputParameter
   
- /**
-  * Sets an output parameter that can be obtained by invoking 
-  * <code>getOutputParame</code>. Typically this algorithm is invoked by an
-  * algorithm at the end of the <code>execute</code> to retrieve output 
-  * information
-  * @param name The output parameter name
-  * @param object Object representing the output parameter
-  */  
-  public void setOutputParameter(String name, Object object) {
-    if (outPutParameters_ == null) {
-      outPutParameters_ = new HashMap<String,Object>();
-    }        
-    outPutParameters_.put(name,object);
-  } // setOutputParameter  
-  
- /**
-  * Gets an output parameter through its name. Typically,
-  * the method is invoked by a Main object after the execution of an algorithm.
-  * @param name The output parameter name
-  * @return Object representing the output parameter, or null if the parameter
-  * doesn't exist or the name is wrong.
-  */
-  public Object getOutputParameter(String name) {
-    if (outPutParameters_ != null) 
-      return outPutParameters_.get(name);
-    else
-      return null ;
-  } // getOutputParameter   
-
   public void setCrossover(Crossover crossover) {
   	this.crossoverOperator = crossover;
   }

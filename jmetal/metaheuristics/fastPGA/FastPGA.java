@@ -145,7 +145,7 @@ public class FastPGA extends Algorithm{
       }
     }
     
-    setOutputParameter("evaluations",evaluations);
+    setEvaluations(evaluations);
         
     Ranking ranking = new Ranking(solutionSet);
     return ranking.getSubfront(0);

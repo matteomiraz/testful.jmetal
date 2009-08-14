@@ -157,7 +157,7 @@ public class ssNSGAII extends Algorithm {
     } // while
 
     // Return as output parameter the required evaluations
-    setOutputParameter("evaluations", requiredEvaluations);
+    setEvaluations(requiredEvaluations);
 
     // Return the first non-dominated front
     Ranking ranking = new Ranking(population);

@@ -107,8 +107,7 @@ public class FastPGA_main {
 
     // Result messsages
     logger_.info("Total execution time: "+estimatedTime);
-    logger_.info("Total number of evaluations: " + 
-                  algorithm.getOutputParameter("evaluations"));
+    logger_.info("Total number of evaluations: " + algorithm.getEvaluations());
     logger_.info("Objectives values have been writen to file FUN");
     population.printObjectivesToFile("FUN");
     logger_.info("Variables values have been writen to file VAR");

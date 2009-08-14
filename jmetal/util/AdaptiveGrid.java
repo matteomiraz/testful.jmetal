@@ -90,15 +90,11 @@ public class AdaptiveGrid<T extends Variable> {
     } // for
 	   
     //Find the max and min limits of objetives into the population
-    for (int ind = 0; ind < solutionSet.size(); ind++){
-      Solution<T> tmpIndividual = solutionSet.get(ind);
+    for(Solution<T> tmpIndividual : solutionSet) {
       for (int obj = 0; obj < objectives_; obj++) {
-        if (tmpIndividual.getObjective(obj) < lowerLimits_[obj]) {
-          lowerLimits_[obj] = tmpIndividual.getObjective(obj);
-        }
-        if (tmpIndividual.getObjective(obj) > upperLimits_[obj]) {
-          upperLimits_[obj] = tmpIndividual.getObjective(obj);
-        }
+        double[] indObjs = tmpIndividual.getObjectives();
+				if (indObjs[obj] < lowerLimits_[obj]) lowerLimits_[obj] = indObjs[obj];
+        if (indObjs[obj] > upperLimits_[obj]) upperLimits_[obj] = indObjs[obj];
       } // for
     } // for   
  } //updateLimits
@@ -165,12 +161,14 @@ public class AdaptiveGrid<T extends Variable> {
       //Update lower and upper limits
       updateLimits(solutionSet);
       
+      double[] solObjs = solution.getObjectives();
+      
       //Actualize the lower and upper limits whit the individual      
       for (int obj = 0; obj < objectives_; obj++){                    
-        if (solution.getObjective(obj) < lowerLimits_[obj])
-          lowerLimits_[obj] = solution.getObjective(obj);
-        if (solution.getObjective(obj) > upperLimits_[obj])
-          upperLimits_[obj] = solution.getObjective(obj);                    
+				if (solObjs[obj] < lowerLimits_[obj])
+          lowerLimits_[obj] = solObjs[obj];
+        if (solObjs[obj] > upperLimits_[obj])
+          upperLimits_[obj] = solObjs[obj];                    
       } // for
                
       //Calculate the division size
@@ -197,19 +195,21 @@ public class AdaptiveGrid<T extends Variable> {
     //Create a int [] to store the range of each objetive
     int [] position = new int[objectives_];
 
+    double[] solObjs = solution.getObjectives();
+
     //Calculate the position for each objetive
     for (int obj = 0; obj < objectives_; obj++) {           
       
-      if ((solution.getObjective(obj) > upperLimits_[obj])
-          || (solution.getObjective(obj) < lowerLimits_[obj]))
+			if ((solObjs[obj] > upperLimits_[obj])
+          || (solObjs[obj] < lowerLimits_[obj]))
         return -1;      
-      else if (solution.getObjective(obj) ==lowerLimits_[obj])
+      else if (solObjs[obj] ==lowerLimits_[obj])
         position[obj] = 0;           
-      else if (solution.getObjective(obj) ==upperLimits_[obj])
+      else if (solObjs[obj] ==upperLimits_[obj])
         position[obj] = ((int)Math.pow(2.0,bisections_))-1;    	              
       else {
         double tmpSize = divisionSize_[obj];               
-        double value   = solution.getObjective(obj);
+        double value   = solObjs[obj];
         double account = lowerLimits_[obj];
         int ranges     = (int)Math.pow(2.0,bisections_);               
         for (int b = 0; b < bisections_; b++){

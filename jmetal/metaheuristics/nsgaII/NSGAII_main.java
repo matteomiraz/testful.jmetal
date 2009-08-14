@@ -64,11 +64,11 @@ public class NSGAII_main {
     
     indicators = null ;
     if (args.length == 1) {
-      Object [] params = {"Real"};
+      Object [] params = {Real.class};
       problem = (Problem<Real>) ProblemFactory.getProblem(args[0],params);
     } // if
     else if (args.length == 2) {
-      Object [] params = {"Real"};
+      Object [] params = {Real.class};
       problem = (Problem<Real>) ProblemFactory.getProblem(args[0],params);
       indicators = new QualityIndicator<Real>(problem, args[1]) ;
     } // if

@@ -8,6 +8,7 @@
 package jmetal.base;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 import jmetal.base.variable.Binary;
 
@@ -142,10 +143,7 @@ public class Solution<T extends Variable> implements Serializable {
    */    
   public Solution(Solution<T> solution) {            
     //-> Initializing state variables
-    objective_ = new double[solution.numberOfObjectives()];
-    for (int i = 0; i < objective_.length;i++) {
-      objective_[i] = solution.getObjective(i);
-    } // for
+  	objective_ = Arrays.copyOf(solution.objective_, solution.objective_.length);
     //<-
 
     decisionVariable_ = new DecisionVariables<T>(solution.getDecisionVariables());
@@ -258,6 +256,11 @@ public class Solution<T extends Variable> implements Serializable {
     return objective_[i];
   } // getObjective
 
+  public double[] getObjectives() {
+    return objective_;
+  } // getObjective
+
+  
   /**
    * Returns the number of objectives.
    * @return The number of objectives.
@@ -285,11 +288,12 @@ public class Solution<T extends Variable> implements Serializable {
    * @return The string.
    */
   public String toString() {
-    String aux="";
-    for (int i = 0; i < numberOfObjectives(); i++)
-      aux = aux + this.getObjective(i) + " ";
+  	StringBuilder sb = new StringBuilder();
 
-    return aux;
+  	for(double o : objective_)
+			sb.append(o).append(" ");
+
+    return sb.toString();
   } // toString
 
   /**
@@ -413,9 +417,10 @@ public class Solution<T extends Variable> implements Serializable {
    */
   public double getAggregativeValue() {
     double value = 0.0;                
-    for (int i = 0; i < numberOfObjectives(); i++){            
-      value += getObjective(i);
-    }                
+
+    for(double o : objective_)
+    	value += o;
+    
     return value;
   } // getAggregativeValue
 

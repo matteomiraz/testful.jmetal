@@ -26,9 +26,8 @@ public class OverallConstraintViolationComparator<T extends Variable> implements
   * respectively.
   */
   public int compare(Solution<T> o1, Solution<T> o2) {    
-    double overall1, overall2;
-    overall1 = o1.getOverallConstraintViolation();
-    overall2 = o2.getOverallConstraintViolation();
+    double overall1 = o1.getOverallConstraintViolation();
+    double overall2 = o2.getOverallConstraintViolation();
         
     if ((overall1 < 0) && (overall2 < 0)) {
       if (overall1 > overall2){

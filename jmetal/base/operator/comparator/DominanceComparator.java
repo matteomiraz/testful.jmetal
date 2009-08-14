@@ -36,50 +36,31 @@ public class DominanceComparator<T extends Variable> implements Comparator<Solut
     else if (solution2 == null)
       return -1;
     
-    int dominate1 ; // dominate1 indicates if some objective of solution1 
-                    // dominates the same objective in solution2. dominate2
-    int dominate2 ; // is the complementary of dominate1.
+    boolean dominate1=false; // dominate1 indicates if some objective of solution1 
+                             // dominates the same objective in solution2. dominate2
+    boolean dominate2=false; // is the complementary of dominate1.
 
-    dominate1 = 0 ; 
-    dominate2 = 0 ;
-    
-    int flag; //stores the result of the comparation
+    if (solution1.getOverallConstraintViolation() != solution2.getOverallConstraintViolation() &&
+        (solution1.getOverallConstraintViolation() < 0 || solution2.getOverallConstraintViolation() < 0)) 
+      return overallConstraintViolationComparator_.compare(solution1,solution2);
 
-    if (solution1.getOverallConstraintViolation()!= 
-        solution2.getOverallConstraintViolation() &&
-       (solution1.getOverallConstraintViolation() < 0) ||         
-       (solution2.getOverallConstraintViolation() < 0)){            
-      return (overallConstraintViolationComparator_.compare(solution1,solution2));
-    }
-                                                
     // Equal number of violated constraint. Apply a dominance Test
-    double value1, value2;
-    for (int i = 0; i < solution1.numberOfObjectives(); i++) {
-      value1 = solution1.getObjective(i);
-      value2 = solution2.getObjective(i);
-      if (value1 < value2) {
-        flag = -1;
-      } else if (value1 > value2) {
-        flag = 1;
-      } else {
-        flag = 0;
-      }
-      
-      if (flag == -1) {
-        dominate1 = 1;
-      }
-      
-      if (flag == 1) {
-        dominate2 = 1;           
-      }
+    double[] obj1 = solution1.getObjectives();
+    double[] obj2 = solution2.getObjectives();
+    for (int i = 0; i < obj1.length; i++) {
+
+    	if (obj1[i] < obj2[i])
+        dominate1=true;
+      else if (obj1[i] > obj2[i])
+        dominate2=true;
     }
             
-    if (dominate1 == dominate2) {            
+    if (dominate1 == dominate2)
       return 0; //No one dominate the other
-    }
-    if (dominate1 == 1) {
+    
+    if (dominate1)
       return -1; // solution1 dominate
-    }
+
     return 1;    // solution2 dominate   
   } // compare
 } // DominanceComparator

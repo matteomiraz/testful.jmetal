@@ -49,13 +49,10 @@ public class EpsilonDominanceComparator<T extends Variable> implements Comparato
     else if (solution2 == null)
       return -1;    
         
-    int dominate1 ; // dominate1 indicates if some objective of solution1 
-                    // dominates the same objective in solution2. dominate2
-    int dominate2 ; // is the complementary of dominate1.
+    boolean dominate1 = false; // dominate1 indicates if some objective of solution1 
+                               // dominates the same objective in solution2. dominate2
+    boolean dominate2 = false; // is the complementary of dominate1.
 
-    dominate1 = 0 ; 
-    dominate2 = 0 ;   
-    
     int flag; 
     flag = overallConstraintViolationComparator_.compare(solution1,solution2);
     
@@ -63,37 +60,24 @@ public class EpsilonDominanceComparator<T extends Variable> implements Comparato
       return flag;
     }
 
-    double value1, value2;
+    double[] sol1objs = solution1.getObjectives();
+    double[] sol2objs = solution2.getObjectives();
+
     // Idem number of violated constraint. Apply a dominance Test
     for (int i = 0; i < solution1.numberOfObjectives(); i++) {
-      value1 = solution1.getObjective(i);
-      value2 = solution2.getObjective(i);
+			double value1 = sol1objs[i];
+			double value2 = sol2objs[i];
 
       //Objetive implements comparable!!! 
-      if (value1/(1 + eta_) < value2) {
-        flag = -1;
-      } else if (value1/(1 + eta_) > value2) {
-        flag = 1;
-      } else {
-        flag =  0;
-      }
-      
-      if (flag == -1) {
-        dominate1 = 1;
-      }
-      
-      if (flag == 1) {
-        dominate2 = 1;
-      }
+      if (value1/(1 + eta_) < value2) dominate1 = true;
+      else if (value1/(1 + eta_) > value2) dominate2 = true;
     }
             
-    if (dominate1 == dominate2) {
-      return 0; // No one dominates the other
-    }
+    if (dominate1 == dominate2) // No one dominates the other
+      return 0; 
     
-    if (dominate1 == 1) {
-      return -1; // solution1 dominates
-    }
+    if (dominate1) // solution1 dominates 
+    	return -1; 
     
     return 1;    // solution2 dominates
   } // compare

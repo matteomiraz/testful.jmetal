@@ -67,7 +67,19 @@ public abstract class Problem<T extends Variable> implements Serializable {
    * @param solution The <code>Solution</code> to evaluate.
    */    
   public abstract void evaluate(Solution<T> solution) throws JMException ;    
-    
+
+  /**
+   * Evaluates a set of <code>Solution</code>s.
+   * @param solution The set of <code>Solution</code>s to evaluate.
+   * @return the number of evaluations done
+   */    
+  public int evaluate(final SolutionSet<T> set) throws JMException {
+  	for(Solution<T> solution : set)
+  		evaluate(solution);
+  	
+  	return set.size();
+  }
+
   /**
    * Gets the number of side constraints in the problem.
    * @return the number of constraints.

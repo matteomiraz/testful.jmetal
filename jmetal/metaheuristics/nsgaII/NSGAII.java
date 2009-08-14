@@ -71,15 +71,14 @@ public class NSGAII<V extends Variable>
     requiredEvaluations = 0;
 
     // Create the initial solutionSet
-    Solution<V> newSolution;
-    for (int i = 0; i < populationSize; i++) {
-      newSolution = new Solution<V>(problem_);
-      problem_.evaluate(newSolution);
-      problem_.evaluateConstraints(newSolution);
-      evaluations++;
-      population.add(newSolution);
-    } //for       
+    for (int i = 0; i < populationSize; i++)
+      population.add(new Solution<V>(problem_));
 
+    evaluations += problem_.evaluate(population);
+    
+    for(Solution<V> solution : population)
+    	problem_.evaluateConstraints(solution);
+    
     // Generations ...
     while (evaluations < maxEvaluations) {
 
@@ -93,16 +92,16 @@ public class NSGAII<V extends Variable>
           Solution<V>[] offSpring = crossoverOperator.execute(parent1, parent2);
           mutationOperator.execute(offSpring[0]);
           mutationOperator.execute(offSpring[1]);
-          problem_.evaluate(offSpring[0]);
-          problem_.evaluateConstraints(offSpring[0]);
-          problem_.evaluate(offSpring[1]);
-          problem_.evaluateConstraints(offSpring[1]);
           offspringPopulation.add(offSpring[0]);
           offspringPopulation.add(offSpring[1]);
           evaluations += 2;
-        } // if                            
-      } // for
-
+        }
+      }
+      
+      // evaluate the offspring population
+      problem_.evaluate(offspringPopulation);
+      for(Solution<V> solution : offspringPopulation)
+				problem_.evaluateConstraints(solution);
 
       // Create the solutionSet union of solutionSet and offSpring
       union = ((SolutionSet<V>) population).union(offspringPopulation);

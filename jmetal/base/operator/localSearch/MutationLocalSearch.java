@@ -114,7 +114,6 @@ public class MutationLocalSearch<T extends Variable> extends LocalSearch<T> {
       Solution<T> mutatedSolution = new Solution<T>(solution);
       mutationOperator_.execute(mutatedSolution);
             
-            
       // Evaluate the getNumberOfConstraints
       if (problem_.getNumberOfConstraints() > 0)
       {

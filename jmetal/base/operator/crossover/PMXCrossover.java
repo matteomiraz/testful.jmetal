@@ -7,11 +7,13 @@
 
 package jmetal.base.operator.crossover;
 
-import jmetal.base.*;    
-import jmetal.base.variable.*;
+import jmetal.base.Configuration;
+import jmetal.base.Operator;
+import jmetal.base.Solution;
+import jmetal.base.Configuration.VariableType_;
+import jmetal.base.variable.Permutation;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
-import jmetal.base.Configuration.VariableType_; 
 
  /**
  * This class allows to apply a PMX crossover operator using two parent
@@ -20,7 +22,9 @@ import jmetal.base.Configuration.VariableType_;
  * the type of those variables must be VariableType_.Permutation.
  */
   public class PMXCrossover extends Operator {
-  /**
+  private static final long serialVersionUID = 1572296934919082873L;
+
+	/**
    * Constructor
    */
   public PMXCrossover() {

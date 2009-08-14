@@ -5,7 +5,9 @@
  */
 package jmetal.base.operator.selection;
 
-import jmetal.base.*;
+import jmetal.base.Operator;
+import jmetal.base.Solution;
+import jmetal.base.SolutionSet;
 import jmetal.util.PseudoRandom;
 
 /**
@@ -14,7 +16,9 @@ import jmetal.util.PseudoRandom;
  */
 public class RandomSelection extends Operator {
   
-  /**
+  private static final long serialVersionUID = 7446171924839213334L;
+
+	/**
   * Performs the operation
   * @param object Object representing a SolutionSet.
   * @return an object representing an array with the selected parents

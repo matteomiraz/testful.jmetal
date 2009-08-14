@@ -8,11 +8,12 @@
  */
 package jmetal.experiments.settings;
 
-import jmetal.metaheuristics.omopso.*;
 import java.util.Properties;
+
 import jmetal.base.Algorithm;
 import jmetal.base.Problem;
 import jmetal.experiments.Settings;
+import jmetal.metaheuristics.omopso.OMOPSO;
 import jmetal.qualityIndicator.QualityIndicator;
 import jmetal.util.JMException;
 

@@ -6,19 +6,24 @@
  */
 package jmetal.metaheuristics.paes;
 
-import jmetal.base.*;
-import jmetal.base.archive.AdaptiveGridArchive;
-import jmetal.base.operator.comparator.*;
-import jmetal.util.JMException;
-
 import java.util.Comparator;
+
+import jmetal.base.Algorithm;
+import jmetal.base.Operator;
+import jmetal.base.Problem;
+import jmetal.base.Solution;
+import jmetal.base.SolutionSet;
+import jmetal.base.archive.AdaptiveGridArchive;
+import jmetal.base.operator.comparator.DominanceComparator;
+import jmetal.util.JMException;
 
 /**
  * This class implements the NSGA-II algorithm. 
  */
 public class PAES extends Algorithm {        
     
-  /**
+  private static final long serialVersionUID = 4817205693804417123L;
+	/**
    * Stores the problem to solve
    */
   private Problem problem_;  

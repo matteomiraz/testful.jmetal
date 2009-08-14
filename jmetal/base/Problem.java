@@ -10,7 +10,8 @@ package jmetal.base;
 
 import java.io.Serializable;
 
-import jmetal.base.Configuration.*;
+import jmetal.base.Configuration.SolutionType_;
+import jmetal.base.Configuration.VariableType_;
 import jmetal.util.JMException;
 
 /**
@@ -18,7 +19,9 @@ import jmetal.util.JMException;
  */
 public abstract class Problem implements Serializable {
   
-  /**
+  private static final long serialVersionUID = -6033690904402492022L;
+
+	/**
    * Stores the number of variables of the problem
    */
   protected int numberOfVariables_ ;

@@ -7,20 +7,27 @@
 
 package jmetal.problems.singleObjective;
 
-import jmetal.base.*;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StreamTokenizer;
+
+import jmetal.base.Problem;
+import jmetal.base.Solution;
 import jmetal.base.Configuration.SolutionType_;
 import jmetal.base.Configuration.VariableType_;
-import jmetal.base.variable.Binary;
 import jmetal.base.variable.Permutation;
-
-import java.io.* ;
 
 /**
  * Class representing a TSP (Traveling Salesman Problem) problem.
  */
 public class TSP extends Problem {
 
-  public int         numberOfCities_ ; 
+  private static final long serialVersionUID = -7417724855350746012L;
+	public int         numberOfCities_ ; 
   public double [][] distanceMatrix_ ;
 
   

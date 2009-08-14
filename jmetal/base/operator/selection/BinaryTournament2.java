@@ -7,8 +7,9 @@
 package jmetal.base.operator.selection;
 
 import java.util.Comparator;
-import jmetal.base.Solution;
+
 import jmetal.base.Operator;
+import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
 import jmetal.base.operator.comparator.DominanceComparator;
 import jmetal.util.PseudoRandom;
@@ -19,7 +20,9 @@ import jmetal.util.PseudoRandom;
  */
 public class BinaryTournament2 extends Operator{
   
-  /**
+  private static final long serialVersionUID = 2774421116618537328L;
+
+	/**
    * dominance_ store the <code>Comparator</code> for check dominance_
    */
   private Comparator dominance_;

@@ -8,14 +8,14 @@ package jmetal.util;
 
 import java.io.Serializable;
 
-import jmetal.base.Configuration;
-
 /**
  * jmetal exception class
  */
 public class JMException extends Exception implements Serializable {
   
-  /**
+  private static final long serialVersionUID = 4288481737365385068L;
+
+	/**
    * Constructor
    * @param Error message
    */

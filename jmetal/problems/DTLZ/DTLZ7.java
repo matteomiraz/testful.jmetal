@@ -8,8 +8,11 @@
  */
 package jmetal.problems.DTLZ;
 
-import jmetal.base.*;
-import jmetal.base.Configuration.*;
+import jmetal.base.DecisionVariables;
+import jmetal.base.Problem;
+import jmetal.base.Solution;
+import jmetal.base.Configuration.SolutionType_;
+import jmetal.base.Configuration.VariableType_;
 import jmetal.util.JMException;
 
 /**
@@ -17,7 +20,9 @@ import jmetal.util.JMException;
  */
 public class DTLZ7 extends Problem{
    
- /**
+ private static final long serialVersionUID = -1722944559338505767L;
+
+/**
   * Creates a default DTLZ7 problem instance (22 variables and 3 objectives)
   * @param solutionType The solution type must "Real" or "BinaryReal". 
   */

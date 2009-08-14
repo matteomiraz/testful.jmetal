@@ -5,18 +5,29 @@
  */
 package jmetal.metaheuristics.mocell;
 
-import jmetal.base.*;
 import java.util.Comparator;
+
+import jmetal.base.Algorithm;
+import jmetal.base.Operator;
+import jmetal.base.Problem;
+import jmetal.base.Solution;
+import jmetal.base.SolutionSet;
 import jmetal.base.archive.CrowdingArchive;
-import jmetal.base.operator.comparator.*;
-import jmetal.util.*;
+import jmetal.base.operator.comparator.CrowdingComparator;
+import jmetal.base.operator.comparator.DominanceComparator;
+import jmetal.util.Distance;
+import jmetal.util.JMException;
+import jmetal.util.Neighborhood;
+import jmetal.util.PseudoRandom;
+import jmetal.util.Ranking;
 
 /**
  * This class representing the asychronous version of MOCell algorithm
  */
 public class aMOCell1 extends Algorithm{
 
-  /**
+  private static final long serialVersionUID = -1168663720157150836L;
+	/**
    * Stores the problem to solve
    */
   private Problem problem_;     

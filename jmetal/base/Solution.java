@@ -9,7 +9,8 @@ package jmetal.base;
 
 import java.io.Serializable;
 
-import jmetal.base.Configuration.* ;
+import jmetal.base.Configuration.SolutionType_;
+import jmetal.base.Configuration.VariableType_;
 import jmetal.base.variable.Binary;
 
 /**
@@ -17,7 +18,9 @@ import jmetal.base.variable.Binary;
  */
 public class Solution implements Serializable {        
   
-  /**
+  private static final long serialVersionUID = 8458216795302135603L;
+
+	/**
    * Stores the type of the variable
    */	
   private SolutionType_ type_ ; 

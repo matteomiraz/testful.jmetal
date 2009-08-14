@@ -7,15 +7,22 @@ package jmetal.metaheuristics.gde3;
 
 import java.util.Comparator;
 
-import jmetal.base.*;
-import jmetal.util.*;
+import jmetal.base.Algorithm;
+import jmetal.base.Operator;
+import jmetal.base.Problem;
+import jmetal.base.Solution;
+import jmetal.base.SolutionSet;
+import jmetal.util.Distance;
+import jmetal.util.JMException;
+import jmetal.util.Ranking;
 
 /**
  * This class implements the NSGA-II algorithm. 
  */
 public class GDE3 extends Algorithm {
   
-  /**
+  private static final long serialVersionUID = 7776463559880778310L;
+	/**
    * stores the problem  to solve
    */
   private Problem  problem_;        

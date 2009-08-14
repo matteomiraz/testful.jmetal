@@ -7,13 +7,12 @@
 package jmetal.base.operator.mutation;
 
 import jmetal.base.Configuration;
+import jmetal.base.Operator;
 import jmetal.base.Solution;
 import jmetal.base.Configuration.SolutionType_;
-import jmetal.base.variable.*;
-import jmetal.base.DecisionVariables;
+import jmetal.base.variable.Binary;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
-import jmetal.base.Operator;
 
 /**
  * This class implements a bit flip mutation operator.
@@ -22,7 +21,9 @@ import jmetal.base.Operator;
  */
 public class BitFlipMutation extends Operator {
 
-  /**
+  private static final long serialVersionUID = 7338668714477076348L;
+
+	/**
    * Constructor
    * Creates a new instance of the Bit Flip mutation operator
    */

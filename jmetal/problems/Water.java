@@ -6,7 +6,8 @@
  */
 package jmetal.problems;
 
-import jmetal.base.*;
+import jmetal.base.Problem;
+import jmetal.base.Solution;
 import jmetal.base.Configuration.SolutionType_;
 import jmetal.base.Configuration.VariableType_;
 import jmetal.util.JMException;
@@ -16,7 +17,8 @@ import jmetal.util.JMException;
  */
 public class Water extends Problem {
   
-  // defining the lower and upper limits
+  private static final long serialVersionUID = 8970858463920311741L;
+	// defining the lower and upper limits
   public static final double [] LOWERLIMIT = {0.01, 0.01, 0.01};
   public static final double [] UPPERLIMIT = {0.45, 0.10, 0.10};                          
 

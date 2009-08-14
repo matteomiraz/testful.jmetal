@@ -7,7 +7,9 @@
 
 package jmetal.problems.cec2009Competition;
 
-import jmetal.base.*;
+import jmetal.base.DecisionVariables;
+import jmetal.base.Problem;
+import jmetal.base.Solution;
 import jmetal.base.Configuration.SolutionType_;
 import jmetal.base.Configuration.VariableType_;
 import jmetal.util.JMException;
@@ -17,7 +19,9 @@ import jmetal.util.JMException;
  */
 public class CEC2009_UF2 extends Problem {
     
- /** 
+ private static final long serialVersionUID = -5573422843324628445L;
+
+/** 
   * Constructor.
   * Creates a default instance of problem CEC2009_UF2 (30 decision variables)
   * @param solutionType The solution type must "Real" or "BinaryReal".

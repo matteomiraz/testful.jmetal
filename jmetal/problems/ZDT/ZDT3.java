@@ -7,7 +7,9 @@
  */
 package jmetal.problems.ZDT;
 
-import jmetal.base.*;
+import jmetal.base.DecisionVariables;
+import jmetal.base.Problem;
+import jmetal.base.Solution;
 import jmetal.base.Configuration.SolutionType_;
 import jmetal.base.Configuration.VariableType_;
 import jmetal.util.JMException;
@@ -18,7 +20,9 @@ import jmetal.util.JMException;
 public class ZDT3 extends Problem {
     
 
- /**
+ private static final long serialVersionUID = 7388792456613451502L;
+
+/**
   * Constructor.
   * Creates default instance of problem ZDT3 (30 decision variables.
   * @param representation The solution type must "Real" or "BinaryReal".

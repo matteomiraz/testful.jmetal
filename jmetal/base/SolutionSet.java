@@ -6,15 +6,25 @@
 */
 package jmetal.base;
 
-import java.io.*;
-import java.util.*; 
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 
 /** 
  * Class representing a SolutionSet (a set of solutions)
  */
 public class SolutionSet implements Serializable {
     
-  /**
+  private static final long serialVersionUID = 4113136899421961879L;
+
+	/**
    * Stores a list of <code>solution</code> objects.
    */
   protected List<Solution> solutionsList_;

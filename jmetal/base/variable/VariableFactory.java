@@ -8,7 +8,6 @@ package jmetal.base.variable;
 
 import jmetal.base.Configuration;
 import jmetal.base.Variable;
-import jmetal.base.variable.*;
 import jmetal.util.JMException;
 
 /**

@@ -8,17 +8,21 @@
 
 package jmetal.problems.ZDT;
 
-import jmetal.base.*;
+import jmetal.base.DecisionVariables;
+import jmetal.base.Problem;
+import jmetal.base.Solution;
 import jmetal.base.Configuration.SolutionType_;
 import jmetal.base.Configuration.VariableType_;
-import jmetal.base.variable.*;
+import jmetal.base.variable.Binary;
 
 /**
  * Class representing problem ZDT5
  */
 public class ZDT5 extends Problem{
      
- /**
+ private static final long serialVersionUID = -8358321326441479092L;
+
+/**
   * Creates a default instance of problem ZDT5 (11 decision variables).
   * This problem allows only "Binary" representations.
   */

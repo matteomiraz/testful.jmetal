@@ -7,16 +7,17 @@
 
 package jmetal.base.variable;
 
-import jmetal.base.Configuration.*;
 import jmetal.base.Variable;
-import jmetal.util.PseudoRandom;
+import jmetal.base.Configuration.VariableType_;
 
 /**
  * Implements a permutation of integer decision variable
  */
 public class Permutation extends Variable {
   
-  /**
+  private static final long serialVersionUID = 207056540852484629L;
+
+	/**
    * Stores a permutation of <code>int</code> values
    */
   public int [] vector_;

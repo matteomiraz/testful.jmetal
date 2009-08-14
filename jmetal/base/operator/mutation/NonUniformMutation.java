@@ -7,12 +7,11 @@
 package jmetal.base.operator.mutation;
 
 import jmetal.base.Configuration;
+import jmetal.base.Operator;
 import jmetal.base.Solution;
-import jmetal.base.DecisionVariables;
+import jmetal.base.Configuration.SolutionType_;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
-import jmetal.base.Operator;
-import jmetal.base.Configuration.SolutionType_;
 
 /**
   * This class implements a non-uniform mutation operator.
@@ -20,7 +19,9 @@ import jmetal.base.Configuration.SolutionType_;
   */
 public class NonUniformMutation extends Operator{
     
-  /**
+  private static final long serialVersionUID = 7432414654294815093L;
+
+	/**
    * perturbation_ stores the perturbation value used in the Non Uniform 
    * mutation operator
    */

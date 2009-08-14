@@ -6,8 +6,11 @@
  */
 package jmetal.problems;
 
-import jmetal.base.*;
-import jmetal.base.Configuration.*;
+import jmetal.base.DecisionVariables;
+import jmetal.base.Problem;
+import jmetal.base.Solution;
+import jmetal.base.Configuration.SolutionType_;
+import jmetal.base.Configuration.VariableType_;
 import jmetal.util.JMException;
 
 /**
@@ -16,7 +19,9 @@ import jmetal.util.JMException;
 public class OKA2 extends Problem {  
    
   
-  /** 
+  private static final long serialVersionUID = 7492988214768375512L;
+
+	/** 
    * Constructor.
    * Creates a new instance of the OKA2 problem.
    * @param solutionType The solution type must "Real" or "BinaryReal".

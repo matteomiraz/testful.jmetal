@@ -5,15 +5,15 @@
  */
 package jmetal.problems.WFG;
 
-import java.io.*;
-import java.util.Random;
 import jmetal.base.DecisionVariables;
 import jmetal.base.Solution;
 import jmetal.util.JMException;
 
 public class WFG7 extends WFG{
     
- /**
+ private static final long serialVersionUID = 7688473474649856754L;
+
+/**
   * Creates a default WFG7 problem with 
   * 2 position-related parameters, 
   * 4 distance-related parameters,

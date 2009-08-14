@@ -7,12 +7,11 @@
 package jmetal.base.operator.mutation;
 
 import jmetal.base.Configuration;
+import jmetal.base.Operator;
 import jmetal.base.Solution;
-import jmetal.base.DecisionVariables;
+import jmetal.base.Configuration.SolutionType_;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
-import jmetal.base.Operator;
-import jmetal.base.Configuration.SolutionType_;
 
 /**
  * This class implements a polynomial mutation operator. 
@@ -24,7 +23,9 @@ import jmetal.base.Configuration.SolutionType_;
  */
 public class PolynomialMutation extends Operator {
     
-  /**
+  private static final long serialVersionUID = -4694450476401572161L;
+
+	/**
   * DEFAULT_INDEX_MUTATION defines a default index for mutation
   */
   public static final double DEFAULT_INDEX_MUTATION = 20.0;

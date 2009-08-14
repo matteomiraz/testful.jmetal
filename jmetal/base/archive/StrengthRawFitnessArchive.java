@@ -7,9 +7,13 @@
 
 package jmetal.base.archive;
 
-import jmetal.base.*;
-import jmetal.base.operator.comparator.*;
 import java.util.Comparator;
+
+import jmetal.base.Solution;
+import jmetal.base.SolutionSet;
+import jmetal.base.operator.comparator.DominanceComparator;
+import jmetal.base.operator.comparator.EqualSolutions;
+import jmetal.base.operator.comparator.FitnessComparator;
 import jmetal.util.Spea2Fitness;
 
 /**
@@ -18,7 +22,9 @@ import jmetal.util.Spea2Fitness;
  */ 
  public class StrengthRawFitnessArchive extends SolutionSet {    
   
-  /**
+  private static final long serialVersionUID = -800403635250139815L;
+
+	/**
    * Stores the maximum size of the archive.
    */
   private int maxSize_;    

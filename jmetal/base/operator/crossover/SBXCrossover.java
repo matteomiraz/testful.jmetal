@@ -7,9 +7,10 @@
 
 package jmetal.base.operator.crossover;
 
-import jmetal.base.*;    
-import jmetal.base.Configuration.* ;
-import jmetal.base.variable.*;
+import jmetal.base.Configuration;
+import jmetal.base.Operator;
+import jmetal.base.Solution;
+import jmetal.base.Configuration.SolutionType_;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
 
@@ -24,7 +25,9 @@ import jmetal.util.PseudoRandom;
  */
 public class SBXCrossover extends Operator {
     
-  /**
+  private static final long serialVersionUID = 485761542428572217L;
+
+	/**
    * DEFAULT_INDEX_CROSSOVER defines a default index crossover
    */
   public static final double DEFAULT_INDEX_CROSSOVER = 20.0; 

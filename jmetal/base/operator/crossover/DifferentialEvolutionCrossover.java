@@ -14,7 +14,9 @@ import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
 
 public class DifferentialEvolutionCrossover extends Operator {
-  /**
+  private static final long serialVersionUID = -3210629965576501068L;
+
+	/**
    * DEFAULT_CR defines a default CR (crossover operation control) value
    */
   public static final double DEFAULT_CR = 0.1; 

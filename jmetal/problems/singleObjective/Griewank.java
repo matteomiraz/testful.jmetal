@@ -14,7 +14,9 @@ import jmetal.base.Configuration.VariableType_;
 import jmetal.util.JMException;
 
 public class Griewank extends Problem {
-  /** 
+  private static final long serialVersionUID = -7795959989040731929L;
+
+	/** 
    * Constructor
    * Creates a default instance of the Griewank problem
    * @param numberOfVariables Number of variables of the problem 

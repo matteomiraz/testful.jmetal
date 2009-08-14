@@ -6,9 +6,9 @@
  */
 package jmetal.base.variable;
 
-import jmetal.base.Configuration.*;
 import jmetal.base.Configuration;
 import jmetal.base.Variable;
+import jmetal.base.Configuration.VariableType_;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
 
@@ -18,7 +18,9 @@ import jmetal.util.PseudoRandom;
  */
 public class Real extends Variable{
 
-  /**
+  private static final long serialVersionUID = -5286666692378861514L;
+
+	/**
    * Stores the value of the real variable
    */
   private double value_;

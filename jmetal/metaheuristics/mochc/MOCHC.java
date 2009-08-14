@@ -6,13 +6,17 @@
 
 package jmetal.metaheuristics.mochc;
 
-import jmetal.base.*;
-import jmetal.base.archive.*;
+import java.util.Comparator;
+
+import jmetal.base.Algorithm;
+import jmetal.base.Operator;
+import jmetal.base.Problem;
+import jmetal.base.Solution;
+import jmetal.base.SolutionSet;
+import jmetal.base.archive.CrowdingArchive;
 import jmetal.base.operator.comparator.CrowdingComparator;
 import jmetal.base.variable.Binary;
 import jmetal.util.JMException;
-
-import java.util.*;
 
 /**
  *
@@ -20,7 +24,8 @@ import java.util.*;
  */
 public class MOCHC extends Algorithm {
 
-  /**
+  private static final long serialVersionUID = 1543452947367589923L;
+	/**
   * Stores the problem to solve
   */
   private Problem problem_;

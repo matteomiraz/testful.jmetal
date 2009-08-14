@@ -6,10 +6,11 @@
  */
 package jmetal.base.operator.crossover;
 
-import jmetal.base.*;
+import jmetal.base.Configuration;
+import jmetal.base.Operator;
+import jmetal.base.Solution;
 import jmetal.base.Configuration.SolutionType_;
-import jmetal.base.variable.*;
-import jmetal.base.*;    
+import jmetal.base.variable.Binary;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
 
@@ -23,7 +24,10 @@ import jmetal.util.PseudoRandom;
  */
 public class HUXCrossover extends Operator{
 
-  /**
+  private static final long serialVersionUID = -98268788775592756L;
+
+
+	/**
    * Constructor
    * Create a new intance of the HUX crossover operator.
    */

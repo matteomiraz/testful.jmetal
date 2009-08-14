@@ -6,21 +6,33 @@
  */
 package jmetal.metaheuristics.omopso;
 
-import jmetal.base.*;
-import jmetal.base.archive.CrowdingArchive;
-import jmetal.base.operator.mutation.*;
-import jmetal.base.operator.comparator.*;
-import jmetal.base.Algorithm;
-import jmetal.util.*;
-
 import java.util.Comparator;
+
+import jmetal.base.Algorithm;
+import jmetal.base.DecisionVariables;
+import jmetal.base.Operator;
+import jmetal.base.Problem;
+import jmetal.base.Solution;
+import jmetal.base.SolutionSet;
+import jmetal.base.archive.CrowdingArchive;
+import jmetal.base.operator.comparator.CrowdingDistanceComparator;
+import jmetal.base.operator.comparator.DominanceComparator;
+import jmetal.base.operator.comparator.EpsilonDominanceComparator;
+import jmetal.base.operator.mutation.NonUniformMutation;
+import jmetal.base.operator.mutation.UniformMutation;
+import jmetal.util.Distance;
+import jmetal.util.JMException;
+import jmetal.util.NonDominatedSolutionList;
+import jmetal.util.PseudoRandom;
 
 /**
  * This class representing an asychronous version of OMOPSO algorithm
  */
 public class OMOPSO extends Algorithm {
                
-  /**
+  private static final long serialVersionUID = 5286767531955701063L;
+
+	/**
   * Stores the problem to solve
   */
   private Problem problem_;

@@ -6,18 +6,17 @@
  */
 package jmetal.base.variable;
 
-import java.util.BitSet;
-
-import jmetal.base.Configuration.*;
 import jmetal.base.Variable;
-import jmetal.util.PseudoRandom;
+import jmetal.base.Configuration.VariableType_;
 
 /** This class extends the Binary class to represent a Real variable encoded by
  * a binary string
  */
 public class BinaryReal extends Binary {
    
-  /**
+  private static final long serialVersionUID = 6445337596110083477L;
+
+	/**
    * Stores the real value of the variable
    */
   private double value_;

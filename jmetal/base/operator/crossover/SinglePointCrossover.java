@@ -7,10 +7,11 @@
  */
 package jmetal.base.operator.crossover;
 
-import jmetal.base.*;
-import jmetal.base.Configuration.*;
-import jmetal.base.variable.*;
-import jmetal.base.*;
+import jmetal.base.Configuration;
+import jmetal.base.Operator;
+import jmetal.base.Solution;
+import jmetal.base.Configuration.SolutionType_;
+import jmetal.base.variable.Binary;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
 
@@ -22,7 +23,9 @@ import jmetal.util.PseudoRandom;
  */
 public class SinglePointCrossover extends Operator {
 
-  /**
+  private static final long serialVersionUID = 7967959079668529640L;
+
+	/**
    * Constructor
    * Creates a new instance of the single point crossover operator
    */

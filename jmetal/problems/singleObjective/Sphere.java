@@ -14,7 +14,9 @@ import jmetal.base.Configuration.VariableType_;
 import jmetal.util.JMException;
 
 public class Sphere extends Problem {
-  /** 
+  private static final long serialVersionUID = -5021029656925462284L;
+
+	/** 
    * Constructor
    * Creates a default instance of the Sphere problem
    * @param numberOfVariables Number of variables of the problem 

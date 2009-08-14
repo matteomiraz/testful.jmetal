@@ -7,11 +7,12 @@
 
 package jmetal.metaheuristics.singleObjective.evolutionStrategy;
 
-import jmetal.base.*;
-import jmetal.base.operator.crossover.*   ;
-import jmetal.base.operator.mutation.*    ; 
-import jmetal.base.operator.selection.*   ;
-import jmetal.problems.singleObjective.*  ; 
+import jmetal.base.Algorithm;
+import jmetal.base.Operator;
+import jmetal.base.Problem;
+import jmetal.base.SolutionSet;
+import jmetal.base.operator.mutation.MutationFactory;
+import jmetal.problems.singleObjective.OneMax;
 import jmetal.util.JMException;
 
 /**

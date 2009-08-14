@@ -6,18 +6,18 @@
  */
 package jmetal.base.operator.selection;
 
-import jmetal.base.Configuration;
 import jmetal.base.Operator;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
-import jmetal.base.Configuration.SolutionType_;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
 
 public class DifferentialEvolutionSelection extends Operator {
 
 
-  /**
+  private static final long serialVersionUID = -7513751998032671539L;
+
+	/**
    * Constructor
    */
   DifferentialEvolutionSelection() {

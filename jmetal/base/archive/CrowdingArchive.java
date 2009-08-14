@@ -6,9 +6,13 @@
  */
 package jmetal.base.archive;
 
-import jmetal.base.*;
-import jmetal.base.operator.comparator.*;
 import java.util.Comparator;
+
+import jmetal.base.Solution;
+import jmetal.base.SolutionSet;
+import jmetal.base.operator.comparator.CrowdingDistanceComparator;
+import jmetal.base.operator.comparator.DominanceComparator;
+import jmetal.base.operator.comparator.EqualSolutions;
 import jmetal.util.Distance;
 
 /**
@@ -17,7 +21,9 @@ import jmetal.util.Distance;
  */
 public class CrowdingArchive extends SolutionSet {    
   
-  /** 
+  private static final long serialVersionUID = -4121763871161850908L;
+
+	/** 
    * Stores the maximum size of the archive.
    */
   private int maxSize_;

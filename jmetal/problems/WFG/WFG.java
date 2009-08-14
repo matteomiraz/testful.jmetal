@@ -5,9 +5,9 @@
  */
 package jmetal.problems.WFG;
 
-import java.io.*;
 import java.util.Random;
-import jmetal.base.*;
+
+import jmetal.base.Problem;
 import jmetal.base.Configuration.SolutionType_;
 import jmetal.base.Configuration.VariableType_;
 
@@ -21,7 +21,9 @@ import jmetal.base.Configuration.VariableType_;
  */
 public abstract class WFG extends Problem{
   
-  /**
+  private static final long serialVersionUID = -3511776882893579601L;
+
+	/**
    * stores a epsilon default value
    */
   private final float epsilon = (float)1e-7;

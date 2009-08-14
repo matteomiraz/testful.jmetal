@@ -7,29 +7,35 @@
  */
 package jmetal.metaheuristics.smpso;
 
-import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import jmetal.base.*;
-import jmetal.base.archive.CrowdingArchive;
-import jmetal.base.variable.*;
-import jmetal.base.operator.mutation.*;
-import jmetal.base.operator.comparator.*;
-import jmetal.base.Algorithm;
-import jmetal.qualityIndicator.Hypervolume;
-import jmetal.util.*;
-
 import java.util.Comparator;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import jmetal.base.Algorithm;
+import jmetal.base.DecisionVariables;
+import jmetal.base.Operator;
+import jmetal.base.Problem;
+import jmetal.base.Solution;
+import jmetal.base.SolutionSet;
+import jmetal.base.archive.CrowdingArchive;
+import jmetal.base.operator.comparator.CrowdingDistanceComparator;
+import jmetal.base.operator.comparator.DominanceComparator;
+import jmetal.base.operator.mutation.NonUniformMutation;
+import jmetal.base.operator.mutation.PolynomialMutation;
+import jmetal.base.operator.mutation.UniformMutation;
+import jmetal.qualityIndicator.Hypervolume;
 import jmetal.qualityIndicator.QualityIndicator;
+import jmetal.util.Distance;
+import jmetal.util.JMException;
+import jmetal.util.PseudoRandom;
 
 public class SMPSO extends Algorithm {
 
-  /**
+  private static final long serialVersionUID = -5445178816136270387L;
+	/**
    * Stores the problem to solve
    */
   private Problem problem_;

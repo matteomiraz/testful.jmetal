@@ -10,14 +10,18 @@ package jmetal.problems.LZ07;
 
 import java.util.Vector;
 
-import jmetal.base.*;
-import jmetal.base.Configuration.*;
+import jmetal.base.DecisionVariables;
+import jmetal.base.Problem;
+import jmetal.base.Solution;
+import jmetal.base.Configuration.SolutionType_;
+import jmetal.base.Configuration.VariableType_;
 import jmetal.util.JMException;
 
 /** 
  * Class representing problem DTLZ1 
  */
 public class LZ07_F6 extends Problem {   
+	private static final long serialVersionUID = 7225210732452769143L;
 	LZ07 lz07_ ; 
  /** 
   * Creates a default DTLZ1 problem (7 variables and 3 objectives)

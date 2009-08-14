@@ -8,11 +8,12 @@
  */
 package jmetal.experiments.settings;
 
-import jmetal.metaheuristics.smpso.*;
 import java.util.Properties;
+
 import jmetal.base.Algorithm;
 import jmetal.base.Problem;
 import jmetal.experiments.Settings;
+import jmetal.metaheuristics.smpso.SMPSO;
 import jmetal.qualityIndicator.QualityIndicator;
 import jmetal.util.JMException;
 

@@ -8,7 +8,8 @@
 
 package jmetal.problems;
 
-import jmetal.base.*;
+import jmetal.base.Problem;
+import jmetal.base.Solution;
 import jmetal.base.Configuration.SolutionType_;
 import jmetal.base.Configuration.VariableType_;
 import jmetal.util.JMException;
@@ -18,7 +19,10 @@ import jmetal.util.JMException;
  */
 public class Viennet2 extends Problem{           
   
- /** 
+ private static final long serialVersionUID = 3889655545570680639L;
+
+
+/** 
   * Constructor.
   * Creates a default instance of the Viennet2 problem
   * @param solutionType The solution type must "Real" or "BinaryReal".

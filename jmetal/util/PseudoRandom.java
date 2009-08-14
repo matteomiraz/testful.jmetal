@@ -7,41 +7,44 @@
  */
 package jmetal.util;
 
+
 /**
  * Class representing some randoms facilities
  */
-public class PseudoRandom {
-    
-  /**
-   * generator used to obtain the random values
-   */
-  private static RandomGenerator random = null;    
+public abstract class PseudoRandom {
   
-  /**
-   * other generator used to obtain the random values
-   */
-  private static java.util.Random randomJava = null;
-             
-  /** 
-   * Constructor.
-   * Creates a new instance of PseudoRandom.
-   */
-  private PseudoRandom() {
-    if (random == null){
-      //this.random = new java.util.Random((long)seed);
-      random = new RandomGenerator();
-      randomJava = new java.util.Random();            
-    }
-  } // PseudoRandom
+	private static final MersenneTwisterFast MT;
+	
+  /** generator used to obtain the random values */
+  private static final RandomGenerator random;
+ 
+  /** other generator used to obtain the random values */
+  private static final java.util.Random randomJava;
     
+  static {
+  	// configuration 1: use mersenne twister fast
+  	MT = new MersenneTwisterFast();
+  	random = null;
+  	randomJava = null;
+  	
+  	// configuration 2: use RandomGenerator & java.util.Random
+  	// MT = null;
+  	//random = new RandomGenerator();
+  	//randomJava = new java.util.Random();
+  }
+  
+  
+	public static MersenneTwisterFast getMersenneTwisterFast() {
+		return MT;
+	}
+  
   /** 
    * Returns a random int value using the Java random generator.
    * @return A random int value.
    */
   public static int randInt() {
-    if (random == null) {
-      new PseudoRandom();
-    }
+  	if(MT != null) return MT.nextInt();
+  	
     return randomJava.nextInt();
   } // randInt
     
@@ -50,9 +53,8 @@ public class PseudoRandom {
    * Returns A random double value.
    */
   public static double randDouble() {
-    if (random == null) {
-      new PseudoRandom();
-    }
+  	if(MT != null) return MT.nextDouble();
+  	
     return random.rndreal(0.0,1.0);
     //return randomJava.nextDouble();
   } // randDouble
@@ -65,10 +67,9 @@ public class PseudoRandom {
    * Return A pseudo random int value between minBound and maxBound.
    */
   public static int randInt(int minBound, int maxBound) {
-    if (random == null) {
-      new PseudoRandom();
-    }
-    return random.rnd(minBound,maxBound);
+  	if(MT != null) return minBound + MT.nextInt(maxBound-minBound+1);
+  	
+  	return random.rnd(minBound,maxBound);
     //return minBound + randomJava.nextInt(maxBound-minBound+1);
   } // randInt
     
@@ -79,9 +80,8 @@ public class PseudoRandom {
    * @return A pseudo random double value between minBound and maxBound
    */
   public static double randDouble(double minBound, double maxBound) {
-    if (random == null) {
-      new PseudoRandom();
-    }
+  	if(MT != null) return minBound + (maxBound - minBound)*randomJava.nextDouble();
+  	
     return random.rndreal(minBound,maxBound);
     //return minBound + (maxBound - minBound)*randomJava.nextDouble();
   } // randDouble    

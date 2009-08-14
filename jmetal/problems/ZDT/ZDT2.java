@@ -8,11 +8,11 @@
 
 package jmetal.problems.ZDT;
 
+import java.util.List;
+
 import jmetal.base.DecisionVariables;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
-import jmetal.base.Configuration.SolutionType_;
-import jmetal.base.Configuration.VariableType_;
 import jmetal.base.variable.IReal;
 import jmetal.util.JMException;
 
@@ -23,12 +23,14 @@ public class ZDT2<V extends IReal>  extends Problem<V>{
       
  private static final long serialVersionUID = -6572519015153296542L;
 
+ private final Class<V> solutionType_;
+
 /** 
   * Constructor.
   * Creates a default instance of  problem ZDT2 (30 decision variables)
   * @param representation The solution type must "Real" or "BinaryReal".
   */
-  public ZDT2(String representation) {
+  public ZDT2(Class<V> representation) {
     this(30,representation); // 30 variables by default
   } // ZDT2
 
@@ -39,7 +41,7 @@ public class ZDT2<V extends IReal>  extends Problem<V>{
   * @param numberOfVariables Number of variables
   * @param solutionType The solution type must "Real" or "BinaryReal".
   */
-  public ZDT2(Integer numberOfVariables, String solutionType) {
+  public ZDT2(Integer numberOfVariables, Class<V> solutionType) {
     numberOfVariables_  = numberOfVariables.intValue();
     numberOfObjectives_ =  2;
     numberOfConstraints_=  0;
@@ -53,14 +55,7 @@ public class ZDT2<V extends IReal>  extends Problem<V>{
       upperLimit_[var] = 1.0;
     } //for
 
-    solutionType_ = Enum.valueOf(SolutionType_.class, solutionType) ; 
-    
-    // All the variables are of the same type, so the solutionType name is the
-    // same than the variableType name
-    variableType_ = new VariableType_[numberOfVariables_];
-    for (int var = 0; var < numberOfVariables_; var++){
-      variableType_[var] = Enum.valueOf(VariableType_.class, solutionType) ;    
-    } // for
+    solutionType_ = solutionType; 
   } //ZDT2
   
   /** 
@@ -107,4 +102,9 @@ public class ZDT2<V extends IReal>  extends Problem<V>{
     h = 1.0 - java.lang.Math.pow(f/g,2.0);
     return h;        
   } // evalH
+
+  @Override
+  public List<V> generateNewDecisionVariable() {
+  	return generate(solutionType_);
+  }
 } //ZDT2

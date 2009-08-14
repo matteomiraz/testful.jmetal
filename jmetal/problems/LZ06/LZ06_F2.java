@@ -8,11 +8,11 @@
 
 package jmetal.problems.LZ06;
 
+import java.util.List;
+
 import jmetal.base.DecisionVariables;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
-import jmetal.base.Configuration.SolutionType_;
-import jmetal.base.Configuration.VariableType_;
 import jmetal.base.variable.IReal;
 import jmetal.util.JMException;
 
@@ -23,12 +23,14 @@ public class LZ06_F2<V extends IReal>  extends Problem<V> {
   
  private static final long serialVersionUID = 5825380420784925762L;
 
+ private final Class<V> solutionType_;
+
 /** 
   * Constructor
   * Creates a default instance of the LZ06_F2 problem
   * @param solutionType The solution type must "Real" or "BinaryReal".
   */
- public LZ06_F2(String solutionType) {
+ public LZ06_F2(Class<V> solutionType) {
    this(30, solutionType); // 30 variables by default
  }
  /** 
@@ -37,7 +39,7 @@ public class LZ06_F2<V extends IReal>  extends Problem<V> {
   * @param numberOfVariables Number of variables.
   * @param solutionType The solution type must "Real" or "BinaryReal".
   */
- public LZ06_F2(Integer numberOfVariables, String solutionType) {
+ public LZ06_F2(Integer numberOfVariables, Class<V> solutionType) {
    numberOfVariables_   = numberOfVariables.intValue() ;
    numberOfObjectives_  = 2;
    numberOfConstraints_ = 0;
@@ -50,14 +52,7 @@ public class LZ06_F2<V extends IReal>  extends Problem<V> {
      upperLimit_[var] = 1.0;
    } // for
        
-   solutionType_ = Enum.valueOf(SolutionType_.class, solutionType) ; 
-   
-   // All the variables are of the same type, so the solutionType name is the
-   // same than the variableType name
-   variableType_ = new VariableType_[numberOfVariables_];
-   for (int var = 0; var < numberOfVariables_; var++){
-     variableType_[var] = Enum.valueOf(VariableType_.class, solutionType) ;    
-   } // for
+   solutionType_ = solutionType; 
  } //LZ06_F2
    
  /** 
@@ -90,4 +85,9 @@ public class LZ06_F2<V extends IReal>  extends Problem<V> {
    solution.setObjective(0,fx[0]);
    solution.setObjective(1,fx[1]);
  } // evaluate
+
+ @Override
+ public List<V> generateNewDecisionVariable() {
+ 	return generate(solutionType_);
+ }
 } // LZ06_F2

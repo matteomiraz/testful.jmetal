@@ -7,11 +7,11 @@
  */
 package jmetal.problems.ZDT;
 
+import java.util.List;
+
 import jmetal.base.DecisionVariables;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
-import jmetal.base.Configuration.SolutionType_;
-import jmetal.base.Configuration.VariableType_;
 import jmetal.base.variable.IReal;
 import jmetal.util.JMException;
 
@@ -22,11 +22,13 @@ public class ZDT6<V extends IReal>  extends Problem<V> {
     
  private static final long serialVersionUID = 6380134519371621098L;
 
-/**
+ private final Class<V> solutionType_;
+
+ /**
   * Creates a default instance of problem ZDT6 (10 decision variables)
   * @param representation The solution type must "Real" or "BinaryReal".
   */
-  public ZDT6(String representation) {
+  public ZDT6(Class<V> representation) {
     this(10,representation); // 10 variables by default
   } // ZDT6
   
@@ -35,7 +37,7 @@ public class ZDT6<V extends IReal>  extends Problem<V> {
   * @param numberOfVariables Number of variables
   * @param solutionType The solution type must "Real" or "BinaryReal".
   */
-  public ZDT6(Integer numberOfVariables, String solutionType) {
+  public ZDT6(Integer numberOfVariables, Class<V> solutionType) {
     numberOfVariables_  = numberOfVariables.intValue();
     numberOfObjectives_ = 2;
     numberOfConstraints_= 0;
@@ -49,14 +51,7 @@ public class ZDT6<V extends IReal>  extends Problem<V> {
       upperLimit_[var] = 1.0;
     } //for
         
-    solutionType_ = Enum.valueOf(SolutionType_.class, solutionType) ; 
-    
-    // All the variables are of the same type, so the solutionType name is the
-    // same than the variableType name
-    variableType_ = new VariableType_[numberOfVariables_];
-    for (int var = 0; var < numberOfVariables_; var++){
-      variableType_[var] = Enum.valueOf(VariableType_.class, solutionType) ;    
-    } // for
+    solutionType_ = solutionType; 
   } //ZDT6
   
   /** 
@@ -103,4 +98,9 @@ public class ZDT6<V extends IReal>  extends Problem<V> {
   public double evalH(double f, double g){
     return 1.0 - Math.pow((f/g),2.0);
   } // evalH       
+
+  @Override
+  public List<V> generateNewDecisionVariable() {
+  	return generate(solutionType_);
+  }
 } //ZDT6

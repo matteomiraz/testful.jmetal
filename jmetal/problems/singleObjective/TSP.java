@@ -17,14 +17,12 @@ import java.io.StreamTokenizer;
 
 import jmetal.base.Problem;
 import jmetal.base.Solution;
-import jmetal.base.Configuration.SolutionType_;
-import jmetal.base.Configuration.VariableType_;
 import jmetal.base.variable.Permutation;
 
 /**
  * Class representing a TSP (Traveling Salesman Problem) problem.
  */
-public class TSP extends Problem<Permutation> {
+public class TSP extends Problem.ProblemPermutation {
 
   private static final long serialVersionUID = -7417724855350746012L;
 	public int         numberOfCities_ ; 
@@ -41,12 +39,7 @@ public class TSP extends Problem<Permutation> {
     numberOfConstraints_= 0;
     problemName_        = "TSP";
              
-    solutionType_ = SolutionType_.Permutation ; 
-    
-    variableType_ = new VariableType_[numberOfVariables_] ;
     length_       = new int[numberOfVariables_];
-    
-    variableType_[0] = Enum.valueOf(VariableType_.class, "Permutation") ;
     
     readProblem(filename) ;
     System.out.println(numberOfCities_) ;

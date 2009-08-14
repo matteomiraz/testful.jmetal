@@ -6,16 +6,18 @@
  */
 package jmetal.problems.singleObjective;
 
+import java.util.List;
+
 import jmetal.base.DecisionVariables;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
-import jmetal.base.Configuration.SolutionType_;
-import jmetal.base.Configuration.VariableType_;
 import jmetal.base.variable.IReal;
 import jmetal.util.JMException;
 
 public class Sphere<V extends IReal>  extends Problem<V> {
   private static final long serialVersionUID = -5021029656925462284L;
+
+  private final Class<V> solutionType_;
 
 	/** 
    * Constructor
@@ -23,7 +25,7 @@ public class Sphere<V extends IReal>  extends Problem<V> {
    * @param numberOfVariables Number of variables of the problem 
    * @param solutionType The solution type must "Real" or "BinaryReal". 
    */
-  public Sphere(Integer numberOfVariables, String solutionType) {
+  public Sphere(Integer numberOfVariables, Class<V> solutionType) {
     numberOfVariables_   = numberOfVariables ;
     numberOfObjectives_  = 1;
     numberOfConstraints_ = 0;
@@ -36,14 +38,7 @@ public class Sphere<V extends IReal>  extends Problem<V> {
       upperLimit_[var] = 5.12;
     } // for
         
-    solutionType_ = Enum.valueOf(SolutionType_.class, solutionType) ; 
-    
-    // All the variables are of the same type, so the solutionType name is the
-    // same than the variableType name
-    variableType_ = new VariableType_[numberOfVariables_];
-    for (int var = 0; var < numberOfVariables_; var++){
-      variableType_[var] = Enum.valueOf(VariableType_.class, solutionType) ;    
-    } // for
+    solutionType_ = solutionType; 
   } // Sphere
     
   /** 
@@ -60,5 +55,10 @@ public class Sphere<V extends IReal>  extends Problem<V> {
     }        
     solution.setObjective(0, sum);
   } // evaluate
+
+  @Override
+  public List<V> generateNewDecisionVariable() {
+  	return generate(solutionType_);
+  }
 } // Sphere
 

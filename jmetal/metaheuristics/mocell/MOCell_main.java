@@ -72,7 +72,7 @@ public class MOCell_main {
       indicators = new QualityIndicator<Real>(problem, args[1]) ;
     } // if
     else { // Default problem
-      problem = new Kursawe(3, "Real"); 
+      problem = new Kursawe(3, Real.class); 
       //problem = new Kursawe(3,"BinaryReal");
       //problem = new Water("Real");
       //problem = new ZDT4("Real");

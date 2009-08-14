@@ -11,14 +11,12 @@ package jmetal.problems.ZDT;
 import jmetal.base.DecisionVariables;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
-import jmetal.base.Configuration.SolutionType_;
-import jmetal.base.Configuration.VariableType_;
 import jmetal.base.variable.Binary;
 
 /**
  * Class representing problem ZDT5
  */
-public class ZDT5 extends Problem<Binary> {
+public class ZDT5 extends Problem.ProblemBinary {
      
  private static final long serialVersionUID = -8358321326441479092L;
 
@@ -46,14 +44,6 @@ public class ZDT5 extends Problem<Binary> {
     for (int var = 1; var < numberOfVariables_; var++) {
       length_[var] = 5;
     }
-        
-    solutionType_ = SolutionType_.Binary ; 
-    
-    // All the variables of this problem are Binary
-    variableType_ = new VariableType_[numberOfVariables_];
-    for (int var = 0; var < numberOfVariables_; var++){
-      variableType_[var] = VariableType_.Binary ;    
-    } // for
   } //ZDT5
 
   /** 

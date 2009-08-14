@@ -8,11 +8,11 @@
 
 package jmetal.problems;
 
+import java.util.List;
+
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.VariableValue;
-import jmetal.base.Configuration.SolutionType_;
-import jmetal.base.Configuration.VariableType_;
 import jmetal.util.JMException;
 
 /**
@@ -21,14 +21,15 @@ import jmetal.util.JMException;
 public class Viennet3<T extends VariableValue> extends Problem<T> {           
   
  private static final long serialVersionUID = 4453468598271961362L;
-
+ 
+ private final Class<T> solutionType_;
 
 /** 
   * Constructor.
   * Creates a default instance of the Viennet3 problem.
   * @param solutionType The solution type must "Real" or "BinaryReal".
   */
-  public Viennet3(String solutionType, Class<T> type) {
+  public Viennet3(Class<T> solutionType) {
     numberOfVariables_   = 2 ;
     numberOfObjectives_  = 3 ;
     numberOfConstraints_ = 0;
@@ -41,14 +42,7 @@ public class Viennet3<T extends VariableValue> extends Problem<T> {
       upperLimit_[var] =   3.0;
     } // for
         
-    solutionType_ = Enum.valueOf(SolutionType_.class, solutionType) ; 
-    
-    // All the variables are of the same type, so the solutionType name is the
-    // same than the variableType name
-    variableType_ = new VariableType_[numberOfVariables_];
-    for (int var = 0; var < numberOfVariables_; var++){
-      variableType_[var] = Enum.valueOf(VariableType_.class, solutionType) ;    
-    } // for
+    solutionType_ = solutionType; 
   } //Viennet3
       
 
@@ -79,6 +73,11 @@ public class Viennet3<T extends VariableValue> extends Problem<T> {
     for (int i = 0; i < numberOfObjectives_; i++)
       solution.setObjective(i,f[i]);        
   } // evaluate
+
+  @Override
+  public List<T> generateNewDecisionVariable() {
+  	return generate(solutionType_);
+  }
 } // Viennet3
 
 

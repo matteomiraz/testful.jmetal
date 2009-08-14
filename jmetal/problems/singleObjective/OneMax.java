@@ -9,15 +9,13 @@ package jmetal.problems.singleObjective;
 
 import jmetal.base.Problem;
 import jmetal.base.Solution;
-import jmetal.base.Configuration.SolutionType_;
-import jmetal.base.Configuration.VariableType_;
 import jmetal.base.variable.Binary;
 
 /**
  * Class representing problem OneMax. The problem consist of maximizing the
  * number of '1's in a binary string.
  */
-public class OneMax extends Problem<Binary> {
+public class OneMax extends Problem.ProblemBinary {
 
   
  private static final long serialVersionUID = 2785137155554439680L;
@@ -32,12 +30,8 @@ public class OneMax extends Problem<Binary> {
     numberOfConstraints_= 0;
     problemName_        = "ONEMAX";
              
-    solutionType_ = SolutionType_.Binary ; 
-    
-    variableType_ = new VariableType_[numberOfVariables_] ;
     length_       = new int[numberOfVariables_];
     
-    variableType_[0] = Enum.valueOf(VariableType_.class, "Binary") ;
     length_      [0] = numberOfBits ;
   } // OneMax
     

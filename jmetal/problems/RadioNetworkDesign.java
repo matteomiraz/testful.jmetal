@@ -10,14 +10,12 @@ package jmetal.problems;
 import jmetal.base.DecisionVariables;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
-import jmetal.base.Configuration.SolutionType_;
-import jmetal.base.Configuration.VariableType_;
 import jmetal.base.variable.Binary;
 
 /**
  * Class representing problem RadioNetworkDesign
  */
-public class RadioNetworkDesign extends Problem<Binary> {
+public class RadioNetworkDesign extends Problem.ProblemBinary {
   private static final long serialVersionUID = -8911628124069437164L;
 	final static  int MAXIMUM_UNCOVERAGE =   10;
   final static int MAXIMUM_ANTENNAE    =   60;
@@ -56,14 +54,10 @@ public class RadioNetworkDesign extends Problem<Binary> {
     numberOfObjectives_  = 2 ;
     numberOfConstraints_ = 2 ;
 
-    variableType_ = new VariableType_[numberOfVariables_] ;
     length_       = new int[numberOfVariables_];
 
-    variableType_[0] = Enum.valueOf(VariableType_.class, "Binary") ;
     length_      [0] = numberOfBits ;
 
-    solutionType_ = SolutionType_.Binary ;
-    
     System.out.println("Created a "+ problemName_ + 
                        " problem. Number of bits: " +numberOfBits); 
   } // RadioNetworkDesign

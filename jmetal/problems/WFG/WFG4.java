@@ -29,7 +29,7 @@ public class WFG4<V extends IReal> extends WFG<V> {
   * 2 objectives
   * @param solutionType The solution type must "Real" or "BinaryReal".
   */
-  public WFG4(String solutionType) {
+  public WFG4(Class<V> solutionType) {
     this(2, 4, 2, solutionType) ;
   } // WFG4
 
@@ -40,7 +40,7 @@ public class WFG4<V extends IReal> extends WFG<V> {
   * @param M Number of objective functions
   * @param solutionType The solution type must "Real" or "BinaryReal".
   */
-  public WFG4(Integer k, Integer l, Integer M,String solutionType) {
+  public WFG4(Integer k, Integer l, Integer M,Class<V> solutionType) {
     super(k,l,M,solutionType);
     problemName_ = "WFG4";
     

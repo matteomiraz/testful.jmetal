@@ -38,8 +38,8 @@ public class BitFlipMutationInt extends Mutation<Int> {
          for (int i = 0; i < solution.getDecisionVariables().size(); i++)
             if (PseudoRandom.randDouble() < probability) {
               int value = (int) (PseudoRandom.randInt(
-                       (int)solution.getDecisionVariables().variables_.get(i).getUpperBound(),
-                       (int)solution.getDecisionVariables().variables_.get(i).getLowerBound()));
+                       (int)solution.getDecisionVariables().variables_.get(i).getLowerBound(),
+                       (int)solution.getDecisionVariables().variables_.get(i).getUpperBound()));
               solution.getDecisionVariables().variables_.get(i).setValue(value);
             } // if
     } catch (ClassCastException e1) {

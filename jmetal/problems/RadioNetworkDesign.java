@@ -7,15 +7,17 @@
  */
 package jmetal.problems;
 
-import jmetal.base.*;
-import jmetal.base.Configuration.*;
-import jmetal.base.variable.* ;
+import jmetal.base.DecisionVariables;
+import jmetal.base.ProblemValue;
+import jmetal.base.Solution;
+import jmetal.base.variable.Binary;
 
 /**
  * Class representing problem RadioNetworkDesign
  */
-public class RadioNetworkDesign extends Problem {
-  final static  int MAXIMUM_UNCOVERAGE =   10;
+public class RadioNetworkDesign extends ProblemValue.ProblemBinary {
+  private static final long serialVersionUID = -8911628124069437164L;
+	final static  int MAXIMUM_UNCOVERAGE =   10;
   final static int MAXIMUM_ANTENNAE    =   60;
   final static int GRID_SIZE_X         =   287; //Artificial grid horizontal size.
   final static int GRID_SIZE_Y         =   287; //Artificial grid vertical size.
@@ -52,22 +54,18 @@ public class RadioNetworkDesign extends Problem {
     numberOfObjectives_  = 2 ;
     numberOfConstraints_ = 2 ;
 
-    variableType_ = new VariableType_[numberOfVariables_] ;
     length_       = new int[numberOfVariables_];
 
-    variableType_[0] = Enum.valueOf(VariableType_.class, "Binary") ;
     length_      [0] = numberOfBits ;
 
-    solutionType_ = SolutionType_.Binary ;
-    
     System.out.println("Created a "+ problemName_ + 
                        " problem. Number of bits: " +numberOfBits); 
   } // RadioNetworkDesign
 
   
 
-  public void evaluate(Solution individual) {
-     DecisionVariables gen  = individual.getDecisionVariables();
+  public void evaluate(Solution<Binary> individual) {
+     DecisionVariables<Binary> gen  = individual.getDecisionVariables();
 
      int[]  trans_location= {20,20,61,20,102,20,143,20,184,20,225,20,266,20,
                           20,61,61,61,102,61,143,61,184,61,225,61,266,61,
@@ -127,8 +125,8 @@ public class RadioNetworkDesign extends Problem {
      covered_points = 0;
 
      // with transmiter locations and calculating ...
-     for(int i=0; i<((Binary)gen.variables_[0]).getNumberOfBits();i++){
-       if (((Binary)gen.variables_[0]).getIth(i) == true){ 
+     for(int i=0; i<((Binary)gen.variables_.get(0)).getNumberOfBits();i++){
+       if (((Binary)gen.variables_.get(0)).getIth(i) == true){ 
          used_trans++;
          x = trans_location[i*2];
          y = trans_location[i*2+1];
@@ -155,7 +153,7 @@ public class RadioNetworkDesign extends Problem {
    * must calculate the overall constraint violation and the number of
    * violated constraints.   * @param individual The individual to be evaluated
    */
-  public void evaluateConstraints(Solution  individual) {
+  public void evaluateConstraints(Solution<Binary>  individual) {
     double[] constraintValue = new double[2] ;
     individual.setNumberOfViolatedConstraint(0);
     individual.setOverallConstraintViolation(0);
@@ -182,7 +180,7 @@ public class RadioNetworkDesign extends Problem {
    * @param individual The individual to be evaluated
    */
 
-  public boolean isOptimum(Solution  individual) {
+  public boolean isOptimum(Solution<Binary>  individual) {
     if ((individual.getObjective(0)==49)&&(individual.getObjective(1)==0))
       return true;
     else

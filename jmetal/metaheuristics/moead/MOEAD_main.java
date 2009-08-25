@@ -12,24 +12,22 @@
  */
 package jmetal.metaheuristics.moead;
 
-import jmetal.metaheuristics.cellde.*;
-import jmetal.base.*;
-import jmetal.base.operator.crossover.*   ;
-import jmetal.base.operator.mutation.*    ; 
-import jmetal.base.operator.selection.*   ;
-import jmetal.problems.*                  ;
-import jmetal.problems.DTLZ.*;
-import jmetal.problems.ZDT.*;
-import jmetal.problems.WFG.*;
-import jmetal.problems.LZ07.* ;
-
-import jmetal.util.JMException;
-
 import java.io.IOException;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 
+import jmetal.base.Configuration;
+import jmetal.base.Problem;
+import jmetal.base.SolutionSet;
+import jmetal.base.operator.crossover.CrossoverFactory;
+import jmetal.base.operator.crossover.DifferentialEvolutionCrossover;
+import jmetal.base.operator.mutation.MutationFactory;
+import jmetal.base.operator.mutation.PolynomialMutation;
+import jmetal.base.variable.Real;
+import jmetal.problems.Kursawe;
+import jmetal.problems.ProblemFactory;
 import jmetal.qualityIndicator.QualityIndicator;
+import jmetal.util.JMException;
 
 public class MOEAD_main {
   public static Logger      logger_ ;      // Logger object
@@ -47,14 +45,14 @@ public class MOEAD_main {
    *      - jmetal.metaheuristics.moead.MOEAD_main problemName ParetoFrontFile
  
    */
-  public static void main(String [] args) throws JMException, SecurityException, IOException {
-    Problem   problem   ;         // The problem to solve
-    Algorithm algorithm ;         // The algorithm to use
-    Operator  selection ;
-    Operator  crossover ;         // Crossover operator
-    Operator  mutation  ;         // Mutation operator
+  @SuppressWarnings("unchecked")
+	public static void main(String [] args) throws JMException, SecurityException, IOException {
+    Problem<Real>   problem   ;         // The problem to solve
+    MOEAD<Real> algorithm ;         // The algorithm to use
+    DifferentialEvolutionCrossover  crossover ;         // Crossover operator
+    PolynomialMutation  mutation  ;         // Mutation operator
      
-    QualityIndicator indicators ; // Object to get quality indicators
+    QualityIndicator<Real> indicators ; // Object to get quality indicators
 
     // Logger object and file to store log messages
     logger_      = Configuration.logger_ ;
@@ -64,15 +62,15 @@ public class MOEAD_main {
     indicators = null ;
     if (args.length == 1) {
       Object [] params = {"Real"};
-      problem = (new ProblemFactory()).getProblem(args[0],params);
+      problem = (Problem<Real>) ProblemFactory.getProblem(args[0],params);
     } // if
     else if (args.length == 2) {
       Object [] params = {"Real"};
-      problem = (new ProblemFactory()).getProblem(args[0],params);
-      indicators = new QualityIndicator(problem, args[1]) ;
+      problem = (Problem<Real>) ProblemFactory.getProblem(args[0],params);
+      indicators = new QualityIndicator<Real>(problem, args[1]) ;
     } // if
     else { // Default problem
-      problem = new Kursawe(3, "Real"); 
+      problem = new Kursawe(3, Real.class); 
       //problem = new Water("Real");
       //problem = new ZDT4("Real");
       //problem = new ZDT3("Real");
@@ -81,28 +79,28 @@ public class MOEAD_main {
       //problem = new OKA2("Real") ;
     } // else
     
-    algorithm = new MOEAD(problem);
+    algorithm = new MOEAD<Real>(problem);
     
     // Algorithm parameters
     algorithm.setInputParameter("populationSize",300);
     algorithm.setInputParameter("maxEvaluations",150000);
     
     // Crossover operator 
-    crossover = CrossoverFactory.getCrossoverOperator("DifferentialEvolutionCrossover");                   
-    crossover.setParameter("CR", 1.0);                   
-    crossover.setParameter("F", 0.5);
+    crossover = (DifferentialEvolutionCrossover) CrossoverFactory.getCrossoverOperator("DifferentialEvolutionCrossover");                   
+    crossover.setCR(1.0);                   
+    crossover.setF(0.5);
     
     // Mutation operator
-    mutation = MutationFactory.getMutationOperator("PolynomialMutation");                    
-    mutation.setParameter("probability",1.0/problem.getNumberOfVariables());
-    mutation.setParameter("distributionIndex",20.0);  
+    mutation = (PolynomialMutation) MutationFactory.getMutationOperator("PolynomialMutation");                    
+    mutation.setProbability(1.0/problem.getNumberOfVariables());
+    mutation.setDistributionIndex(20.0);  
     
-    algorithm.addOperator("crossover",crossover);
-    algorithm.addOperator("mutation",mutation);
+    algorithm.setCrossover(crossover);
+    algorithm.setMutation(mutation);
     
     // Execute the Algorithm
     long initTime = System.currentTimeMillis();
-    SolutionSet population = algorithm.execute();
+    SolutionSet<Real> population = algorithm.execute();
     long estimatedTime = System.currentTimeMillis() - initTime;
     
     // Result messages 

@@ -7,9 +7,8 @@
 
 package jmetal.base.operator.crossover;
 
-import jmetal.base.*;    
-import jmetal.base.Configuration.* ;
-import jmetal.base.variable.*;
+import jmetal.base.Solution;
+import jmetal.base.variable.Real;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
 
@@ -22,9 +21,11 @@ import jmetal.util.PseudoRandom;
  * DEFAULT_INDEX_CROSSOVER. You can change it using the parameter 
  * "distributionIndex" before invoking the execute() method -- see lines 196-199
  */
-public class SBXCrossover extends Operator {
+public class SBXCrossover extends Crossover<Real> {
     
-  /**
+  private static final long serialVersionUID = 485761542428572217L;
+
+	/**
    * DEFAULT_INDEX_CROSSOVER defines a default index crossover
    */
   public static final double DEFAULT_INDEX_CROSSOVER = 20.0; 
@@ -66,14 +67,15 @@ public class SBXCrossover extends Operator {
    * @param parent2 The second parent
    * @return An array containing the two offsprings
    */
-  public Solution[] doCrossover(double probability, 
-                                Solution parent1, 
-                                Solution parent2) throws JMException {
+  @SuppressWarnings("unchecked")
+	public Solution<Real>[] doCrossover(double probability, 
+                                Solution<Real> parent1, 
+                                Solution<Real> parent2) throws JMException {
     
-    Solution [] offSpring = new Solution[2];
+    Solution<Real> [] offSpring = new Solution[2];
 
-    offSpring[0] = new Solution(parent1);
-    offSpring[1] = new Solution(parent2);
+    offSpring[0] = new Solution<Real>(parent1);
+    offSpring[1] = new Solution<Real>(parent2);
                     
     int i;
     double rand;
@@ -83,8 +85,8 @@ public class SBXCrossover extends Operator {
     double valueX1,valueX2;
     if (PseudoRandom.randDouble() <= probability){
       for (i=0; i<parent1.getDecisionVariables().size(); i++){
-        valueX1 = parent1.getDecisionVariables().variables_[i].getValue();
-        valueX2 = parent2.getDecisionVariables().variables_[i].getValue();
+        valueX1 = parent1.getDecisionVariables().variables_.get(i).getValue();
+        valueX2 = parent2.getDecisionVariables().variables_.get(i).getValue();
         if (PseudoRandom.randDouble()<=0.5 ){
           
           if (java.lang.Math.abs(valueX1- valueX2) > EPS){
@@ -97,8 +99,8 @@ public class SBXCrossover extends Operator {
               y2 = valueX1;
             } // if                       
             
-            yL = parent1.getDecisionVariables().variables_[i].getLowerBound();
-            yu = parent1.getDecisionVariables().variables_[i].getUpperBound();
+            yL = parent1.getDecisionVariables().variables_.get(i).getLowerBound();
+            yu = parent1.getDecisionVariables().variables_.get(i).getUpperBound();
             rand = PseudoRandom.randDouble();
             beta = 1.0 + (2.0*(y1-yL)/(y2-y1));
             alpha = 2.0 - java.lang.Math.pow(beta,-(eta_c+1.0));
@@ -134,19 +136,19 @@ public class SBXCrossover extends Operator {
               c2=yu;                        
               
             if (PseudoRandom.randDouble()<=0.5) {
-              offSpring[0].getDecisionVariables().variables_[i].setValue(c2);
-              offSpring[1].getDecisionVariables().variables_[i].setValue(c1);
+              offSpring[0].getDecisionVariables().variables_.get(i).setValue(c2);
+              offSpring[1].getDecisionVariables().variables_.get(i).setValue(c1);
             } else {
-              offSpring[0].getDecisionVariables().variables_[i].setValue(c1);
-              offSpring[1].getDecisionVariables().variables_[i].setValue(c2);                            
+              offSpring[0].getDecisionVariables().variables_.get(i).setValue(c1);
+              offSpring[1].getDecisionVariables().variables_.get(i).setValue(c2);                            
             } // if
           } else {
-            offSpring[0].getDecisionVariables().variables_[i].setValue(valueX1);
-            offSpring[1].getDecisionVariables().variables_[i].setValue(valueX2);                        
+            offSpring[0].getDecisionVariables().variables_.get(i).setValue(valueX1);
+            offSpring[1].getDecisionVariables().variables_.get(i).setValue(valueX2);                        
           } // if
         } else {
-          offSpring[0].getDecisionVariables().variables_[i].setValue(valueX2);
-          offSpring[1].getDecisionVariables().variables_[i].setValue(valueX1);                    
+          offSpring[0].getDecisionVariables().variables_.get(i).setValue(valueX2);
+          offSpring[1].getDecisionVariables().variables_.get(i).setValue(valueX1);                    
         } // if
       } // if
     } // if
@@ -154,56 +156,17 @@ public class SBXCrossover extends Operator {
      return offSpring;                                                                                      
   } // doCrossover
   
+  public void setDistributionIndex(double value) {
+  	eta_c = value;
+  }
   
   /**
   * Executes the operation
   * @param object An object containing an array of two parents
   * @return An object containing the offSprings
   */
-  public Object execute(Object object) throws JMException {
-    Solution [] parents = (Solution [])object;
-
-    if ((parents[0].getType() != SolutionType_.Real) ||
-        (parents[1].getType() != SolutionType_.Real)) {
-
-      Configuration.logger_.severe("SBXCrossover.execute: the solutions " +
-          "are not of the right type. The type should be 'Real', but " +
-          parents[0].getType() + " and " + 
-          parents[1].getType() + " are obtained");
-
-      Class cls = java.lang.String.class;
-      String name = cls.getName(); 
-      throw new JMException("Exception in " + name + ".execute()") ;
-    } // if 
-    
-    Double probability = (Double)getParameter("probability");
-    if (parents.length < 2)
-    {
-      Configuration.logger_.severe("SBXCrossover.execute: operator needs two " +
-          "parents");
-      Class cls = java.lang.String.class;
-      String name = cls.getName(); 
-      throw new JMException("Exception in " + name + ".execute()") ;      
-    }
-    else if (probability == null)
-    {
-      Configuration.logger_.severe("SBXCrossover.execute: probability not " +
-      "specified");
-      Class cls = java.lang.String.class;
-      String name = cls.getName(); 
-      throw new JMException("Exception in " + name + ".execute()") ;  
-    }
- 
-    Double distributionIndex = (Double)getParameter("distributionIndex");
-    if (distributionIndex != null) {
-      eta_c = distributionIndex ;
-    } // if
-    
-    Solution [] offSpring;
-    offSpring = doCrossover(probability.doubleValue(),
-                            parents[0],
-                            parents[1]);
-        
+  public Solution<Real>[] execute(Solution<Real> parent1, Solution<Real> parent2) throws JMException {
+    Solution<Real> [] offSpring = doCrossover(probability, parent1, parent2);
         
     for (int i = 0; i < offSpring.length; i++)
     {

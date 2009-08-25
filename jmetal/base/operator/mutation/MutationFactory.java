@@ -8,7 +8,6 @@
 package jmetal.base.operator.mutation;
 
 import jmetal.base.Configuration;
-import jmetal.base.Operator;
 import jmetal.util.JMException;
 
 /**
@@ -22,20 +21,20 @@ public class MutationFactory {
    * @return the operator
    * @throws JMException 
    */
-  public static Operator getMutationOperator(String name) throws JMException{
+  @SuppressWarnings("unchecked")
+	public static Mutation<?> getMutationOperator(String name) throws JMException{
   
     if (name.equalsIgnoreCase("PolynomialMutation"))
       return new PolynomialMutation(20);
     else if (name.equalsIgnoreCase("BitFlipMutation"))
-      return new BitFlipMutation();
+      return new BitFlipMutationInt();
     else if (name.equalsIgnoreCase("SwapMutation"))
       return new SwapMutation();
     else
     {
-      Configuration.logger_.severe("Operator '" + name + "' not found ");
-      Class cls = java.lang.String.class;
-      String name2 = cls.getName() ;    
-      throw new JMException("Exception in " + name2 + ".getMutationOperator()") ;
+      String msg = "Operator '" + name + "' not found ";
+			Configuration.logger_.severe(msg);
+      throw new JMException(msg) ;
     }        
   } // getMutationOperator
 } // MutationFactory

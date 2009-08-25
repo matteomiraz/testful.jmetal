@@ -8,20 +8,28 @@
  */
 package jmetal.problems.DTLZ;
 
-import jmetal.base.*;
-import jmetal.base.Configuration.*;
+import java.util.List;
+
+import jmetal.base.DecisionVariables;
+import jmetal.base.ProblemValue;
+import jmetal.base.Solution;
+import jmetal.base.variable.IReal;
 import jmetal.util.JMException;
 
 /**
  * Class representing problem DTLZ3
  */
-public class DTLZ3 extends Problem{
+public class DTLZ3<V extends IReal>  extends ProblemValue<V>{
   
- /**
+ private static final long serialVersionUID = 8592434595608300197L;
+
+ private final Class<V> solutionType_;
+
+/**
   * Creates a default DTLZ3 problem (12 variables and 3 objectives)
   * @param solutionType The solution type must "Real" or "BinaryReal". 
   */
-  public DTLZ3(String solutionType){
+  public DTLZ3(Class<V> solutionType){
     this(12,3,solutionType);
   } // DTLZ3
     
@@ -33,7 +41,7 @@ public class DTLZ3 extends Problem{
   */
   public DTLZ3(Integer numberOfVariables, 
   		         Integer numberOfObjectives, 
-  		         String   solutionType) {
+  		         Class<V>   solutionType) {
     numberOfVariables_   = numberOfVariables.intValue();
     numberOfObjectives_  = numberOfObjectives.intValue();
     numberOfConstraints_ = 0;
@@ -46,14 +54,7 @@ public class DTLZ3 extends Problem{
       upperLimit_[var] = 1.0;
     }
         
-    solutionType_ = Enum.valueOf(SolutionType_.class, solutionType) ; 
-    
-    // All the variables are of the same type, so the solutionType name is the
-    // same than the variableType name
-    variableType_ = new VariableType_[numberOfVariables_];
-    for (int var = 0; var < numberOfVariables_; var++){
-      variableType_[var] = Enum.valueOf(VariableType_.class, solutionType) ;    
-    } // for
+    solutionType_ = solutionType; 
   }
     
   /** 
@@ -61,15 +62,15 @@ public class DTLZ3 extends Problem{
   * @param solution The solution to evaluate
    * @throws JMException 
   */      
-  public void evaluate(Solution solution) throws JMException {
-    DecisionVariables gen  = solution.getDecisionVariables();
+  public void evaluate(Solution<V> solution) throws JMException {
+    DecisionVariables<V> gen  = solution.getDecisionVariables();
 
     double [] x = new double[numberOfVariables_];
     double [] f = new double[numberOfObjectives_];
     int k = numberOfVariables_ - numberOfObjectives_ + 1;
         
     for (int i = 0; i < numberOfVariables_; i++)
-      x[i] = gen.variables_[i].getValue();
+      x[i] = gen.variables_.get(i).getValue();
         
     double g = 0.0;
     for (int i = numberOfVariables_ - k; i < numberOfVariables_; i++)
@@ -91,5 +92,10 @@ public class DTLZ3 extends Problem{
     for (int i = 0; i < numberOfObjectives_; i++)
       solution.setObjective(i,f[i]);                
   } //evaluate
+
+  @Override
+  public List<V> generateNewDecisionVariable() {
+  	return generate(solutionType_);
+  }
 }
 

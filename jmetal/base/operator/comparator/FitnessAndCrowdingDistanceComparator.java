@@ -8,22 +8,25 @@ package jmetal.base.operator.comparator;
 
 import java.util.Comparator;
 
+import jmetal.base.Solution;
+import jmetal.base.Variable;
+
 /**
  * This class implements a <code>Comparator</code> (a method for comparing
  * <code>Solution</code> objects) based on the fitness and crowding distance.
  */
-public class FitnessAndCrowdingDistanceComparator implements Comparator{
+public class FitnessAndCrowdingDistanceComparator<T extends Variable> implements Comparator<Solution<T>>{
   
   /** 
    * stores a comparator for check the fitness value of the solutions
    */
-  private static final Comparator fitnessComparator_ =
-                              new FitnessComparator();
+  private final Comparator<Solution<T>> fitnessComparator_ =
+                              new FitnessComparator<T>();
   /** 
    * stores a comparator for check the crowding distance
    */
-  private static final Comparator crowdingDistanceComparator_ = 
-                              new CrowdingDistanceComparator();
+  private final Comparator<Solution<T>> crowdingDistanceComparator_ = 
+                              new CrowdingDistanceComparator<T>();
   
  /**
   * Compares two solutions.
@@ -32,7 +35,7 @@ public class FitnessAndCrowdingDistanceComparator implements Comparator{
   * @return -1, or 0, or 1 if solution1 is less than, equal, or greater than 
   * solution2, respectively.
   */
-  public int compare(Object solution1, Object solution2) {    
+  public int compare(Solution<T> solution1, Solution<T> solution2) {    
     
     int flag = fitnessComparator_.compare(solution1,solution2);
     if (flag != 0) {

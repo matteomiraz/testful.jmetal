@@ -7,28 +7,41 @@
 package jmetal.metaheuristics.densea;
 
 import java.util.Comparator;
-import jmetal.base.*;
-import jmetal.base.operator.comparator.*;
-import jmetal.util.*;
 
+import jmetal.base.Algorithm;
+import jmetal.base.Problem;
+import jmetal.base.Solution;
+import jmetal.base.SolutionSet;
+import jmetal.base.Variable;
+import jmetal.base.operator.comparator.CrowdingComparator;
+import jmetal.base.operator.comparator.EqualSolutions;
+import jmetal.base.operator.crossover.Crossover;
+import jmetal.base.operator.localSearch.LocalSearch;
+import jmetal.base.operator.mutation.Mutation;
+import jmetal.base.operator.selection.Selection;
+import jmetal.util.Distance;
+import jmetal.util.JMException;
+import jmetal.util.Ranking;
 
-public class DENSEA extends Algorithm{
+public class DENSEA<V extends Variable>
+	extends Algorithm<V, Crossover<V>, Mutation<V>, Selection<V, Solution<V>>, LocalSearch<V>> {
 
-  private Problem problem_;
+  private static final long serialVersionUID = -2886797988032373886L;
+	private Problem<V> problem_;
 
   /* Create a new instance of DENSEA algorithm */
-  public DENSEA(Problem problem) {
+  public DENSEA(Problem<V> problem) {
     problem_ = problem;
   }
 
   //Implements the Densea delete duplicate elements
-  public void deleteDuplicates(SolutionSet population) {
-    Comparator equalIndividuals = new EqualSolutions();
+  public void deleteDuplicates(SolutionSet<V> population) {
+    Comparator<Solution<V>> equalIndividuals = new EqualSolutions<V>();
     for (int i = 0; i < population.size()/2; i++) {
       for (int j = i+1; j < population.size()/2; j++) {
         int flag = equalIndividuals.compare(population.get(i),population.get(j));
         if (flag == 0) {
-          Solution aux = population.get(j);
+          Solution<V> aux = population.get(j);
           population.replace(j,population.get((population.size()/2)+j));
           population.replace((population.size()/2)+j,aux);          
         }
@@ -37,29 +50,22 @@ public class DENSEA extends Algorithm{
   }
 
   /* Execute the algorithm */
-  public SolutionSet execute() throws JMException {
+  public SolutionSet<V> execute() throws JMException {
     int populationSize, maxEvaluations, evaluations               ;
-    SolutionSet population, offspringPopulation, union            ;
-    Operator mutationOperator,crossoverOperator,selectionOperator ;
-    Distance distance    = new Distance()                         ;               
+    SolutionSet<V> population                                        ;
 
     //Read the params
     populationSize    = ((Integer)this.getInputParameter("populationSize")).intValue();
     maxEvaluations    = ((Integer)this.getInputParameter("maxEvaluations")).intValue();                
 
     //Init the variables
-    population        = new SolutionSet(populationSize);        
+    population        = new SolutionSet<V>(populationSize);        
     evaluations       = 0;                
 
-    //Read the operators
-    mutationOperator  = this.operators_.get("mutation");
-    crossoverOperator = this.operators_.get("crossover");
-    selectionOperator = this.operators_.get("selection");  
-
     //-> Create the initial population
-    Solution newIndividual;
+    Solution<V> newIndividual;
     for (int i = 0; i < populationSize; i++) {
-      newIndividual = new Solution(problem_);                    
+      newIndividual = new Solution<V>(problem_);                    
       problem_.evaluate(newIndividual);            
       problem_.evaluateConstraints(newIndividual);
       evaluations++;
@@ -67,16 +73,15 @@ public class DENSEA extends Algorithm{
     } //for       
     //<-
 
-    Ranking r;
+    Ranking<V> r;
 
     while (evaluations < maxEvaluations) {
-      SolutionSet P3 = new SolutionSet(populationSize);
+      SolutionSet<V> P3 = new SolutionSet<V>(populationSize);
       for (int i = 0; i < populationSize/2; i++) {
-        Solution [] parents = new Solution[2];
-        Solution [] offSpring;
-        parents[0] = (Solution)selectionOperator.execute(population);
-        parents[1] = (Solution)selectionOperator.execute(population);
-        offSpring = (Solution [])crossoverOperator.execute(parents);
+        Solution<V> [] offSpring;
+        Solution<V> parent1 = selectionOperator.execute(population);
+        Solution<V> parent2 = selectionOperator.execute(population);
+        offSpring = crossoverOperator.execute(parent1, parent2);
         mutationOperator.execute(offSpring[0]);
         problem_.evaluate(offSpring[0]);
         problem_.evaluateConstraints(offSpring[0]);
@@ -89,11 +94,11 @@ public class DENSEA extends Algorithm{
         P3.add(offSpring[1]);
       }
 
-      r = new Ranking(P3);
+      r = new Ranking<V>(P3);
       for (int i = 0; i < r.getNumberOfSubfronts();i++) {
-        distance.crowdingDistanceAssignment(r.getSubfront(i),problem_.getNumberOfObjectives());
+        Distance.crowdingDistanceAssignment(r.getSubfront(i),problem_.getNumberOfObjectives());
       }
-      P3.sort(new CrowdingComparator());
+      P3.sort(new CrowdingComparator<V>());
 
       System.out.println("Una population!!!!!!!");
       for (int i = 0; i < P3.size(); i++) {
@@ -101,10 +106,10 @@ public class DENSEA extends Algorithm{
         //System.out.println(P3.get(i).getCrowdingDistance());
       }
 
-      population.sort(new CrowdingComparator());
+      population.sort(new CrowdingComparator<V>());
       //deleteDuplicates(population);
       //deleteDuplicates(P3);
-      SolutionSet auxiliar = new SolutionSet(populationSize);
+      SolutionSet<V> auxiliar = new SolutionSet<V>(populationSize);
       for (int i = 0; i < (populationSize/2);i++) {
         auxiliar.add(population.get(i));
       }
@@ -115,12 +120,12 @@ public class DENSEA extends Algorithm{
 
       population = auxiliar;
 
-      r = new Ranking(population);
+      r = new Ranking<V>(population);
       for (int i = 0; i < r.getNumberOfSubfronts();i++) {
-        distance.crowdingDistanceAssignment(r.getSubfront(i),problem_.getNumberOfObjectives());
+        Distance.crowdingDistanceAssignment(r.getSubfront(i),problem_.getNumberOfObjectives());
       }
     }
-    r = new Ranking(population);
+    r = new Ranking<V>(population);
     return r.getSubfront(0);
   }
 }

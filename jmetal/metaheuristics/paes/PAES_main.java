@@ -7,18 +7,18 @@
 package jmetal.metaheuristics.paes;
 
 import java.io.IOException;
-import jmetal.base.*                      ;
-import jmetal.base.operator.mutation.*    ; 
-import jmetal.problems.*                  ;
-import jmetal.problems.DTLZ.*;
-import jmetal.problems.ZDT.*;
-import jmetal.problems.WFG.*;
-import jmetal.problems.LZ07.* ;
-import jmetal.util.JMException;
-
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
-import jmetal.qualityIndicator.QualityIndicator;
+
+import jmetal.base.Configuration;
+import jmetal.base.Problem;
+import jmetal.base.SolutionSet;
+import jmetal.base.operator.mutation.MutationFactory;
+import jmetal.base.operator.mutation.PolynomialMutation;
+import jmetal.base.variable.Real;
+import jmetal.problems.Kursawe;
+import jmetal.problems.ProblemFactory;
+import jmetal.util.JMException;
 
 public class PAES_main {
   public static Logger      logger_ ;      // Logger object
@@ -29,32 +29,27 @@ public class PAES_main {
    *             the problem to solve.
    * @throws JMException 
    */
-  public static void main(String [] args) throws JMException, IOException {
-    Problem   problem   ;         // The problem to solve
-    Algorithm algorithm ;         // The algorithm to use
-    Operator  crossover ;         // Crossover operator
-    Operator  mutation  ;         // Mutation operator
-    Operator  selection ;         // Selection operator
+  @SuppressWarnings("unchecked")
+	public static void main(String [] args) throws JMException, IOException {
+    Problem<Real>   problem   ;         // The problem to solve
+    PAES<Real> algorithm ;         // The algorithm to use
+    PolynomialMutation  mutation  ;         // Mutation operator
     
-    QualityIndicator indicators ; // Object to get quality indicators
-
     // Logger object and file to store log messages
     logger_      = Configuration.logger_ ;
     fileHandler_ = new FileHandler("PAES_main.log");
     logger_.addHandler(fileHandler_) ;
     
-    indicators = null ;
     if (args.length == 1) {
       Object [] params = {"Real"};
-      problem = (new ProblemFactory()).getProblem(args[0],params);
+      problem = (Problem<Real>) ProblemFactory.getProblem(args[0],params);
     } // if
     else if (args.length == 2) {
       Object [] params = {"Real"};
-      problem = (new ProblemFactory()).getProblem(args[0],params);
-      indicators = new QualityIndicator(problem, args[1]) ;
+      problem = (Problem<Real>) ProblemFactory.getProblem(args[0],params);
     } // if
     else { // Default problem
-      problem = new Kursawe(3, "Real"); 
+      problem = new Kursawe(3, Real.class); 
       //problem = new Kursawe(3,"BinaryReal");
       //problem = new Water("Real");
       //problem = new ZDT4("Real");
@@ -63,7 +58,7 @@ public class PAES_main {
       //problem = new OKA2("Real") ;
     } // else
     
-    algorithm = new PAES(problem);
+    algorithm = new PAES<Real>(problem);
     
     // Algorithm parameters
     algorithm.setInputParameter("archiveSize",100);
@@ -71,20 +66,20 @@ public class PAES_main {
     algorithm.setInputParameter("maxEvaluations",25000);
       
     // Mutation (Real variables)
-    mutation = MutationFactory.getMutationOperator("PolynomialMutation");                    
-    mutation.setParameter("probability",1.0/problem.getNumberOfVariables());
-    mutation.setParameter("distributionIndex",20.0);
+    mutation = (PolynomialMutation) MutationFactory.getMutationOperator("PolynomialMutation");                    
+    mutation.setProbability(1.0/problem.getNumberOfVariables());
+    mutation.setDistributionIndex(20.0);
     
     // Mutation (BinaryReal variables)
     //mutation = MutationFactory.getMutationOperator("BitFlipMutation");                    
     //mutation.setParameter("probability",1.0/80);
     
     // Add the operators to the algorithm
-    algorithm.addOperator("mutation", mutation);
+    algorithm.setMutation(mutation);
     
     // Execute the Algorithm 
     long initTime = System.currentTimeMillis();
-    SolutionSet population = algorithm.execute();
+    SolutionSet<Real> population = algorithm.execute();
     long estimatedTime = System.currentTimeMillis() - initTime;
     
     // Result messages 

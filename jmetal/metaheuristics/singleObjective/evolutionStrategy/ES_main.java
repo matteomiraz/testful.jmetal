@@ -7,11 +7,12 @@
 
 package jmetal.metaheuristics.singleObjective.evolutionStrategy;
 
-import jmetal.base.*;
-import jmetal.base.operator.crossover.*   ;
-import jmetal.base.operator.mutation.*    ; 
-import jmetal.base.operator.selection.*   ;
-import jmetal.problems.singleObjective.*  ; 
+import jmetal.base.Problem;
+import jmetal.base.SolutionSet;
+import jmetal.base.operator.mutation.BitFlipMutationBinary;
+import jmetal.base.operator.mutation.MutationFactory;
+import jmetal.base.variable.Binary;
+import jmetal.problems.singleObjective.OneMax;
 import jmetal.util.JMException;
 
 /**
@@ -22,9 +23,9 @@ import jmetal.util.JMException;
 public class ES_main {
 
   public static void main(String [] args) throws JMException {
-    Problem   problem   ;         // The problem to solve
-    Algorithm algorithm ;         // The algorithm to use
-    Operator  mutation  ;         // Mutation operator
+    Problem<Binary>   problem   ;         // The problem to solve
+    ElitistES<Binary> algorithm ;         // The algorithm to use
+    BitFlipMutationBinary  mutation  ;         // Mutation operator
             
     int bits ; // Length of bit string in the OneMax problem
     
@@ -38,21 +39,20 @@ public class ES_main {
     mu     = 1  ;
     lambda = 10 ;
     
-    algorithm = new ElitistES(problem, mu, lambda);
+    algorithm = new ElitistES<Binary>(problem, mu, lambda);
     //algorithm = new NonElitistES(problem, mu, lambda);
     
     /* Algorithm params*/
     algorithm.setInputParameter("maxEvaluations", 20000);
     
     /* Mutation and Crossover for Real codification */
-    mutation = MutationFactory.getMutationOperator("BitFlipMutation");                    
-    mutation.setParameter("probability",1.0/bits); 
+    mutation = (BitFlipMutationBinary) MutationFactory.getMutationOperator("BitFlipMutationBinary");                    
+    mutation.setProbability(1.0/bits); 
+    algorithm.setMutation(mutation);
     
-    algorithm.addOperator("mutation",mutation);
- 
     /* Execute the Algorithm */
     long initTime = System.currentTimeMillis();
-    SolutionSet population = algorithm.execute();
+    SolutionSet<Binary> population = algorithm.execute();
     long estimatedTime = System.currentTimeMillis() - initTime;
     System.out.println("Total execution time: "+estimatedTime);
 

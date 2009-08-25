@@ -6,21 +6,21 @@
  */
 package jmetal.metaheuristics.pesaII;
 
-import jmetal.base.*;
-import jmetal.base.operator.crossover.*   ;
-import jmetal.base.operator.mutation.*    ; 
-import jmetal.base.operator.selection.*   ;
-import jmetal.base.variable.*             ;
-import jmetal.problems.*                  ;
-import jmetal.problems.DTLZ.*;
-import jmetal.problems.ZDT.*;
-import jmetal.problems.WFG.*;
-
-import jmetal.util.JMException;
 import java.io.IOException;
-
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
+
+import jmetal.base.Configuration;
+import jmetal.base.Problem;
+import jmetal.base.SolutionSet;
+import jmetal.base.operator.crossover.CrossoverFactory;
+import jmetal.base.operator.crossover.SBXCrossover;
+import jmetal.base.operator.mutation.MutationFactory;
+import jmetal.base.operator.mutation.PolynomialMutation;
+import jmetal.base.variable.Real;
+import jmetal.problems.Kursawe;
+import jmetal.problems.ProblemFactory;
+import jmetal.util.JMException;
 
 public class PESA2_main {
   public static Logger      logger_ ;      // Logger object
@@ -31,11 +31,12 @@ public class PESA2_main {
    *             the problem to solve.
    * @throws JMException 
    */
-  public static void main(String [] args) throws JMException, IOException {
-    Problem   problem   ;         // The problem to solve
-    Algorithm algorithm ;         // The algorithm to use
-    Operator  crossover ;         // Crossover operator
-    Operator  mutation  ;         // Mutation operator    
+  @SuppressWarnings("unchecked")
+	public static void main(String [] args) throws JMException, IOException {
+    Problem<Real>   problem   ;         // The problem to solve
+    PESA2<Real> algorithm ;         // The algorithm to use
+    SBXCrossover crossover ;         // Crossover operator
+    PolynomialMutation<Real>  mutation  ;         // Mutation operator    
      
     // Logger object and file to store log messages
     logger_      = Configuration.logger_ ;
@@ -44,10 +45,10 @@ public class PESA2_main {
     
     if (args.length == 1) {
       Object [] params = {"Real"};
-      problem = (new ProblemFactory()).getProblem(args[0],params);
+      problem = (Problem<Real>) ProblemFactory.getProblem(args[0],params);
     } // if
     else { // Default problem
-      problem = new Kursawe(3, "Real"); 
+      problem = new Kursawe(3, Real.class); 
       //problem = new Kursawe(3,"BinaryReal");
       //problem = new Water("Real");
       //problem = new ZDT4("Real");
@@ -56,7 +57,7 @@ public class PESA2_main {
       //problem = new OKA2("Real") ;
     } // else
     
-    algorithm = new PESA2(problem);
+    algorithm = new PESA2<Real>(problem);
     
     // Algorithm parameters 
     algorithm.setInputParameter("populationSize",10);
@@ -65,13 +66,13 @@ public class PESA2_main {
     algorithm.setInputParameter("maxEvaluations",25000);
     
     // Mutation and Crossover for Real codification 
-    crossover = CrossoverFactory.getCrossoverOperator("SBXCrossover");                   
-    crossover.setParameter("probability",0.9);                   
-    crossover.setParameter("distributionIndex",20.0);
+    crossover = (SBXCrossover) CrossoverFactory.getCrossoverOperator("SBXCrossover");                   
+    crossover.setProbability(0.9);                   
+    crossover.setDistributionIndex(20.0);
     
-    mutation = MutationFactory.getMutationOperator("PolynomialMutation");                    
-    mutation.setParameter("probability",1.0/problem.getNumberOfVariables());
-    mutation.setParameter("distributionIndex",20.0);
+    mutation = (PolynomialMutation<Real>) MutationFactory.getMutationOperator("PolynomialMutation");                    
+    mutation.setProbability(1.0/problem.getNumberOfVariables());
+    mutation.setDistributionIndex(20.0);
     
     // Mutation and Crossover Binary codification
     /*
@@ -82,13 +83,13 @@ public class PESA2_main {
     */
     
     // Add the operators to the algorithm
-    algorithm.addOperator("crossover",crossover);
-    algorithm.addOperator("mutation",mutation);
+    algorithm.setCrossover(crossover);
+    algorithm.setMutation(mutation);
     
     
     // Execute the Algorithm
     long initTime = System.currentTimeMillis();
-    SolutionSet population = algorithm.execute();
+    SolutionSet<Real> population = algorithm.execute();
     long estimatedTime = System.currentTimeMillis() - initTime;
     System.out.println("Total execution time: "+estimatedTime);
     

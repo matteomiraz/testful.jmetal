@@ -8,23 +8,25 @@
  */
 package jmetal.experiments.settings;
 
-import jmetal.metaheuristics.abyss.*;
 import java.util.Properties;
+
 import jmetal.base.Algorithm;
-import jmetal.base.Operator;
-import jmetal.base.Problem;
+import jmetal.base.ProblemValue;
 import jmetal.base.operator.crossover.CrossoverFactory;
+import jmetal.base.operator.crossover.SBXCrossover;
+import jmetal.base.operator.localSearch.LocalSearch;
 import jmetal.base.operator.localSearch.MutationLocalSearch;
 import jmetal.base.operator.mutation.MutationFactory;
-import jmetal.base.operator.selection.SelectionFactory;
+import jmetal.base.operator.mutation.PolynomialMutation;
 import jmetal.experiments.Settings;
-import jmetal.problems.ProblemFactory;
+import jmetal.metaheuristics.abyss.AbYSS;
 import jmetal.qualityIndicator.QualityIndicator;
 import jmetal.util.JMException;
 
 /**
  * Constructor
  */
+@SuppressWarnings("unchecked")
 public class AbYSS_Settings extends Settings {
   // Default settings
   int populationSize_ = 100;
@@ -42,7 +44,7 @@ public class AbYSS_Settings extends Settings {
   /**
    * Constructor
    */
-  public AbYSS_Settings(Problem problem) {
+  public AbYSS_Settings(ProblemValue problem) {
     super(problem);
   } // MOCell_Settings
 
@@ -53,14 +55,14 @@ public class AbYSS_Settings extends Settings {
    */
   public Algorithm configure() throws JMException {
     Algorithm algorithm;
-    Operator crossover;
-    Operator mutation;
-    Operator improvement; // Operator for improvement
+    SBXCrossover crossover;
+    PolynomialMutation mutation;
+    LocalSearch improvement; // Operator for improvement
 
     QualityIndicator indicators;
 
     // Creating the problem
-    algorithm = new AbYSS(problem_);
+    algorithm = new AbYSS((ProblemValue) problem_);
 
     // Algorithm parameters
     algorithm.setInputParameter("populationSize", 20);
@@ -69,34 +71,25 @@ public class AbYSS_Settings extends Settings {
     algorithm.setInputParameter("archiveSize", 100);
     algorithm.setInputParameter("maxEvaluations", 25000);
 
-    // Mutation and Crossover for Real codification 
-    crossover = CrossoverFactory.getCrossoverOperator("SBXCrossover");
-    crossover.setParameter("probability", crossoverProbability_);
-    crossover.setParameter("distributionIndex", distributionIndexForCrossover_);
-
-    mutation = MutationFactory.getMutationOperator("PolynomialMutation");
-    mutation.setParameter("probability", mutationProbability_);
-    mutation.setParameter("distributionIndex", distributionIndexForMutation_);
-
     // STEP 4. Specify and configure the crossover operator, used in the
     //         solution combination method of the scatter search
-    crossover = CrossoverFactory.getCrossoverOperator("SBXCrossover");
-    crossover.setParameter("probability", crossoverProbability_);
-    crossover.setParameter("distributionIndex", distributionIndexForCrossover_);
+    crossover = (SBXCrossover) CrossoverFactory.getCrossoverOperator("SBXCrossover");
+    crossover.setProbability(crossoverProbability_);
+    crossover.setDistributionIndex(distributionIndexForCrossover_);
 
     // STEP 5. Specify and configure the improvement method. We use by default
     //         a polynomial mutation in this method.
-    mutation = MutationFactory.getMutationOperator("PolynomialMutation");
-    mutation.setParameter("probability", mutationProbability_);
-    mutation.setParameter("distributionIndex", distributionIndexForMutation_);
+    mutation = (PolynomialMutation) MutationFactory.getMutationOperator("PolynomialMutation");
+    mutation.setProbability(mutationProbability_);
+    mutation.setDistributionIndex(distributionIndexForMutation_);
 
 
     improvement = new MutationLocalSearch(problem_, mutation);
-    improvement.setParameter("improvementRounds", improvementRounds_);
+    improvement.setImprovementRounds(improvementRounds_);
 
     // STEP 6. Add the operators to the algorithm
-    algorithm.addOperator("crossover", crossover);
-    algorithm.addOperator("improvement", improvement);
+    algorithm.setCrossover(crossover);
+    algorithm.setImprovement(improvement);
 
     // Creating the indicator object
     if (!paretoFrontFile_.equals("")) {

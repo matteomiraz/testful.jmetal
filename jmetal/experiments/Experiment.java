@@ -19,23 +19,20 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Properties;
-import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import jmetal.base.Algorithm;
-import jmetal.base.Problem;
-import jmetal.base.SolutionSet;
+import jmetal.base.ProblemValue;
 import jmetal.experiments.util.runExperiment;
-import jmetal.problems.ProblemFactory;
-import jmetal.qualityIndicator.QualityIndicator;
 import jmetal.util.JMException;
 
 /**
  *
  * @author antonio
  */
+@SuppressWarnings("unchecked")
 public abstract class Experiment {
 
   String experimentName_;
@@ -160,11 +157,11 @@ public abstract class Experiment {
         System.out.println("Experiment directory is not a directory. Deleting file and creating directory");
       }
       experimentDirectory.delete();
-      boolean result = new File(experimentBaseDirectory_).mkdirs();
+      new File(experimentBaseDirectory_).mkdirs();
     } // if
     else {
       System.out.println("Experiment directory does NOT exist. Creating");
-      boolean result = new File(experimentBaseDirectory_).mkdirs();
+      new File(experimentBaseDirectory_).mkdirs();
     } // else
     } // checkDirectories
 
@@ -175,18 +172,18 @@ public abstract class Experiment {
    * @param problemId Index of the problem in problemList_
    * @param algorithm Array containing the algorithms to execute
    */
-  public abstract void algorithmSettings(Problem problem, int problemId, Algorithm[] algorithm);
+  public abstract void algorithmSettings(ProblemValue problem, int problemId, Algorithm[] algorithm);
 
   public static void main(String[] args) throws JMException, IOException {
   }
 
   ;
 
-  public void generateLatexTables() throws FileNotFoundException, IOException {
+	public void generateLatexTables() throws FileNotFoundException, IOException {
     latexDirectory_ = experimentBaseDirectory_ + "/" + latexDirectory_;
     System.out.println("latex directory: " + latexDirectory_);
 
-    Vector[][][] data = new Vector[indicatorList_.length][][];
+    Vector<Double>[][][] data = new Vector[indicatorList_.length][][];
     for (int indicator = 0; indicator < indicatorList_.length; indicator++) {
       // A data vector per problem
       data[indicator] = new Vector[problemList_.length][];
@@ -195,7 +192,7 @@ public abstract class Experiment {
         data[indicator][problem] = new Vector[algorithmNameList_.length];
 
         for (int algorithm = 0; algorithm < algorithmNameList_.length; algorithm++) {
-          data[indicator][problem][algorithm] = new Vector();
+          data[indicator][problem][algorithm] = new Vector<Double>();
 
           String directory = experimentBaseDirectory_;
           directory += "/data/";
@@ -295,7 +292,7 @@ public abstract class Experiment {
     File latexOutput;
     latexOutput = new File(latexDirectory_);
     if (!latexOutput.exists()) {
-      boolean result = new File(latexDirectory_).mkdirs();
+      new File(latexDirectory_).mkdirs();
       System.out.println("Creating " + latexDirectory_ + " directory");
     }
     System.out.println("Experiment name: " + experimentName_);
@@ -313,11 +310,12 @@ public abstract class Experiment {
    * @param vector
    * @param values
    */
-  void calculateStatistics(Vector vector,
+  void calculateStatistics(Vector<Double> vector,
           Map<String, Double> values) {
 
     if (vector.size() > 0) {
-      double sum, minimum, maximum, sqsum, min, max, median, mean, iqr, stdDeviation;
+      @SuppressWarnings("unused")
+			double sum, minimum, maximum, sqsum, min, max, median, mean, iqr, stdDeviation;
 
       sqsum = 0.0;
       sum = 0.0;
@@ -381,7 +379,7 @@ public abstract class Experiment {
    * @param last index of last position to consider in the vector
    * @return The median
    */
-  Double calculateMedian(Vector vector, int first, int last) {
+  Double calculateMedian(Vector<Double> vector, int first, int last) {
     double median = 0.0;
 
     int size = last - first + 1;
@@ -402,7 +400,7 @@ public abstract class Experiment {
    * @param vector
    * @return The IQR
    */
-  Double calculateIQR(Vector vector) {
+  Double calculateIQR(Vector<Double> vector) {
     double q3 = 0.0;
     double q1 = 0.0;
 
@@ -656,7 +654,7 @@ public abstract class Experiment {
     File rOutput;
     rOutput = new File(rDirectory_);
     if (!rOutput.exists()) {
-      boolean result = new File(rDirectory_).mkdirs();
+      new File(rDirectory_).mkdirs();
       System.out.println("Creating " + rDirectory_ + " directory");
     }
 
@@ -738,7 +736,7 @@ public abstract class Experiment {
     File rOutput;
     rOutput = new File(rDirectory_);
     if (!rOutput.exists()) {
-      boolean result = new File(rDirectory_).mkdirs();
+      new File(rDirectory_).mkdirs();
       System.out.println("Creating " + rDirectory_ + " directory");
     }
 

@@ -7,8 +7,13 @@
 package jmetal.base ;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
+import jmetal.base.operator.crossover.Crossover;
+import jmetal.base.operator.localSearch.LocalSearch;
+import jmetal.base.operator.mutation.Mutation;
+import jmetal.base.operator.selection.Selection;
 import jmetal.util.JMException;
 
 /** This class implements a generic template for the algorithms developed in
@@ -16,15 +21,34 @@ import jmetal.util.JMException;
  *  and their names, and another mapping between the operators and their names. 
  *  The class declares an abstract method called <code>execute</code>, which 
  *  defines the behavior of the algorithm.
+ *  @param <V> the type of the variable
+ *  @param <C> the type of the crossover operator
+ *  @param <M> the type of the mutation operator
+ *  @param <S> the type of the selection operator
+ *  @param <I> the type of the improvement operator
  */ 
-public abstract class Algorithm implements Serializable {
+public abstract class Algorithm<V extends Variable, C extends Crossover<V>, M extends Mutation<V>, S extends Selection<V,?>, I extends LocalSearch<V>> implements Serializable {
    
- /** 
-  * Stores the operators used by the algorithm, such as selection, crossover,
-  * etc.
-  */
-  protected Map<String,Operator> operators_ = null;
-  
+ private static final long serialVersionUID = 170011594278842840L;
+
+ protected C crossoverOperator;
+ protected M mutationOperator;
+ protected S selectionOperator;
+ protected I improvement;
+
+ // output parameters
+ private int evaluations = -1;
+ 
+ 
+ public void setEvaluations(int evaluations) {
+	 this.evaluations = evaluations;
+ }
+
+
+ public int getEvaluations() {
+	 return evaluations;
+ }
+ 
  /** 
   * Stores algorithm specific parameters. For example, in NSGA-II these
   * parameters include the population size and the maximum number of function
@@ -32,43 +56,13 @@ public abstract class Algorithm implements Serializable {
   */
   protected Map<String,Object> inputParameters_ = null;  
   
-  /** 
-   * Stores output parameters, which are retrieved by Main object to 
-   * obtain information from an algorithm.
-   */
-  protected Map<String,Object> outPutParameters_ = null;
-  
  /**   
   * Launches the execution of an specific algorithm.
   * @return a <code>SolutionSet</code> that is a set of non dominated solutions
   * as a result of the algorithm execution  
   */
-  public abstract SolutionSet execute() throws JMException ;   
+  public abstract SolutionSet<V> execute() throws JMException ;   
   
- /**
-  * Offers facilities for add new operators for the algorithm. To use an
-  * operator, an algorithm has to obtain it through the 
-  * <code>getOperator</code> method.
-  * @param name The operator name
-  * @param operator The operator
-  */
-  public void addOperator(String name, Operator operator){
-    if (operators_ == null) {
-      operators_ = new HashMap<String,Operator>();
-    }        
-    operators_.put(name,operator);
-  } // addOperator 
-  
- /**
-  * Gets an operator through his name. If the operator doesn't exist or the name 
-  * is wrong this method returns null. The client of this method have to check 
-  * the result of the method.
-  * @param name The operator name
-  * @return The operator if exists, null in another case.
-  */
-  public Operator getOperator(String name){
-    return operators_.get(name);
-  } // getOperator   
   
  /**
   * Sets an input parameter to an algorithm. Typically,
@@ -97,32 +91,19 @@ public abstract class Algorithm implements Serializable {
     return inputParameters_.get(name);
   } // getInputParameter
   
- /**
-  * Sets an output parameter that can be obtained by invoking 
-  * <code>getOutputParame</code>. Typically this algorithm is invoked by an
-  * algorithm at the end of the <code>execute</code> to retrieve output 
-  * information
-  * @param name The output parameter name
-  * @param object Object representing the output parameter
-  */  
-  public void setOutputParameter(String name, Object object) {
-    if (outPutParameters_ == null) {
-      outPutParameters_ = new HashMap<String,Object>();
-    }        
-    outPutParameters_.put(name,object);
-  } // setOutputParameter  
+  public void setCrossover(C crossover) {
+  	this.crossoverOperator = crossover;
+  }
   
- /**
-  * Gets an output parameter through its name. Typically,
-  * the method is invoked by a Main object after the execution of an algorithm.
-  * @param name The output parameter name
-  * @return Object representing the output parameter, or null if the parameter
-  * doesn't exist or the name is wrong.
-  */
-  public Object getOutputParameter(String name) {
-    if (outPutParameters_ != null) 
-      return outPutParameters_.get(name);
-    else
-      return null ;
-  } // getOutputParameter   
+	public void setMutation(M mutation) {
+		this.mutationOperator = mutation;
+	}
+
+	public void setSelection(S selection) {
+		this.selectionOperator = selection;
+	}
+	
+	public void setImprovement(I improvement) {
+		this.improvement = improvement;
+	}
 } // Algorithm

@@ -6,18 +6,20 @@
  */
 package jmetal.experiments;
 
-import jmetal.base.*;
-import jmetal.problems.*  ;
-
-import jmetal.util.JMException;
 import java.io.IOException;
-
 import java.util.Properties;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 
+import jmetal.base.Algorithm;
+import jmetal.base.Configuration;
+import jmetal.base.Problem;
+import jmetal.base.SolutionSet;
+import jmetal.problems.ProblemFactory;
 import jmetal.qualityIndicator.QualityIndicator;
+import jmetal.util.JMException;
 
+@SuppressWarnings("unchecked")
 public class Main {
   public static Logger      logger_ ;      // Logger object
   public static FileHandler fileHandler_ ; // FileHandler object
@@ -59,7 +61,7 @@ public class Main {
     else if (args.length == 1) { // algorithmName
       algorithmName = args[0] ;
       Object [] problemParams = {"Real"};
-      problem = (new ProblemFactory()).getProblem(problemName, problemParams);
+      problem = ProblemFactory.getProblem(problemName, problemParams);
       Object [] settingsParams = {problem} ;
       settings = (new SettingsFactory()).getSettingsObject(algorithmName, settingsParams) ;
     } // if
@@ -67,7 +69,7 @@ public class Main {
       algorithmName = args[0] ;
       problemName = args[1] ;
       Object [] problemParams = {"Real"};
-      problem = (new ProblemFactory()).getProblem(problemName, problemParams);
+      problem = ProblemFactory.getProblem(problemName, problemParams);
       Object [] settingsParams = {problem} ;
       settings = (new SettingsFactory()).getSettingsObject(algorithmName, settingsParams) ;
     } // if    
@@ -76,7 +78,7 @@ public class Main {
       problemName = args[1] ;
       paretoFrontFile = args[2] ;
       Object [] problemParams = {"Real"};
-      problem = (new ProblemFactory()).getProblem(problemName, problemParams);
+      problem = ProblemFactory.getProblem(problemName, problemParams);
       Object [] settingsParams = {problem} ;
       settings = (new SettingsFactory()).getSettingsObject(algorithmName, settingsParams) ;
             
@@ -111,10 +113,8 @@ public class Main {
       logger_.info("Spread     : " + indicators.getSpread(population)) ;
       logger_.info("Epsilon    : " + indicators.getEpsilon(population)) ;  
 
-      if (algorithm.getOutputParameter("evaluations") != null) { 
-        Integer evals = (Integer)algorithm.getOutputParameter("evaluations") ;
-        int evaluations = (Integer)evals.intValue();
-        logger_.info("Speed      : " + evaluations + " evaluations") ;      
+      if (algorithm.getEvaluations() >= 0) { 
+        logger_.info("Speed      : " + algorithm.getEvaluations() + " evaluations") ;      
       } // if
     } // if
   } //main

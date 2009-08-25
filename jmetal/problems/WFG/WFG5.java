@@ -5,10 +5,9 @@
  */
 package jmetal.problems.WFG;
 
-import java.io.*;
-import java.util.Random;
 import jmetal.base.DecisionVariables;
 import jmetal.base.Solution;
+import jmetal.base.variable.IReal;
 import jmetal.util.JMException;
 
 /**
@@ -19,15 +18,17 @@ import jmetal.util.JMException;
  *            Third International Conference, EMO 2005. 
  *            Proceedings, volume 3410 of Lecture Notes in Computer Science
  */
-public class WFG5 extends WFG{
-  /**
+public class WFG5<V extends IReal> extends WFG<V> {
+  private static final long serialVersionUID = 4715616710041299474L;
+
+	/**
   * Creates a default WFG5 instance with 
   * 2 position-related parameters 
   * 4 distance-related parameters
   * and 2 objectives
   * @param solutionType The solution type must "Real" or "BinaryReal".
   */
-  public WFG5(String solutionType) {
+  public WFG5(Class<V> solutionType) {
     this(2, 4, 2, solutionType) ;
   } // WFG5
 
@@ -38,7 +39,7 @@ public class WFG5 extends WFG{
   * @param M Number of objective functions
   * @param solutionType The solution type must "Real" or "BinaryReal".
   */
-  public WFG5(Integer k, Integer l, Integer M,String solutionType) {
+  public WFG5(Integer k, Integer l, Integer M,Class<V> solutionType) {
     super(k,l,M,solutionType);
     problemName_ = "WFG5";
         
@@ -122,12 +123,12 @@ public class WFG5 extends WFG{
   * @param solution The solution to evaluate
    * @throws JMException 
   */    
-  public final void evaluate(Solution solution) throws JMException {
+  public final void evaluate(Solution<V> solution) throws JMException {
     float [] variables = new float[getNumberOfVariables()];
-    DecisionVariables dv = solution.getDecisionVariables();
+    DecisionVariables<V> dv = solution.getDecisionVariables();
         
     for (int i = 0; i < getNumberOfVariables(); i++) {
-      variables[i] = (float)dv.variables_[i].getValue();    
+      variables[i] = (float)dv.variables_.get(i).getValue();    
     }
         
     float [] sol = evaluate(variables);

@@ -6,18 +6,20 @@
  */
 package jmetal.experiments;
 
-import java.util.logging.Logger;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import jmetal.base.Algorithm;
-import jmetal.base.Problem;
+import jmetal.base.ProblemValue;
 import jmetal.experiments.settings.NSGAII_Settings;
 import jmetal.util.JMException;
 
 /**
  * @author Antonio J. Nebro
  */
+@SuppressWarnings("unchecked")
 public class NSGAIIStudy extends Experiment {
   
   /**
@@ -25,7 +27,7 @@ public class NSGAIIStudy extends Experiment {
    * @param problem The problem to solve
    * @param problemIndex
    */
-  public synchronized void  algorithmSettings(Problem problem, int problemIndex, Algorithm[] algorithm) {
+  public synchronized void  algorithmSettings(ProblemValue problem, int problemIndex, Algorithm[] algorithm) {
     try {
       int numberOfAlgorithms = algorithmNameList_.length;
 
@@ -77,8 +79,8 @@ public class NSGAIIStudy extends Experiment {
     exp.independentRuns_ = 30 ;
     
     // Run the experiments
-    int numberOfThreads ;
-    exp.runExperiment(numberOfThreads = 6) ;
+    int numberOfThreads = 6;
+    exp.runExperiment(numberOfThreads) ;
     
     // Generate latex tables (comment this sentence is not desired)
     exp.generateLatexTables() ;
@@ -94,8 +96,8 @@ public class NSGAIIStudy extends Experiment {
     prefix = new String("Problems");
     problems = new String[]{"ZDT1", "ZDT2","ZDT3", "ZDT4", "DTLZ1", "WFG2"} ;
 
-    boolean notch ;
-    exp.generateRBoxplotScripts(rows, columns, problems, prefix, notch = false) ;
+    boolean notch = false;
+    exp.generateRBoxplotScripts(rows, columns, problems, prefix, notch) ;
     exp.generateRWilcoxonScripts(problems, prefix) ;
   }
 } // NSGAIIStudy

@@ -6,24 +6,37 @@
 
 package jmetal.metaheuristics.fastPGA;
 
-import jmetal.base.*;
-import jmetal.base.operator.comparator.FPGAFitnessComparator;
-import jmetal.util.*;
+import java.util.Comparator;
 
-import java.util.*;
+import jmetal.base.Algorithm;
+import jmetal.base.Problem;
+import jmetal.base.Solution;
+import jmetal.base.SolutionSet;
+import jmetal.base.Variable;
+import jmetal.base.operator.comparator.FPGAFitnessComparator;
+import jmetal.base.operator.crossover.Crossover;
+import jmetal.base.operator.localSearch.LocalSearch;
+import jmetal.base.operator.mutation.Mutation;
+import jmetal.base.operator.selection.Selection;
+import jmetal.util.Distance;
+import jmetal.util.FPGAFitness;
+import jmetal.util.JMException;
+import jmetal.util.Ranking;
 
 /*
 * This class implements the FPGA (Fast Pareto Genetic Algorithm).
 */
-public class FastPGA extends Algorithm{
+public class FastPGA<V extends Variable>
+	extends Algorithm<V, Crossover<V>, Mutation<V>, Selection<V, Solution<V>>, LocalSearch<V>> {
     
-  Problem problem_;
+  private static final long serialVersionUID = -1773050806660065098L;
+	Problem<V> problem_;
   
   /**
    * Constructor
    * Creates a new instance of FastPGA
    */
-  public FastPGA(Problem problem) {
+  public FastPGA(Problem<V> problem) {
     problem_ = problem;
   } // FastPGA
   
@@ -33,15 +46,13 @@ public class FastPGA extends Algorithm{
   * as a result of the algorithm execution  
    * @throws JMException 
   */  
-  public SolutionSet execute() throws JMException {
+  public SolutionSet<V> execute() throws JMException {
     int maxPopSize, populationSize,offSpringSize,
         evaluations, maxEvaluations, initialPopulationSize;
-    SolutionSet solutionSet, offSpringSolutionSet, candidateSolutionSet = null;
+    SolutionSet<V> solutionSet, offSpringSolutionSet, candidateSolutionSet = null;
     double a, b, c, d;
-    Operator crossover, mutation, selection;    
     int termination;
-    Distance distance = new Distance();
-    Comparator fpgaFitnessComparator = new FPGAFitnessComparator();
+    Comparator<Solution<V>> fpgaFitnessComparator = new FPGAFitnessComparator<V>();
     
     //Read the parameters
     maxPopSize     = ((Integer)getInputParameter("maxPopSize")).intValue();
@@ -49,11 +60,6 @@ public class FastPGA extends Algorithm{
     initialPopulationSize = 
                   ((Integer)getInputParameter("initialPopulationSize")).intValue();
     termination = ((Integer)getInputParameter("termination")).intValue();
-    
-    //Read the operators
-    crossover = (Operator) operators_.get("crossover");
-    mutation  = (Operator) operators_.get("mutation");
-    selection = (Operator) operators_.get("selection");
     
     //Read the params
     a = ((Double)getInputParameter("a")).doubleValue();
@@ -67,9 +73,9 @@ public class FastPGA extends Algorithm{
     offSpringSize  = maxPopSize;
     
     //Build a solution set randomly
-    solutionSet = new SolutionSet(populationSize);
+    solutionSet = new SolutionSet<V>(populationSize);
     for (int i = 0; i < populationSize; i++) {
-      Solution solution = new Solution(problem_);
+      Solution<V> solution = new Solution<V>(problem_);
       problem_.evaluate(solution);
       problem_.evaluateConstraints(solution);
       evaluations++;
@@ -77,20 +83,19 @@ public class FastPGA extends Algorithm{
     }
     
     //Begin the iterations
-    Solution [] parents = new Solution[2];
-    Solution [] offSprings;
+    Solution<V> [] offSprings;
     boolean stop = false;
     int reachesMaxNonDominated = 0;
     while (!stop) {
       
       // Create the candidate solutionSet
-      offSpringSolutionSet = new SolutionSet(offSpringSize);
+      offSpringSolutionSet = new SolutionSet<V>(offSpringSize);
       for (int i = 0; i < offSpringSize/2; i++) {
-        parents[0] = (Solution)selection.execute(solutionSet);
-        parents[1] = (Solution)selection.execute(solutionSet);
-        offSprings = (Solution [])crossover.execute(parents);
-        mutation.execute(offSprings[0]);
-        mutation.execute(offSprings[1]);
+        Solution<V> parent1 = selectionOperator.execute(solutionSet);
+        Solution<V> parent2 = selectionOperator.execute(solutionSet);
+        offSprings = crossoverOperator.execute(parent1, parent2);
+        mutationOperator.execute(offSprings[0]);
+        mutationOperator.execute(offSprings[1]);
         problem_.evaluate(offSprings[0]);        
         problem_.evaluateConstraints(offSprings[0]);
         evaluations++;
@@ -105,9 +110,9 @@ public class FastPGA extends Algorithm{
       candidateSolutionSet = solutionSet.union(offSpringSolutionSet);
       
       // Rank
-      Ranking ranking = new Ranking(candidateSolutionSet);
-      distance.crowdingDistanceAssignment(ranking.getSubfront(0),problem_.getNumberOfObjectives());
-      FPGAFitness fitness = new FPGAFitness(candidateSolutionSet,problem_);
+      Ranking<V> ranking = new Ranking<V>(candidateSolutionSet);
+      Distance.crowdingDistanceAssignment(ranking.getSubfront(0),problem_.getNumberOfObjectives());
+      FPGAFitness<V> fitness = new FPGAFitness<V>(candidateSolutionSet,problem_);
       fitness.fitnessAssign();
       
       // Count the non-dominated solutions in candidateSolutionSet      
@@ -118,7 +123,7 @@ public class FastPGA extends Algorithm{
       offSpringSize  = (int)Math.min(c + Math.floor(d * count),maxPopSize);
             
       candidateSolutionSet.sort(fpgaFitnessComparator);
-      solutionSet = new SolutionSet(populationSize);
+      solutionSet = new SolutionSet<V>(populationSize);
       
       for (int i = 0; i < populationSize; i++) {
         solutionSet.add(candidateSolutionSet.get(i));
@@ -126,7 +131,7 @@ public class FastPGA extends Algorithm{
       
       //Termination test
       if (termination == 0) {
-        ranking = new Ranking(solutionSet);
+        ranking = new Ranking<V>(solutionSet);
         count = ranking.getSubfront(0).size();        
         if (count == maxPopSize) {
           if (reachesMaxNonDominated == 0) {
@@ -145,9 +150,9 @@ public class FastPGA extends Algorithm{
       }
     }
     
-    setOutputParameter("evaluations",evaluations);
+    setEvaluations(evaluations);
         
-    Ranking ranking = new Ranking(solutionSet);
+    Ranking<V> ranking = new Ranking<V>(solutionSet);
     return ranking.getSubfront(0);
   } // execute
 } // FastPGA

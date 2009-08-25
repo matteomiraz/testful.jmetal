@@ -9,9 +9,7 @@ package jmetal.experiments;
 import java.lang.reflect.Constructor;
 
 import jmetal.base.Configuration;
-import jmetal.base.Problem;
 import jmetal.util.JMException;
-import jmetal.experiments.settings.* ;
 
 /**
  * This class represents a factory for problems
@@ -31,8 +29,8 @@ public class SettingsFactory {
     String base = "jmetal.experiments.settings." + algorithmName + "_Settings";
 
     try {
-      Class problemClass = Class.forName(base);
-      Constructor [] constructors = problemClass.getConstructors();
+      Class<?> problemClass = Class.forName(base);
+      Constructor<?> [] constructors = problemClass.getConstructors();
       int i = 0;
       //find the constructor
       while ((i < constructors.length) && 

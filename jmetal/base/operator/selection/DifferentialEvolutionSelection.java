@@ -6,16 +6,17 @@
  */
 package jmetal.base.operator.selection;
 
-import jmetal.base.Configuration;
-import jmetal.base.Operator;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
-import jmetal.base.Configuration.SolutionType_;
+import jmetal.base.Variable;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
 
-public class DifferentialEvolutionSelection extends Operator {
+public class DifferentialEvolutionSelection<T extends Variable> extends Selection<T, Solution<T>[]> {
 
+  private static final long serialVersionUID = -7513751998032671539L;
+
+  private int index;
 
   /**
    * Constructor
@@ -23,18 +24,20 @@ public class DifferentialEvolutionSelection extends Operator {
   DifferentialEvolutionSelection() {
   } // Constructor
 
+	public void setIndex(int index) {
+		this.index = index;
+	}
+  
   /**
    * Executes the operation
    * @param object An object containing the population and the position (index)
    *               of the current individual
    * @return An object containing the three selected parents
    */
-  public Object execute(Object object) throws JMException {
-    Object[] parameters = (Object[])object ;
-    SolutionSet population = (SolutionSet)parameters[0];
-    int         index      = (Integer)parameters[1] ;
-
-    Solution[] parents = new Solution[3] ;
+  @SuppressWarnings("unchecked")
+	@Override
+  public Solution<T>[] execute(SolutionSet<T> population) throws JMException {
+    Solution<T>[] parents = new Solution[3] ;
     int r1, r2, r3 ;
 
     if (population.size() < 4)

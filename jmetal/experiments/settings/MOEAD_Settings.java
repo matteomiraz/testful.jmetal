@@ -8,16 +8,16 @@
  */
 package jmetal.experiments.settings;
 
-import jmetal.metaheuristics.moead.*;
 import java.util.Properties;
+
 import jmetal.base.Algorithm;
-import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.operator.crossover.CrossoverFactory;
+import jmetal.base.operator.crossover.DifferentialEvolutionCrossover;
 import jmetal.base.operator.mutation.MutationFactory;
-import jmetal.base.operator.selection.SelectionFactory;
+import jmetal.base.operator.mutation.PolynomialMutation;
 import jmetal.experiments.Settings;
-import jmetal.problems.ProblemFactory;
+import jmetal.metaheuristics.moead.MOEAD;
 import jmetal.qualityIndicator.QualityIndicator;
 import jmetal.util.JMException;
 
@@ -25,6 +25,7 @@ import jmetal.util.JMException;
  *
  * @author Antonio
  */
+@SuppressWarnings("unchecked")
 public class MOEAD_Settings extends Settings {
   // Default settings
   double CR_ = 0.1;
@@ -51,8 +52,8 @@ public class MOEAD_Settings extends Settings {
    */
   public Algorithm configure() throws JMException {
     Algorithm algorithm;
-    Operator crossover;
-    Operator mutation;
+    DifferentialEvolutionCrossover crossover;
+    PolynomialMutation mutation;
 
     QualityIndicator indicators;
 
@@ -64,17 +65,17 @@ public class MOEAD_Settings extends Settings {
     algorithm.setInputParameter("maxEvaluations", maxEvaluations_);
 
     // Crossover operator 
-    crossover = CrossoverFactory.getCrossoverOperator("DifferentialEvolutionCrossover");
-    crossover.setParameter("CR", CR_);
-    crossover.setParameter("F", F_);   
+    crossover = (DifferentialEvolutionCrossover) CrossoverFactory.getCrossoverOperator("DifferentialEvolutionCrossover");
+    crossover.setCR(CR_);
+    crossover.setF(F_);   
     
     // Mutation operator
-    mutation = MutationFactory.getMutationOperator("PolynomialMutation");                    
-    mutation.setParameter("probability", mutationProbability_);
-    mutation.setParameter("distributionIndex", distributionIndexForMutation_); 
+    mutation = (PolynomialMutation) MutationFactory.getMutationOperator("PolynomialMutation");                    
+    mutation.setProbability(mutationProbability_);
+    mutation.setDistributionIndex(distributionIndexForMutation_);    
     
-    algorithm.addOperator("crossover", crossover);
-    algorithm.addOperator("mutation", mutation);
+    algorithm.setCrossover(crossover);
+    algorithm.setMutation(mutation);
     
     // Creating the indicator object
     if (!paretoFrontFile_.equals("")) {

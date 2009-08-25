@@ -6,22 +6,23 @@
  */
 package jmetal.experiments;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import jmetal.base.Algorithm;
-import jmetal.base.Problem;
+import jmetal.base.ProblemValue;
 import jmetal.experiments.settings.AbYSS_Settings;
 import jmetal.experiments.settings.MOCell_Settings;
 import jmetal.experiments.settings.NSGAII_Settings;
 import jmetal.experiments.settings.SPEA2_Settings;
-
 import jmetal.util.JMException;
 
 /**
  * @author Antonio J. Nebro
  */
+@SuppressWarnings("unchecked")
 public class ConstrainedProblemsStudy extends Experiment {
 
   /**
@@ -29,7 +30,7 @@ public class ConstrainedProblemsStudy extends Experiment {
    * @param problem The problem to solve
    * @param problemIndex
    */
-  public void algorithmSettings(Problem problem, int problemIndex, Algorithm[] algorithm) {
+	public void algorithmSettings(ProblemValue problem, int problemIndex, Algorithm[] algorithm) {
     try {
       int numberOfAlgorithms = algorithmNameList_.length;
 
@@ -76,7 +77,7 @@ public class ConstrainedProblemsStudy extends Experiment {
     exp.independentRuns_ = 100;
 
     // Run the experiments
-    int numberOfThreads ;
+    //int numberOfThreads ;
     //exp.runExperiment(numberOfThreads = 4) ;
     
     // Generate latex tables
@@ -87,7 +88,7 @@ public class ConstrainedProblemsStudy extends Experiment {
     int columns  ;
     String prefix ;
     String [] problems ;
-    boolean notch ;
+    boolean notch  = true;
 
 
     // Configuring scripts for ZDT
@@ -95,7 +96,7 @@ public class ConstrainedProblemsStudy extends Experiment {
     columns = 2 ;
     prefix = new String("Constrained");
     problems = new String[]{"ConstrEx", "Golinski", "Srinivas","Tanaka"} ;
-    exp.generateRBoxplotScripts(rows, columns, problems, prefix, notch=true) ;
+    exp.generateRBoxplotScripts(rows, columns, problems, prefix, notch) ;
     exp.generateRWilcoxonScripts(problems, prefix) ;
   }
 } // ConstrainedProblemsStudy

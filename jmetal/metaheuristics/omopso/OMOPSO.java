@@ -6,24 +6,41 @@
  */
 package jmetal.metaheuristics.omopso;
 
-import jmetal.base.*;
-import jmetal.base.archive.CrowdingArchive;
-import jmetal.base.operator.mutation.*;
-import jmetal.base.operator.comparator.*;
-import jmetal.base.Algorithm;
-import jmetal.util.*;
-
 import java.util.Comparator;
+
+import jmetal.base.Algorithm;
+import jmetal.base.DecisionVariables;
+import jmetal.base.ProblemValue;
+import jmetal.base.Solution;
+import jmetal.base.SolutionSet;
+import jmetal.base.archive.CrowdingArchive;
+import jmetal.base.operator.comparator.CrowdingDistanceComparator;
+import jmetal.base.operator.comparator.DominanceComparator;
+import jmetal.base.operator.comparator.EpsilonDominanceComparator;
+import jmetal.base.operator.crossover.Crossover;
+import jmetal.base.operator.localSearch.LocalSearch;
+import jmetal.base.operator.mutation.Mutation;
+import jmetal.base.operator.mutation.NonUniformMutation;
+import jmetal.base.operator.mutation.UniformMutation;
+import jmetal.base.operator.selection.Selection;
+import jmetal.base.variable.Real;
+import jmetal.util.Distance;
+import jmetal.util.JMException;
+import jmetal.util.NonDominatedSolutionList;
+import jmetal.util.PseudoRandom;
 
 /**
  * This class representing an asychronous version of OMOPSO algorithm
  */
-public class OMOPSO extends Algorithm {
+public class OMOPSO
+	extends Algorithm<Real, Crossover<Real>, Mutation<Real>, Selection<Real, Solution<Real>>, LocalSearch<Real>> {
                
-  /**
+  private static final long serialVersionUID = 5286767531955701063L;
+
+	/**
   * Stores the problem to solve
   */
-  private Problem problem_;
+  private ProblemValue<Real> problem_;
   
   /**
    * Stores the number of particles_ used
@@ -53,22 +70,22 @@ public class OMOPSO extends Algorithm {
   /**
   * Stores the particles
   */
-  private SolutionSet particles_;
+  private SolutionSet<Real> particles_;
   
   /**
    * Stores the best_ solutions founds so far for each particles
    */
-  private Solution[] best_;
+  private Solution<Real>[] best_;
   
   /**
   * Stores the leaders_
   */
-  private CrowdingArchive leaders_ ;
+  private CrowdingArchive<Real> leaders_ ;
   
   /**
   * Stores the epsilon-archive
   */
-  private NonDominatedSolutionList eArchive_;
+  private NonDominatedSolutionList<Real> eArchive_;
   
   /**
   * Stores the speed_ of each particle
@@ -78,27 +95,22 @@ public class OMOPSO extends Algorithm {
   /**
   * Stores a comparator for checking dominance
   */
-  private Comparator dominance_;
+  private Comparator<Solution<Real>> dominance_;
   
   /**
   * Stores a comparator for crowding checking
   */
-  private Comparator crowdingDistanceComparator_;
-  
-  /**
-   * Stores a <code>Distance</code> object
-   */
-  private Distance distance_;
+  private Comparator<Solution<Real>> crowdingDistanceComparator_;
   
   /**
   * Stores a operator for uniform mutations
   */
-  private Operator uniformMutation_;
+  private UniformMutation uniformMutation_;
   
   /**
   * Stores a operator for non uniform mutations
   */ 
-  private Operator nonUniformMutation_;
+  private NonUniformMutation nonUniformMutation_;
   
   /**
   * eta_ value
@@ -110,40 +122,40 @@ public class OMOPSO extends Algorithm {
   * Constructor
   * @param problem Problem to solve
   */    
-  public OMOPSO(Problem problem) {                
+  public OMOPSO(ProblemValue<Real> problem) {                
     problem_ = problem;        
   } // OMOPSO
   
   /**
    * Initialize all parameter of the algorithm
    */
-  public void initParams(){
+  @SuppressWarnings("unchecked")
+	public void initParams(){
     particlesSize_ = ((Integer)getInputParameter("swarmSize")).intValue();
     archiveSize_   = ((Integer)getInputParameter("archiveSize")).intValue();
     maxIterations_ = ((Integer)getInputParameter("maxIterations")).intValue();
     perturbation_  = ((Double)getInputParameter("perturbationIndex")).doubleValue() ;
     
-    particles_     = new SolutionSet(particlesSize_);        
+    particles_     = new SolutionSet<Real>(particlesSize_);        
     best_          = new Solution[particlesSize_];
-    leaders_       = new CrowdingArchive(archiveSize_,problem_.getNumberOfObjectives());
-    eArchive_      = new NonDominatedSolutionList(new EpsilonDominanceComparator(eta_));
+    leaders_       = new CrowdingArchive<Real>(archiveSize_,problem_.getNumberOfObjectives());
+    eArchive_      = new NonDominatedSolutionList<Real>(new EpsilonDominanceComparator<Real>(eta_));
     
 
     // Create the dominator for equadless and dominance
-    dominance_          = new DominanceComparator();    
-    crowdingDistanceComparator_ = new CrowdingDistanceComparator();
-    distance_           = new Distance();
+    dominance_          = new DominanceComparator<Real>();    
+    crowdingDistanceComparator_ = new CrowdingDistanceComparator<Real>();
     
     // Create the speed_ vector
     speed_ = new double[particlesSize_][problem_.getNumberOfVariables()];
     
     uniformMutation_ = new UniformMutation();
-    uniformMutation_.setParameter("perturbationIndex",perturbation_);
-    uniformMutation_.setParameter("probability",1.0/problem_.getNumberOfVariables());
+    uniformMutation_.setPerturbationIndex(perturbation_);
+    uniformMutation_.setProbability(1.0/problem_.getNumberOfVariables());
     nonUniformMutation_ = new NonUniformMutation();
-    nonUniformMutation_.setParameter("perturbationIndex",perturbation_);        
-    nonUniformMutation_.setParameter("maxIterations",maxIterations_);
-    nonUniformMutation_.setParameter("probability",1.0/problem_.getNumberOfVariables());
+    nonUniformMutation_.setPerturbation(perturbation_);        
+    nonUniformMutation_.setMaxIterations(maxIterations_);
+    nonUniformMutation_.setProbability(1.0/problem_.getNumberOfVariables());
   } // initParams
            
   
@@ -153,14 +165,14 @@ public class OMOPSO extends Algorithm {
    */
   private void computeSpeed() throws JMException{        
     double r1,r2,W,C1,C2; 
-    DecisionVariables bestGlobal;                                            
+    DecisionVariables<Real> bestGlobal;                                            
         
     for (int i = 0; i < particlesSize_; i++){
-      DecisionVariables particle     = particles_.get(i).getDecisionVariables();
-      DecisionVariables bestParticle = best_[i].getDecisionVariables();                        
+      DecisionVariables<Real> particle     = particles_.get(i).getDecisionVariables();
+      DecisionVariables<Real> bestParticle = best_[i].getDecisionVariables();                        
 
       //Select a global best_ for calculate the speed of particle i, bestGlobal
-      Solution one, two;
+      Solution<Real> one, two;
       int pos1 = PseudoRandom.randInt(0,leaders_.size()-1);
       int pos2 = PseudoRandom.randInt(0,leaders_.size()-1);
       one = leaders_.get(pos1);
@@ -183,10 +195,10 @@ public class OMOPSO extends Algorithm {
       for (int var = 0; var < particle.size(); var++){                                     
         //Computing the velocity of this particle
         speed_[i][var] = W  * speed_[i][var] +
-                   C1 * r1 * (bestParticle.variables_[var].getValue() - 
-                              particle.variables_[var].getValue()) +
-                   C2 * r2 * (bestGlobal.variables_[var].getValue() - 
-                              particle.variables_[var].getValue());
+                   C1 * r1 * (bestParticle.variables_.get(var).getValue() - 
+                              particle.variables_.get(var).getValue()) +
+                   C2 * r2 * (bestGlobal.variables_.get(var).getValue() - 
+                              particle.variables_.get(var).getValue());
       }
                 
     }
@@ -198,16 +210,16 @@ public class OMOPSO extends Algorithm {
    */
   private void computeNewPositions() throws JMException{
     for (int i = 0; i < particlesSize_; i++){
-      DecisionVariables particle = particles_.get(i).getDecisionVariables();
+      DecisionVariables<Real> particle = particles_.get(i).getDecisionVariables();
       //particle.move(speed_[i]);
       for (int var = 0; var < particle.size(); var++){
-        particle.variables_[var].setValue(particle.variables_[var].getValue()+ speed_[i][var]);
-        if (particle.variables_[var].getValue() < problem_.getLowerLimit(var)){
-          particle.variables_[var].setValue(problem_.getLowerLimit(var));                    
+        particle.variables_.get(var).setValue(particle.variables_.get(var).getValue()+ speed_[i][var]);
+        if (particle.variables_.get(var).getValue() < problem_.getLowerLimit(var)){
+          particle.variables_.get(var).setValue(problem_.getLowerLimit(var));                    
           speed_[i][var] = speed_[i][var] * -1.0;    
         }
-        if (particle.variables_[var].getValue() > problem_.getUpperLimit(var)){
-          particle.variables_[var].setValue(problem_.getUpperLimit(var));                    
+        if (particle.variables_.get(var).getValue() > problem_.getUpperLimit(var)){
+          particle.variables_.get(var).setValue(problem_.getUpperLimit(var));                    
           speed_[i][var] = speed_[i][var] * -1.0;    
         }                                             
       }
@@ -223,7 +235,7 @@ public class OMOPSO extends Algorithm {
     //There are three groups of particles_, the ones that are mutated with
     //a non-uniform mutation operator, the ones that are mutated with a 
     //uniform mutation and the one that no are mutated
-    nonUniformMutation_.setParameter("currentIteration",actualIteration);
+    nonUniformMutation_.setCurrentIteration(actualIteration);
     //*/
 
     for (int i = 0; i < particles_.size();i++)            
@@ -242,12 +254,12 @@ public class OMOPSO extends Algorithm {
   * as a result of the algorithm execution  
    * @throws JMException 
   */  
-  public SolutionSet execute() throws JMException{
+  public SolutionSet<Real> execute() throws JMException{
     initParams();
 
     //->Step 1 (and 3) Create the initial population and evaluate
     for (int i = 0; i < particlesSize_; i++){
-      Solution particle = new Solution(problem_);
+      Solution<Real> particle = new Solution<Real>(problem_);
       problem_.evaluate(particle);
       problem_.evaluateConstraints(particle);
       particles_.add(particle);                   
@@ -263,20 +275,20 @@ public class OMOPSO extends Algorithm {
         
     // Step4 and 5   
     for (int i = 0; i < particles_.size(); i++){
-      Solution particle = new Solution(particles_.get(i));            
+      Solution<Real> particle = new Solution<Real>(particles_.get(i));            
       if (leaders_.add(particle)){
-        eArchive_.add(new Solution(particle));
+        eArchive_.add(new Solution<Real>(particle));
       }
     }
                 
     //-> Step 6. Initialice the memory of each particle
     for (int i = 0; i < particles_.size(); i++){
-      Solution particle = new Solution(particles_.get(i));           
+      Solution<Real> particle = new Solution<Real>(particles_.get(i));           
       best_[i] = particle;
     }
         
     //Crowding the leaders_
-    distance_.crowdingDistanceAssignment(leaders_,problem_.getNumberOfObjectives());        
+    Distance.crowdingDistanceAssignment(leaders_,problem_.getNumberOfObjectives());        
 
     //-> Step 7. Iterations ..        
     while (iteration_ < maxIterations_){
@@ -291,16 +303,16 @@ public class OMOPSO extends Algorithm {
             
       //Evaluate the new particles_ in new positions
       for (int i = 0; i < particles_.size(); i++){
-        Solution particle = particles_.get(i);
+        Solution<Real> particle = particles_.get(i);
         problem_.evaluate(particle);                
         problem_.evaluateConstraints(particle);                
       }
             
       //Actualize the archive          
       for (int i = 0; i < particles_.size(); i++){
-        Solution particle = new Solution(particles_.get(i));                
+        Solution<Real> particle = new Solution<Real>(particles_.get(i));                
         if (leaders_.add(particle)){
-          eArchive_.add(new Solution(particle));
+          eArchive_.add(new Solution<Real>(particle));
         }                
       }
             
@@ -308,14 +320,14 @@ public class OMOPSO extends Algorithm {
       for (int i = 0; i < particles_.size();i++){
         int flag = dominance_.compare(particles_.get(i),best_[i]);
         if (flag != 1) { // the new particle is best_ than the older remeber        
-          Solution particle = new Solution(particles_.get(i));                    
+          Solution<Real> particle = new Solution<Real>(particles_.get(i));                    
           //this.best_.reemplace(i,particle);
           best_[i] = particle;
         }
       }       
             
       //Crowding the leaders_
-      distance_.crowdingDistanceAssignment(leaders_,
+      Distance.crowdingDistanceAssignment(leaders_,
                                               problem_.getNumberOfObjectives());            
       iteration_++;
     }
@@ -327,7 +339,7 @@ public class OMOPSO extends Algorithm {
   /** 
    * Gets the leaders of the OMOPSO algorithm
    */
-  public SolutionSet getLeader(){
+  public SolutionSet<Real> getLeader(){
     return leaders_;
   }  // getLeader 
 } // OMOPSO

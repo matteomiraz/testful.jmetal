@@ -7,20 +7,22 @@
 package jmetal.metaheuristics.spea2;
 
 import java.io.IOException;
-import jmetal.base.*;
-import jmetal.base.operator.crossover.*   ;
-import jmetal.base.operator.mutation.*    ; 
-import jmetal.base.operator.selection.*   ;
-import jmetal.problems.*                  ;
-import jmetal.problems.DTLZ.*;
-import jmetal.problems.ZDT.*;
-import jmetal.problems.WFG.*;
-import jmetal.problems.ZZJ07.*;
-import jmetal.problems.LZ07.* ;
-
-import jmetal.util.JMException;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
+
+import jmetal.base.Configuration;
+import jmetal.base.Problem;
+import jmetal.base.SolutionSet;
+import jmetal.base.operator.crossover.CrossoverFactory;
+import jmetal.base.operator.crossover.SBXCrossover;
+import jmetal.base.operator.mutation.MutationFactory;
+import jmetal.base.operator.mutation.PolynomialMutation;
+import jmetal.base.operator.selection.BinaryTournament;
+import jmetal.base.operator.selection.SelectionFactory;
+import jmetal.base.variable.Real;
+import jmetal.problems.Kursawe;
+import jmetal.problems.ProblemFactory;
+import jmetal.util.JMException;
 
 public class SPEA2_main {
   public static Logger      logger_ ;      // Logger object
@@ -31,12 +33,13 @@ public class SPEA2_main {
    *             the problem to solve.
    * @throws JMException 
    */
-  public static void main(String [] args) throws JMException, IOException {
-    Problem   problem   ;         // The problem to solve
-    Algorithm algorithm ;         // The algorithm to use
-    Operator  crossover ;         // Crossover operator
-    Operator  mutation  ;         // Mutation operator
-    Operator  selection ;         // Selection operator
+  @SuppressWarnings("unchecked")
+	public static void main(String [] args) throws JMException, IOException {
+    Problem<Real>   problem   ;         // The problem to solve
+    SPEA2<Real> algorithm ;         // The algorithm to use
+    SBXCrossover  crossover ;         // Crossover operator
+    PolynomialMutation<Real> mutation  ;         // Mutation operator
+    BinaryTournament<Real>  selection ;         // Selection operator
         
     // Logger object and file to store log messages
     logger_      = Configuration.logger_ ;
@@ -45,10 +48,10 @@ public class SPEA2_main {
     
     if (args.length == 1) {
       Object [] params = {"Real"};
-      problem = (new ProblemFactory()).getProblem(args[0],params);
+      problem = (Problem<Real>) ProblemFactory.getProblem(args[0],params);
     } // if
     else { // Default problem
-      problem = new Kursawe(3, "Real"); 
+      problem = new Kursawe(3, Real.class); 
       //problem = new Kursawe(3,"BinaryReal");
       //problem = new Water("Real");
       //problem = new ZDT4("Real");
@@ -57,7 +60,7 @@ public class SPEA2_main {
       //problem = new OKA2("Real") ;
     } // else
     
-    algorithm = new SPEA2(problem);
+    algorithm = new SPEA2<Real>(problem);
     
     // Algorithm params    
     algorithm.setInputParameter("populationSize",100);
@@ -65,12 +68,12 @@ public class SPEA2_main {
     algorithm.setInputParameter("maxEvaluations",25000);
       
     // Mutation and Crossover for Real codification
-    crossover = CrossoverFactory.getCrossoverOperator("SBXCrossover");                   
-    crossover.setParameter("probability",0.9);                   
-    crossover.setParameter("distribuitionIndex",20.0);
-    mutation = MutationFactory.getMutationOperator("PolynomialMutation");                    
-    mutation.setParameter("probability",1.0/problem.getNumberOfVariables());
-    mutation.setParameter("distributionIndex",20.0);
+    crossover = (SBXCrossover) CrossoverFactory.getCrossoverOperator("SBXCrossover");                   
+    crossover.setProbability(0.9);                   
+    crossover.setDistributionIndex(20.0);
+    mutation = (PolynomialMutation<Real>) MutationFactory.getMutationOperator("PolynomialMutation");                    
+    mutation.setProbability(1.0/problem.getNumberOfVariables());
+    mutation.setDistributionIndex(20.0);
     
     /* Mutation and Crossover Binary codification */
     /*
@@ -81,16 +84,16 @@ public class SPEA2_main {
     */
     
     /* Selection Operator */
-    selection = SelectionFactory.getSelectionOperator("BinaryTournament") ;                           
+    selection = (BinaryTournament<Real>) SelectionFactory.getSelectionOperator("BinaryTournament") ;                           
     
     // Add the operators to the algorithm
-    algorithm.addOperator("crossover",crossover);
-    algorithm.addOperator("mutation",mutation);
-    algorithm.addOperator("selection",selection);
+    algorithm.setCrossover(crossover);
+    algorithm.setMutation(mutation);
+    algorithm.setSelection(selection);
     
     // Execute the Algorithm
     long initTime = System.currentTimeMillis();
-    SolutionSet population = algorithm.execute();
+    SolutionSet<Real> population = algorithm.execute();
     long estimatedTime = System.currentTimeMillis() - initTime;
 
        // Result messages 

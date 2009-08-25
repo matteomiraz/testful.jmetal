@@ -7,11 +7,10 @@
 
 package jmetal.base.operator.crossover;
 
-import jmetal.base.*;    
-import jmetal.base.variable.*;
+import jmetal.base.Solution;
+import jmetal.base.variable.Permutation;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
-import jmetal.base.Configuration.VariableType_; 
 
  /**
  * This class allows to apply a PMX crossover operator using two parent
@@ -19,8 +18,10 @@ import jmetal.base.Configuration.VariableType_;
  * NOTE: the operator is applied to the first variable of the solutions, and 
  * the type of those variables must be VariableType_.Permutation.
  */
-  public class PMXCrossover extends Operator {
-  /**
+  public class PMXCrossover extends Crossover<Permutation> {
+  private static final long serialVersionUID = 1572296934919082873L;
+
+	/**
    * Constructor
    */
   public PMXCrossover() {
@@ -34,26 +35,24 @@ import jmetal.base.Configuration.VariableType_;
    * @return An array containig the two offsprings
    * @throws JMException 
    */
-  public Solution[] doCrossover(double   probability, 
-                                Solution parent1, 
-                                Solution parent2) throws JMException {
+  @SuppressWarnings("unchecked")
+	public Solution<Permutation>[] doCrossover(double   probability, 
+                                Solution<Permutation> parent1, 
+                                Solution<Permutation> parent2) throws JMException {
 
-    Solution [] offspring = new Solution[2];
+    Solution<Permutation> [] offspring = new Solution[2];
 
-    offspring[0] = new Solution(parent1);
-    offspring[1] = new Solution(parent2);
-
-    if (parent1.getDecisionVariables().variables_[0].getVariableType() ==
-      VariableType_.Permutation) {
+    offspring[0] = new Solution<Permutation>(parent1);
+    offspring[1] = new Solution<Permutation>(parent2);
 
       int permutationLength ;
 
-      permutationLength = ((Permutation)parent1.getDecisionVariables().variables_[0]).getLength() ;
+      permutationLength = ((Permutation)parent1.getDecisionVariables().variables_.get(0)).getLength() ;
 
-      int parent1Vector[]    = ((Permutation)parent1.getDecisionVariables().variables_[0]).vector_ ;
-      int parent2Vector[]    = ((Permutation)parent2.getDecisionVariables().variables_[0]).vector_ ;    
-      int offspring1Vector[] = ((Permutation)offspring[0].getDecisionVariables().variables_[0]).vector_ ;
-      int offspring2Vector[] = ((Permutation)offspring[1].getDecisionVariables().variables_[0]).vector_ ;
+      int parent1Vector[]    = ((Permutation)parent1.getDecisionVariables().variables_.get(0)).vector_ ;
+      int parent2Vector[]    = ((Permutation)parent2.getDecisionVariables().variables_.get(0)).vector_ ;    
+      int offspring1Vector[] = ((Permutation)offspring[0].getDecisionVariables().variables_.get(0)).vector_ ;
+      int offspring2Vector[] = ((Permutation)offspring[1].getDecisionVariables().variables_.get(0)).vector_ ;
 
       if (PseudoRandom.randDouble() < probability) {
         int cuttingPoint1 ;
@@ -109,14 +108,6 @@ import jmetal.base.Configuration.VariableType_;
           offspring2Vector[i] = n2 ;
         } // for
       } // if
-      else {
-        Configuration.logger_.severe("PMXCrossover.doCrossover: invalid type+" +
-            ""+ parent1.getDecisionVariables().variables_[0].getVariableType());
-        Class cls = java.lang.String.class;
-        String name = cls.getName(); 
-        throw new JMException("Exception in " + name + ".doCrossover()") ; 
-      } // else
-    } // if
     return offspring ;                                                                                      
   } // doCrossover
 
@@ -125,32 +116,8 @@ import jmetal.base.Configuration.VariableType_;
    * @param object An object containing an array of two solutions 
    * @throws JMException 
    */
-  public Object execute(Object object) throws JMException {
-    Solution [] parents = (Solution [])object;
-    Double crossoverProbability ;
-    
-    crossoverProbability = (Double)parameters_.get("probability");
-    
-    if (parents.length < 2)
-    {
-      Configuration.logger_.severe("PMXCrossover.execute: operator needs two " +
-          "parents");
-      Class cls = java.lang.String.class;
-      String name = cls.getName(); 
-      throw new JMException("Exception in " + name + ".execute()") ;      
-    }
-    else if (crossoverProbability == null)
-    {
-      Configuration.logger_.severe("PMXCrossover.execute: probability not " +
-      "specified");
-      Class cls = java.lang.String.class;
-      String name = cls.getName(); 
-      throw new JMException("Exception in " + name + ".execute()") ;  
-    }          
-    
-    Solution [] offspring = doCrossover(crossoverProbability.doubleValue(),
-                                          parents[0],
-                                          parents[1]);
+  public Solution<Permutation>[] execute(Solution<Permutation> parent1, Solution<Permutation> parent2) throws JMException {
+    Solution<Permutation> [] offspring = doCrossover(probability, parent1, parent2);
 
     return offspring; 
   } // execute

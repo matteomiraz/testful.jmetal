@@ -8,21 +8,29 @@
 
 package jmetal.problems.ZZJ07;
 
-import jmetal.base.*;
-import jmetal.base.Configuration.*;
+import java.util.List;
+
+import jmetal.base.DecisionVariables;
+import jmetal.base.ProblemValue;
+import jmetal.base.Solution;
+import jmetal.base.variable.IReal;
 import jmetal.util.JMException;
 
 /** 
 * Class representing problem ZZJ07_F9
 */
-public class ZZJ07_F9 extends Problem {
+public class ZZJ07_F9<V extends IReal>  extends ProblemValue<V> {
   
- /** 
+ private static final long serialVersionUID = 3687280812689464109L;
+
+ private final Class<V> solutionType_;
+
+/** 
   * Constructor
   * Creates a default instance of the ZZJ07_F9 problem
   * @param solutionType The solution type must "Real" or "BinaryReal".
   */
- public ZZJ07_F9(String solutionType) {
+ public ZZJ07_F9(Class<V> solutionType) {
    this(30, solutionType); // 30 variables by default
  }
  /** 
@@ -31,7 +39,7 @@ public class ZZJ07_F9 extends Problem {
   * @param numberOfVariables Number of variables.
   * @param solutionType The solution type must "Real" or "BinaryReal".
   */
- public ZZJ07_F9(Integer numberOfVariables, String solutionType) {
+ public ZZJ07_F9(Integer numberOfVariables, Class<V> solutionType) {
    numberOfVariables_   = numberOfVariables.intValue() ;
    numberOfObjectives_  = 2;
    numberOfConstraints_ = 0;
@@ -44,14 +52,7 @@ public class ZZJ07_F9 extends Problem {
      upperLimit_[var] = 1.0;
    } // for
        
-   solutionType_ = Enum.valueOf(SolutionType_.class, solutionType) ; 
-   
-   // All the variables are of the same type, so the solutionType name is the
-   // same than the variableType name
-   variableType_ = new VariableType_[numberOfVariables_];
-   for (int var = 0; var < numberOfVariables_; var++){
-     variableType_[var] = Enum.valueOf(VariableType_.class, solutionType) ;    
-   } // for
+   solutionType_ = solutionType; 
  } //ZZJ07_F9
    
  /** 
@@ -59,8 +60,8 @@ public class ZZJ07_F9 extends Problem {
  * @param solution The solution to evaluate
   * @throws JMException 
  */        
- public void evaluate(Solution solution) throws JMException {
-   DecisionVariables decisionVariables  = solution.getDecisionVariables();
+ public void evaluate(Solution<V> solution) throws JMException {
+   DecisionVariables<V> decisionVariables  = solution.getDecisionVariables();
    
    double [] x  = new double[numberOfVariables_] ; 
    double [] fx = new double[numberOfVariables_] ; 
@@ -69,7 +70,7 @@ public class ZZJ07_F9 extends Problem {
    double sum ;
    double prod ;
    for (int i = 0; i < numberOfVariables_; i++)
-     x[i] = decisionVariables.variables_[i].getValue() ;
+     x[i] = decisionVariables.variables_.get(i).getValue() ;
    
    fx[0] = x[0];
 
@@ -89,7 +90,9 @@ public class ZZJ07_F9 extends Problem {
    solution.setObjective(0,fx[0]);
    solution.setObjective(1,fx[1]);
  } // evaluate
+
+ @Override
+ public List<V> generateNewDecisionVariable() {
+ 	return generate(solutionType_);
+ }
 } // ZZJ07_F9
-
-
-

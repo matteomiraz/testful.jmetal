@@ -55,8 +55,8 @@ public class BitFlipMutation extends Operator {
          for (int i = 0; i < solution.getDecisionVariables().size(); i++)
             if (PseudoRandom.randDouble() < probability) {
               int value = (int) (PseudoRandom.randInt(
-                       (int)solution.getDecisionVariables().variables_[i].getUpperBound(),
-                       (int)solution.getDecisionVariables().variables_[i].getLowerBound()));
+                       (int)solution.getDecisionVariables().variables_[i].getLowerBound(),
+                       (int)solution.getDecisionVariables().variables_[i].getUpperBound()));
               solution.getDecisionVariables().variables_[i].setValue(value);
             } // if
       } // else

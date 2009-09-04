@@ -24,8 +24,12 @@ public abstract class PseudoRandom {
   private static final java.util.Random randomJava;
     
   static {
+      long seed = System.currentTimeMillis();
+      //long seed = 13;
+  	System.out.println("Using seed: " + seed);
+
   	// configuration 1: use mersenne twister fast
-  	MT = new MersenneTwisterFast();
+  	MT = new MersenneTwisterFast(seed);
   	random = null;
   	randomJava = null;
   	

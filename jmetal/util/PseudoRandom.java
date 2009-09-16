@@ -7,9 +7,6 @@
  */
 package jmetal.util;
 
-import ec.util.MersenneTwisterFast;
-
-
 /**
  * Class representing some randoms facilities
  */

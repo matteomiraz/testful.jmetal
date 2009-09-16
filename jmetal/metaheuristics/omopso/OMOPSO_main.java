@@ -59,10 +59,10 @@ public class OMOPSO_main {
     algorithm = new OMOPSO(problem) ;
     
     // Algorithm parameters
-    algorithm.setInputParameter("swarmSize",100);
-    algorithm.setInputParameter("archiveSize",100);
-    algorithm.setInputParameter("maxIterations",250);
-    algorithm.setInputParameter("perturbationIndex",0.5);
+    algorithm.setSwarmSize(100);
+    algorithm.setArchiveSize(100);
+    algorithm.setMaxEvaluations(250);
+    algorithm.setPerturbationIndex(0.5);
     
     // Execute the Algorithm 
     long initTime = System.currentTimeMillis();

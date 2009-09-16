@@ -20,7 +20,6 @@ import jmetal.base.operator.selection.Selection;
 import jmetal.base.operator.selection.SelectionFactory;
 import jmetal.experiments.Settings;
 import jmetal.metaheuristics.mocell.aMOCell4;
-import jmetal.qualityIndicator.QualityIndicator;
 import jmetal.util.JMException;
 
 /**
@@ -57,12 +56,10 @@ public class MOCell_Settings extends Settings{
    * @throws jmetal.util.JMException
    */
   public Algorithm configure() throws JMException {
-    Algorithm algorithm ;
+    aMOCell4 algorithm ;
     Selection selection ;
     SBXCrossover crossover ;
     PolynomialMutation  mutation  ;
-    
-    QualityIndicator indicators ;
     
     // Creating the problem: there are six MOCell variants
     //algorithm = new sMOCell1(problem_) ;
@@ -73,10 +70,10 @@ public class MOCell_Settings extends Settings{
     algorithm = new aMOCell4(problem_) ;
 
     // Algorithm parameters
-    algorithm.setInputParameter("populationSize", populationSize_);
-    algorithm.setInputParameter("maxEvaluations", maxEvaluations_);
-    algorithm.setInputParameter("archiveSize",archiveSize_ );
-    algorithm.setInputParameter("feedBack",feedback_);
+    algorithm.setPopulationSize(populationSize_);
+    algorithm.setMaxEvaluations(maxEvaluations_);
+    algorithm.setArchiveSize(archiveSize_ );
+//    algorithm.setFeedBack(feedback_);
     
     // Mutation and Crossover for Real codification 
     crossover = (SBXCrossover) CrossoverFactory.getCrossoverOperator("SBXCrossover");                   
@@ -95,11 +92,11 @@ public class MOCell_Settings extends Settings{
     algorithm.setMutation(mutation);
     algorithm.setSelection(selection);
     
-   // Creating the indicator object
-   if (! paretoFrontFile_.equals("")) {
-      indicators = new QualityIndicator(problem_, paretoFrontFile_);
-      algorithm.setInputParameter("indicators", indicators) ;  
-   } // if
+//   // Creating the indicator object
+//   if (! paretoFrontFile_.equals("")) {
+//      indicators = new QualityIndicator(problem_, paretoFrontFile_);
+//      algorithm.setIndicators(indicators) ;  
+//   } // if
     return algorithm ;
   }
   

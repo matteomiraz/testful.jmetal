@@ -48,6 +48,17 @@ public class sMOCell1<V extends Variable>
     problem_ = problem;
   } // sMOCell1
 
+  private int archiveSize;
+  
+	public void setArchiveSize(int archiveSize) {
+		this.archiveSize = archiveSize;
+	}
+
+  private int feedBack;
+
+	public void setFeedBack(int feedBack) {
+		this.feedBack = feedBack;
+	}
 
   /**   
    * Runs of the sMOCell1 algorithm.
@@ -57,7 +68,7 @@ public class sMOCell1<V extends Variable>
    */ 
   @SuppressWarnings("unchecked")
 	public SolutionSet<V> execute() throws JMException {
-    int populationSize, archiveSize, maxEvaluations, evaluations, feedBack;
+    int populationSize, maxEvaluations, evaluations;
     SolutionSet<V> currentSolutionSet, newSolutionSet;
     CrowdingArchive<V> archive;
     SolutionSet<V> [] neighbors;    
@@ -66,10 +77,8 @@ public class sMOCell1<V extends Variable>
     crowding  = new CrowdingComparator<V>();  
 
     //Read the params
-    populationSize    = ((Integer)getInputParameter("populationSize")).intValue();
-    archiveSize       = ((Integer)getInputParameter("archiveSize")).intValue();
-    maxEvaluations    = ((Integer)getInputParameter("maxEvaluations")).intValue();                
-    feedBack          = ((Integer)getInputParameter("feedBack")).intValue();
+    populationSize    = getPopulationSize();
+    maxEvaluations    = getMaxEvaluations();                
 
     //Initialize the variables    
     currentSolutionSet  = new SolutionSet<V>(populationSize);        

@@ -53,10 +53,6 @@ public class SMPSO<V extends Real>
    */
   private int archiveSize_;
   /**
-   * Stores the maximum number of iteration_
-   */
-  private int maxIterations_;
-  /**
    * Stores the current number of iteration_
    */
   private int iteration_;
@@ -205,18 +201,30 @@ public class SMPSO<V extends Real>
     ChVel2_ = -1;
   } // Constructor
 
+  
+	public void setSwarmSize(int particlesSize) {
+		particlesSize_ = particlesSize;
+	}
+  
+	public void setArchiveSize(int archiveSize) {
+		archiveSize_ = archiveSize;
+	}
+	
+	public void setMutationDistributionIndex(double mutationDistributionIndex) {
+		mutationDistributionIndex_ = mutationDistributionIndex;
+	}
+	
+	public void setIndicators(QualityIndicator<V> indicators) {
+		indicators_ = indicators;
+	}
+	
   /**
    * Initialize all parameter of the algorithm
    */
   @SuppressWarnings("unchecked")
 	public void initParams() {
-    particlesSize_ = ((Integer) getInputParameter("swarmSize")).intValue();
-    archiveSize_ = ((Integer) getInputParameter("archiveSize")).intValue();
-    maxIterations_ = ((Integer) getInputParameter("maxIterations")).intValue();
-    mutationDistributionIndex_ = ((Double) getInputParameter("mutationDistributionIndex")).intValue();
     //eta_           = ((Double)getInputParameter("eta")).doubleValue();
 
-    indicators_ = (QualityIndicator<V>) getInputParameter("indicators");
     requiredEvaluations_ = 0;
 
     iteration_ = 0 ;
@@ -239,7 +247,7 @@ public class SMPSO<V extends Real>
     uniformMutation_.setProbability(1.0 / problem_.getNumberOfVariables());
     nonUniformMutation_ = new NonUniformMutation();
     nonUniformMutation_.setPerturbation(perturbation_);
-    nonUniformMutation_.setMaxIterations(maxIterations_);
+    nonUniformMutation_.setMaxIterations(getMaxEvaluations());
     nonUniformMutation_.setProbability(1.0 / problem_.getNumberOfVariables());
     polynomialMutation_ = new PolynomialMutation<V>() ;
     polynomialMutation_.setDistributionIndex(mutationDistributionIndex_);
@@ -434,10 +442,10 @@ public class SMPSO<V extends Real>
     Distance.crowdingDistanceAssignment(leaders_, problem_.getNumberOfObjectives());
 
     //-> Step 7. Iterations ..        
-    while (iteration_ < maxIterations_) {
+    while (iteration_ < getMaxEvaluations()) {
       try {
         //Compute the speed_
-        computeSpeed(iteration_, maxIterations_);
+        computeSpeed(iteration_, getMaxEvaluations());
       } catch (IOException ex) {
         Logger.getLogger(SMPSO.class.getName()).log(Level.SEVERE, null, ex);
       }
@@ -446,7 +454,7 @@ public class SMPSO<V extends Real>
       computeNewPositions();
 
       //Mutate the particles_          
-      mopsoMutation(iteration_, maxIterations_);
+      mopsoMutation(iteration_, getMaxEvaluations());
 
       //Evaluate the new particles_ in new positions
       for (int i = 0; i < particles_.size(); i++) {

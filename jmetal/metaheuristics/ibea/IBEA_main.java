@@ -63,9 +63,9 @@ public class IBEA_main {
     algorithm = new IBEA<Real>(problem);
 
     // Algorithm params
-    algorithm.setInputParameter("populationSize",100);
-    algorithm.setInputParameter("archiveSize",100);
-    algorithm.setInputParameter("maxEvaluations",25000);
+    algorithm.setPopulationSize(100);
+    algorithm.setArchiveSize(100);
+    algorithm.setMaxEvaluations(25000);
 
     // Mutation and Crossover for Real codification
     crossover = (SBXCrossover) CrossoverFactory.getCrossoverOperator("SBXCrossover");

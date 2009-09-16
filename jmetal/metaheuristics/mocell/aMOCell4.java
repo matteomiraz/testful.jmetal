@@ -39,12 +39,18 @@ public class aMOCell4<V extends Variable>
     problem_ = problem;
   }
 
+  private int archiveSize;
+  
+	public void setArchiveSize(int archiveSize) {
+		this.archiveSize = archiveSize;
+	}
+
   /** Execute the algorithm 
    * @throws JMException */
   @SuppressWarnings("unchecked")
 	public SolutionSet<V> execute() throws JMException {
     //Init the param
-    int populationSize, archiveSize, maxEvaluations, evaluations;
+    int populationSize, maxEvaluations, evaluations;
     SolutionSet<V> currentPopulation;
     CrowdingArchive<V> archive;
     SolutionSet<V> [] neighbors;    
@@ -54,9 +60,8 @@ public class aMOCell4<V extends Variable>
 
     //Init the param
     //Read the params
-    populationSize    = ((Integer)getInputParameter("populationSize")).intValue();
-    archiveSize       = ((Integer)getInputParameter("archiveSize")).intValue();
-    maxEvaluations    = ((Integer)getInputParameter("maxEvaluations")).intValue();                                
+    populationSize    = getPopulationSize();
+    maxEvaluations    = getMaxEvaluations();                                
 
     //Init the variables    
     currentPopulation  = new SolutionSet<V>(populationSize);        

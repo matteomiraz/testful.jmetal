@@ -43,7 +43,7 @@ public class ES_main {
     //algorithm = new NonElitistES(problem, mu, lambda);
     
     /* Algorithm params*/
-    algorithm.setInputParameter("maxEvaluations", 20000);
+    algorithm.setMaxEvaluations(20000);
     
     /* Mutation and Crossover for Real codification */
     mutation = (BitFlipMutationBinary) MutationFactory.getMutationOperator("BitFlipMutationBinary");                    

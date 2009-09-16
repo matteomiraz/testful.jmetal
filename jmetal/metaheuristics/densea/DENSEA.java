@@ -55,8 +55,8 @@ public class DENSEA<V extends Variable>
     SolutionSet<V> population                                        ;
 
     //Read the params
-    populationSize    = ((Integer)this.getInputParameter("populationSize")).intValue();
-    maxEvaluations    = ((Integer)this.getInputParameter("maxEvaluations")).intValue();                
+    populationSize    = getPopulationSize();
+    maxEvaluations    = getMaxEvaluations();                
 
     //Init the variables
     population        = new SolutionSet<V>(populationSize);        

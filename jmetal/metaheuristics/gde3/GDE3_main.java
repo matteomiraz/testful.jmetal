@@ -64,8 +64,8 @@ public class GDE3_main {
     //algorithm = new aMOCellDE(problem);
     
     // Algorithm parameters
-    algorithm.setInputParameter("populationSize",100);
-    algorithm.setInputParameter("maxIterations",250);
+    algorithm.setPopulationSize(100);
+    algorithm.setMaxEvaluations(250);
     
     // Crossover operator 
     crossover = (DifferentialEvolutionCrossover) CrossoverFactory.getCrossoverOperator("DifferentialEvolutionCrossover");                   

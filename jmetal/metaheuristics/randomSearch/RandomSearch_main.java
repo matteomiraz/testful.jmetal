@@ -54,7 +54,7 @@ public class RandomSearch_main {
     algorithm = new RandomSearch<Real>(problem);
 
     // Algorithm parameters
-    algorithm.setInputParameter("maxEvaluations",25000);
+    algorithm.setMaxEvaluations(25000);
 
     // Execute the Algorithm
     long initTime = System.currentTimeMillis();

@@ -20,7 +20,6 @@ import jmetal.base.operator.mutation.MutationFactory;
 import jmetal.base.operator.mutation.PolynomialMutation;
 import jmetal.experiments.Settings;
 import jmetal.metaheuristics.abyss.AbYSS;
-import jmetal.qualityIndicator.QualityIndicator;
 import jmetal.util.JMException;
 
 /**
@@ -54,22 +53,20 @@ public class AbYSS_Settings extends Settings {
    * @throws jmetal.util.JMException
    */
   public Algorithm configure() throws JMException {
-    Algorithm algorithm;
+  	AbYSS algorithm;
     SBXCrossover crossover;
     PolynomialMutation mutation;
     LocalSearch improvement; // Operator for improvement
-
-    QualityIndicator indicators;
 
     // Creating the problem
     algorithm = new AbYSS((ProblemValue) problem_);
 
     // Algorithm parameters
-    algorithm.setInputParameter("populationSize", 20);
-    algorithm.setInputParameter("refSet1Size", 10);
-    algorithm.setInputParameter("refSet2Size", 10);
-    algorithm.setInputParameter("archiveSize", 100);
-    algorithm.setInputParameter("maxEvaluations", 25000);
+    algorithm.setPopulationSize(20);
+    algorithm.setRefSet1Size(10);
+    algorithm.setRefSet2Size(10);
+    algorithm.setArchiveSize(100);
+    algorithm.setMaxEvaluations(25000);
 
     // STEP 4. Specify and configure the crossover operator, used in the
     //         solution combination method of the scatter search
@@ -91,11 +88,12 @@ public class AbYSS_Settings extends Settings {
     algorithm.setCrossover(crossover);
     algorithm.setImprovement(improvement);
 
-    // Creating the indicator object
-    if (!paretoFrontFile_.equals("")) {
-      indicators = new QualityIndicator(problem_, paretoFrontFile_);
-      algorithm.setInputParameter("indicators", indicators);
-    } // if
+//    AbYSS does not use indicators
+//    // Creating the indicator object
+//    if (!paretoFrontFile_.equals("")) {
+//      indicators = new QualityIndicator(problem_, paretoFrontFile_);
+//      algorithm.setInputParameter("indicators", indicators);
+//    } // if
     return algorithm;
   } // Constructor
 

@@ -47,6 +47,12 @@ public class sMOCell2<V extends Variable>
     problem_= problem;
   } //sMOCell2
 
+  private int archiveSize;
+  
+	public void setArchiveSize(int archiveSize) {
+		this.archiveSize = archiveSize;
+	}
+  
   /**   
    * Runs of the sMOCell2 algorithm.
    * @return a <code>SolutionSet</code> that is a set of non dominated solutions
@@ -55,7 +61,7 @@ public class sMOCell2<V extends Variable>
    */   
   @SuppressWarnings("unchecked")
 	public SolutionSet<V> execute() throws JMException {
-    int populationSize, archiveSize, maxEvaluations, evaluations;
+    int populationSize, maxEvaluations, evaluations;
     SolutionSet<V> currentSolutionSet, newSolutionSet;
     CrowdingArchive<V> archive;
     SolutionSet<V> [] neighbors;    
@@ -64,9 +70,8 @@ public class sMOCell2<V extends Variable>
     crowding  = new CrowdingComparator<V>();  
 
     //Read the params
-    populationSize    = ((Integer)getInputParameter("populationSize")).intValue();
-    archiveSize       = ((Integer)getInputParameter("archiveSize")).intValue();
-    maxEvaluations    = ((Integer)getInputParameter("maxEvaluations")).intValue();                                
+    populationSize    = getPopulationSize();
+    maxEvaluations    = getMaxEvaluations();                                
 
     //Initialize the variables    
     currentSolutionSet  = new SolutionSet<V>(populationSize);        

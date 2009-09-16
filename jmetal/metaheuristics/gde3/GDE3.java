@@ -62,8 +62,8 @@ public class GDE3<V extends Real>
     Solution<V> parent[] ;
     
     //Read the parameters
-    populationSize = ((Integer)this.getInputParameter("populationSize")).intValue();
-    maxIterations  = ((Integer)this.getInputParameter("maxIterations")).intValue();                             
+    populationSize = getPopulationSize();
+    maxIterations  = getMaxEvaluations();                             
    
     //Initialize the variables
     population  = new SolutionSet<V>(populationSize);        

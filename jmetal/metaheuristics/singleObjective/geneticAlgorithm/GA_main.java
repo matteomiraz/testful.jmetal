@@ -43,8 +43,8 @@ public class GA_main {
     algorithm = new GGA<Real>(problem) ;
     
     /* Algorithm parameters*/
-    algorithm.setInputParameter("populationSize",100);
-    algorithm.setInputParameter("maxEvaluations",100000);
+    algorithm.setPopulationSize(100);
+    algorithm.setMaxEvaluations(00000);
     
     // Mutation and Crossover for Real codification 
     crossover = (SBXCrossover) CrossoverFactory.getCrossoverOperator("SBXCrossover");                   

@@ -82,8 +82,8 @@ public class MOEAD_main {
     algorithm = new MOEAD<Real>(problem);
     
     // Algorithm parameters
-    algorithm.setInputParameter("populationSize",300);
-    algorithm.setInputParameter("maxEvaluations",150000);
+    algorithm.setPopulationSize(300);
+    algorithm.setMaxEvaluations(150000);
     
     // Crossover operator 
     crossover = (DifferentialEvolutionCrossover) CrossoverFactory.getCrossoverOperator("DifferentialEvolutionCrossover");                   

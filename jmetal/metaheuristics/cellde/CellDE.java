@@ -46,6 +46,17 @@ public class CellDE<V extends Real, S extends Selection<V, Solution<V>>>
     problem_ = problem;
   } // CellDE
 
+  private int archiveSize;
+  
+	public void setArchiveSize(int archiveSize) {
+		this.archiveSize = archiveSize;
+	}
+  
+	private int feedBack;
+	
+	public void setFeedBack(int feedBack) {
+		this.feedBack = feedBack;
+	}
 
   /**   
    * Runs of the CellDE algorithm.
@@ -55,7 +66,7 @@ public class CellDE<V extends Real, S extends Selection<V, Solution<V>>>
    */ 
   @SuppressWarnings("unchecked")
 	public SolutionSet<V> execute() throws JMException {
-    int populationSize, archiveSize, maxEvaluations, evaluations, feedBack;
+    int populationSize, maxEvaluations, evaluations;
     SolutionSet<V> currentSolutionSet;
     SolutionSet<V> archive;
     SolutionSet<V>[] neighbors;    
@@ -64,10 +75,8 @@ public class CellDE<V extends Real, S extends Selection<V, Solution<V>>>
     crowding  = new CrowdingComparator<V>();  
 
     //Read the params
-    populationSize    = ((Integer)getInputParameter("populationSize")).intValue();
-    archiveSize       = ((Integer)getInputParameter("archiveSize")).intValue();
-    maxEvaluations    = ((Integer)getInputParameter("maxEvaluations")).intValue();                
-    feedBack          = ((Integer)getInputParameter("feedBack")).intValue();
+    populationSize    = getPopulationSize();
+    maxEvaluations    = getMaxEvaluations();                
 
     //Initialize the variables    
     currentSolutionSet  = new SolutionSet<V>(populationSize);                       

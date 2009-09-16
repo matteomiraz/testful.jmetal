@@ -38,6 +38,12 @@ public class IBEA<V extends Variable>
    */
   public static final int TOURNAMENTS_ROUNDS = 1;
 
+  private int archiveSize;
+  
+	public void setArchiveSize(int archiveSize) {
+		this.archiveSize = archiveSize;
+	}
+  
   /**
    * Stores the problem to solve
    */
@@ -252,13 +258,12 @@ public class IBEA<V extends Variable>
   * @throws JMException
   */
   public SolutionSet<V> execute() throws JMException{
-    int populationSize, archiveSize, maxEvaluations, evaluations;
+    int populationSize, maxEvaluations, evaluations;
     SolutionSet<V> solutionSet, archive, offSpringSolutionSet;
 
     //Read the params
-    populationSize = ((Integer)getInputParameter("populationSize")).intValue();
-    archiveSize    = ((Integer)getInputParameter("archiveSize")).intValue();
-    maxEvaluations = ((Integer)getInputParameter("maxEvaluations")).intValue();
+    populationSize = getPopulationSize();
+    maxEvaluations = getMaxEvaluations();
 
     //Initialize the variables
     solutionSet  = new SolutionSet<V>(populationSize);

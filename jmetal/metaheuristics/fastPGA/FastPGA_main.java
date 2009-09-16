@@ -62,20 +62,20 @@ public class FastPGA_main {
 
     algorithm = new FastPGA<Real>(problem);
 
-    algorithm.setInputParameter("maxPopSize",100);
-    algorithm.setInputParameter("initialPopulationSize",100);
-    algorithm.setInputParameter("maxEvaluations",25000);
-    algorithm.setInputParameter("a",20.0);
-    algorithm.setInputParameter("b",1.0);
-    algorithm.setInputParameter("c",20.0);
-    algorithm.setInputParameter("d",0.0);
+    algorithm.setPopulationSize(100);
+    algorithm.setInitialPopulationSize(100);
+    algorithm.setMaxEvaluations(25000);
+    algorithm.setA(20.0);
+    algorithm.setB(1.0);
+    algorithm.setC(20.0);
+    algorithm.setD(0.0);
 
     // Parameter "termination"
     // If the preferred stopping criterium is PPR based, termination must 
     // be set to 0; otherwise, if the algorithm is intended to iterate until 
     // a give number of evaluations is carried out, termination must be set to 
     // that number
-    algorithm.setInputParameter("termination",1);
+    algorithm.setTermination(1);
 
     // Mutation and Crossover for Real codification 
     crossover = (SBXCrossover) CrossoverFactory.getCrossoverOperator("SBXCrossover");                   

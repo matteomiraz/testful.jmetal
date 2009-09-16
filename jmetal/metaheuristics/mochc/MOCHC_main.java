@@ -27,11 +27,11 @@ public class MOCHC_main {
 
       MOCHC<Binary> algorithm = new MOCHC<Binary>(problem);
       
-      algorithm.setInputParameter("initialConvergenceCount",0.25);
-      algorithm.setInputParameter("preservedPopulation",0.05);
-      algorithm.setInputParameter("convergenceValue",3);
-      algorithm.setInputParameter("populationSize",100);
-      algorithm.setInputParameter("maxEvaluations",60000);
+      algorithm.setInitialConvergenceCount(0.25);
+      algorithm.setPreservedPopulation(0.05);
+      algorithm.setConvergenceValue(3);
+      algorithm.setPopulationSize(100);
+      algorithm.setMaxEvaluations(60000);
       
       HUXCrossover crossoverOperator      ;
       BitFlipMutationBinary mutationOperator       ;

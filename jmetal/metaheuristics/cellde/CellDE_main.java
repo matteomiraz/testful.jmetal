@@ -16,15 +16,11 @@ import java.io.IOException;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 
-import jmetal.base.Algorithm;
 import jmetal.base.Configuration;
 import jmetal.base.Problem;
 import jmetal.base.SolutionSet;
 import jmetal.base.operator.crossover.CrossoverFactory;
-import jmetal.base.operator.crossover.DifferentialCrossover;
 import jmetal.base.operator.crossover.DifferentialEvolutionCrossover;
-import jmetal.base.operator.localSearch.LocalSearch;
-import jmetal.base.operator.mutation.Mutation;
 import jmetal.base.operator.selection.BinaryTournament;
 import jmetal.base.operator.selection.SelectionFactory;
 import jmetal.base.variable.Real;
@@ -50,7 +46,7 @@ public class CellDE_main {
     Problem<Real>  problem   ;         // The problem to solve
     BinaryTournament<Real>  selection ;
     DifferentialEvolutionCrossover  crossover ;
-    Algorithm<Real,DifferentialCrossover<Real>,Mutation<Real>,BinaryTournament<Real>,LocalSearch<Real>> algorithm ;         // The algorithm to use
+    CellDE<Real, BinaryTournament<Real>> algorithm ;         // The algorithm to use
     
     QualityIndicator<Real> indicators ; // Object to get quality indicators
 
@@ -82,10 +78,10 @@ public class CellDE_main {
     algorithm = new CellDE<Real, BinaryTournament<Real>>(problem);
     
     // Algorithm parameters
-    algorithm.setInputParameter("populationSize",100);
-    algorithm.setInputParameter("archiveSize",100);
-    algorithm.setInputParameter("maxEvaluations",25000);
-    algorithm.setInputParameter("feedBack", 20);
+    algorithm.setPopulationSize(100);
+    algorithm.setArchiveSize(100);
+    algorithm.setMaxEvaluations(25000);
+    algorithm.setFeedBack(20);
     
     // Crossover operator 
     crossover = (DifferentialEvolutionCrossover) CrossoverFactory.getCrossoverOperator("DifferentialEvolutionCrossover");                   

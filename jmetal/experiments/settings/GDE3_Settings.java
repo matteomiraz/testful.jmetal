@@ -18,7 +18,6 @@ import jmetal.base.operator.selection.Selection;
 import jmetal.base.operator.selection.SelectionFactory;
 import jmetal.experiments.Settings;
 import jmetal.metaheuristics.gde3.GDE3;
-import jmetal.qualityIndicator.QualityIndicator;
 import jmetal.util.JMException;
 
 /**
@@ -47,19 +46,17 @@ public class GDE3_Settings extends Settings {
    * @throws jmetal.util.JMException
    */
   public Algorithm configure() throws JMException {
-    Algorithm algorithm;
+    GDE3 algorithm;
     Selection selection;
     DifferentialEvolutionCrossover crossover;
     //Operator mutation;
-
-    QualityIndicator indicators;
 
     // Creating the problem
     algorithm = new GDE3(problem_);
 
     // Algorithm parameters
-    algorithm.setInputParameter("populationSize", populationSize_);
-    algorithm.setInputParameter("maxIterations", maxIterations_);
+    algorithm.setPopulationSize(populationSize_);
+    algorithm.setMaxEvaluations(maxIterations_);
 
     // Crossover operator 
     crossover = (DifferentialEvolutionCrossover) CrossoverFactory.getCrossoverOperator("DifferentialEvolutionCrossover");
@@ -72,11 +69,11 @@ public class GDE3_Settings extends Settings {
     algorithm.setCrossover(crossover);
     algorithm.setSelection(selection);
 
-    // Creating the indicator object
-    if (!paretoFrontFile_.equals("")) {
-      indicators = new QualityIndicator(problem_, paretoFrontFile_);
-      algorithm.setInputParameter("indicators", indicators);
-    } // if
+//    // Creating the indicator object
+//    if (!paretoFrontFile_.equals("")) {
+//      indicators = new QualityIndicator(problem_, paretoFrontFile_);
+//      algorithm.setIndicators(indicators);
+//    } // if
 
     return algorithm;
   }

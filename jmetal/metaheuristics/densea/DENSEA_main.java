@@ -43,8 +43,8 @@ public class DENSEA_main {
     algorithm = new DENSEA<Binary>(problem);
     
     // Algorithm parameters
-    algorithm.setInputParameter("populationSize",100);
-    algorithm.setInputParameter("maxEvaluations",25000);
+    algorithm.setPopulationSize(100);
+    algorithm.setMaxEvaluations(25000);
     
     // Mutation and Crossover Binary codification 
     crossover = (SinglePointCrossoverBinary) CrossoverFactory.getCrossoverOperator("SinglePointCrossoverBinary");                   

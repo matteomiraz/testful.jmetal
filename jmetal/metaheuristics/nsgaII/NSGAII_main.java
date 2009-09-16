@@ -85,8 +85,8 @@ public class NSGAII_main {
     algorithm = new NSGAII<Real>(problem);
 
     // Algorithm parameters
-    algorithm.setInputParameter("populationSize",100);
-    algorithm.setInputParameter("maxEvaluations",25000);
+    algorithm.setPopulationSize(100);
+    algorithm.setMaxEvaluations(25000);
 
     // Mutation and Crossover for Real codification 
     crossover = (SBXCrossover) CrossoverFactory.getCrossoverOperator("SBXCrossover");                   
@@ -106,7 +106,7 @@ public class NSGAII_main {
     algorithm.setSelection(selection);
     
     // Add the indicator object to the algorithm
-    algorithm.setInputParameter("indicators", indicators) ;
+    algorithm.setIndicators(indicators);
     
     // Execute the Algorithm
     long initTime = System.currentTimeMillis();

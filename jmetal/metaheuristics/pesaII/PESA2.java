@@ -39,6 +39,16 @@ public class PESA2<V extends Variable>
     problem_ = problem;
   } // PESA2
     
+  int biSections, archiveSize; 
+  
+	public void setBiSections(int biSections) {
+		this.biSections = biSections;
+	}
+	
+	public void setArchiveSize(int archiveSize) {
+		this.archiveSize = archiveSize;
+	}
+
   /**   
   * Runs of the PESA2 algorithm.
   * @return a <code>SolutionSet</code> that is a set of non dominated solutions
@@ -46,21 +56,19 @@ public class PESA2<V extends Variable>
    * @throws JMException 
   */  
   public SolutionSet<V> execute() throws JMException{        
-    int archiveSize, bisections, maxEvaluations, evaluations, populationSize;        
+    int maxEvaluations, evaluations, populationSize;        
     AdaptiveGridArchive<V> archive;
     SolutionSet<V> solutionSet;
         
     // Read parameters
-    populationSize = ((Integer)(inputParameters_.get("populationSize"))).intValue();
-    archiveSize    = ((Integer)(inputParameters_.get("archiveSize"))).intValue()   ;
-    bisections     = ((Integer)(inputParameters_.get("bisections"))).intValue()    ;
-    maxEvaluations = ((Integer)(inputParameters_.get("maxEvaluations"))).intValue();
+    populationSize = getPopulationSize();
+    maxEvaluations = getMaxEvaluations();
     
     // Get the operators
             
     // Initialize the variables
     evaluations = 0;    
-    archive = new AdaptiveGridArchive<V>(archiveSize,bisections,
+    archive = new AdaptiveGridArchive<V>(archiveSize,biSections,
                                         problem_.getNumberOfObjectives());
     solutionSet  = new SolutionSet<V>(populationSize);
     selectionOperator    = new PESA2Selection<V>();

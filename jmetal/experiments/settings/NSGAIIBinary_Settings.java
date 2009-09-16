@@ -58,7 +58,7 @@ public class NSGAIIBinary_Settings extends Settings{
    * @throws jmetal.util.JMException
    */
   public Algorithm configure() throws JMException {
-    Algorithm algorithm ;
+    NSGAII algorithm ;
     Selection  selection ;
     Crossover  crossover ;
     Mutation mutation  ;
@@ -69,8 +69,8 @@ public class NSGAIIBinary_Settings extends Settings{
     algorithm = new NSGAII(problem_) ;
     
     // Algorithm parameters
-    algorithm.setInputParameter("populationSize", populationSize_);
-    algorithm.setInputParameter("maxEvaluations", maxEvaluations_);
+    algorithm.setPopulationSize(populationSize_);
+    algorithm.setMaxEvaluations(maxEvaluations_);
 
     
     // Mutation and Crossover Binary codification
@@ -91,7 +91,7 @@ public class NSGAIIBinary_Settings extends Settings{
    // Creating the indicator object
    if (! paretoFrontFile_.equals("")) {
       indicators = new QualityIndicator(problem_, paretoFrontFile_);
-      algorithm.setInputParameter("indicators", indicators) ;  
+      algorithm.setIndicators(indicators) ;  
    } // if
     return algorithm ;
   } // configure

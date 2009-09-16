@@ -39,7 +39,35 @@ public class FastPGA<V extends Variable>
   public FastPGA(Problem<V> problem) {
     problem_ = problem;
   } // FastPGA
+
+  private double a, b, c, d;
+  private int initialPopulationSize;
+  private int termination;
   
+	public void setA(double a) {
+		this.a = a;
+	}
+	
+	public void setB(double b) {
+		this.b = b;
+	}
+	
+	public void setC(double c) {
+		this.c = c;
+	}
+	
+	public void setD(double d) {
+		this.d = d;
+	}
+	
+	public void setInitialPopulationSize(int initialPopulationSize) {
+		this.initialPopulationSize = initialPopulationSize;
+	}
+	
+	public void setTermination(int termination) {
+		this.termination = termination;
+	}
+
   /**   
   * Runs of the FastPGA algorithm.
   * @return a <code>SolutionSet</code> that is a set of non dominated solutions
@@ -48,25 +76,14 @@ public class FastPGA<V extends Variable>
   */  
   public SolutionSet<V> execute() throws JMException {
     int maxPopSize, populationSize,offSpringSize,
-        evaluations, maxEvaluations, initialPopulationSize;
+        evaluations, maxEvaluations;
     SolutionSet<V> solutionSet, offSpringSolutionSet, candidateSolutionSet = null;
-    double a, b, c, d;
-    int termination;
     Comparator<Solution<V>> fpgaFitnessComparator = new FPGAFitnessComparator<V>();
     
     //Read the parameters
-    maxPopSize     = ((Integer)getInputParameter("maxPopSize")).intValue();
-    maxEvaluations = ((Integer)getInputParameter("maxEvaluations")).intValue();
-    initialPopulationSize = 
-                  ((Integer)getInputParameter("initialPopulationSize")).intValue();
-    termination = ((Integer)getInputParameter("termination")).intValue();
-    
-    //Read the params
-    a = ((Double)getInputParameter("a")).doubleValue();
-    b = ((Double)getInputParameter("b")).doubleValue();
-    c = ((Double)getInputParameter("c")).doubleValue();
-    d = ((Double)getInputParameter("d")).doubleValue();
-       
+    maxPopSize     = getPopulationSize();
+    maxEvaluations = getMaxEvaluations();
+
     //Initialize populationSize and offSpringSize
     evaluations = 0;
     populationSize = initialPopulationSize;

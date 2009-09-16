@@ -80,11 +80,11 @@ public class AbYSS_main {
     algorithm = new AbYSS<Real>(problem) ;
     
     // STEP 3. Set the input parameters required by the metaheuristic
-    algorithm.setInputParameter("populationSize", 20);
-    algorithm.setInputParameter("refSet1Size"   , 10);
-    algorithm.setInputParameter("refSet2Size"   , 10);
-    algorithm.setInputParameter("archiveSize"   , 100);
-    algorithm.setInputParameter("maxEvaluations", 25000);
+    algorithm.setPopulationSize(20);
+    algorithm.setRefSet1Size(10);
+    algorithm.setRefSet2Size(10);
+    algorithm.setArchiveSize(100);
+    algorithm.setMaxEvaluations(25000);
       
     // STEP 4. Specify and configure the crossover operator, used in the
     //         solution combination method of the scatter search

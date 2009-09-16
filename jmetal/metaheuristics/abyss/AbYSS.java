@@ -132,18 +132,29 @@ public class AbYSS<V extends VariableValue>
     refSet2_     = null ;
     subSet_      = null ;    
   } // AbYSS
-    
+
+  
+	public void setRefSet1Size(int refSet1Size) {
+		refSet1Size_ = refSet1Size;
+	}
+	
+	
+	public void setRefSet2Size(int refSet2Size) {
+		refSet2Size_ = refSet2Size;
+	}
+	
+	public void setArchiveSize(int archiveSize) {
+		archiveSize_ = archiveSize;
+	}
+  
   /**
    * Reads the parameter from the parameter list using the
    * <code>getInputParameter</code> method.
    */
   public void initParam(){
     //Read the parameters
-    solutionSetSize_= ((Integer)getInputParameter("populationSize")).intValue();
-    refSet1Size_    = ((Integer)getInputParameter("refSet1Size")).intValue();
-    refSet2Size_    = ((Integer)getInputParameter("refSet2Size")).intValue();
-    archiveSize_    = ((Integer)getInputParameter("archiveSize")).intValue();
-    maxEvaluations  = ((Integer)getInputParameter("maxEvaluations")).intValue();
+    solutionSetSize_= getPopulationSize();
+    maxEvaluations  = getMaxEvaluations();;
         
     //Initialize the variables
     solutionSet_ = new SolutionSet<V>(solutionSetSize_);     

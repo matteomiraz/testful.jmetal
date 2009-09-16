@@ -46,7 +46,7 @@ public class SMPSO_Settings extends Settings{
    * @throws jmetal.util.JMException
    */
   public Algorithm configure() throws JMException {
-    Algorithm algorithm ;
+    SMPSO algorithm ;
     
     QualityIndicator indicators ;
     
@@ -54,16 +54,16 @@ public class SMPSO_Settings extends Settings{
     algorithm = new SMPSO((ProblemValue) problem_) ;
     
     // Algorithm parameters
-    algorithm.setInputParameter("swarmSize", swarmSize_);
-    algorithm.setInputParameter("maxIterations", maxIterations_);
-    algorithm.setInputParameter("archiveSize", archiveSize_);
-    algorithm.setInputParameter("perturbationIndex", perturbationIndex_);
-    algorithm.setInputParameter("mutationDistributionIndex", mutationDistributionIndex_);
+    algorithm.setSwarmSize(swarmSize_);
+    algorithm.setMaxEvaluations(maxIterations_);
+    algorithm.setArchiveSize(archiveSize_);
+//    algorithm.setPerturbationIndex(perturbationIndex_);
+    algorithm.setMutationDistributionIndex(mutationDistributionIndex_);
     
    // Creating the indicator object
    if (! paretoFrontFile_.equals("")) {
       indicators = new QualityIndicator(problem_, paretoFrontFile_);
-      algorithm.setInputParameter("indicators", indicators) ;  
+      algorithm.setIndicators(indicators) ;  
    } // if
     return algorithm ;
   }

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     jMetal
+     ====================================================================== -->
+<project name="jMetal" default="create_jar">
+	<description>jMetal</description>
+
+	<!-- ================================= 
+       target: default              
+       ================================= -->
+	<target name="create_jar" depends="compile" description="jMetal">
+
+		<mkdir dir="META-INF"/>
+		<exec executable="hg" output="META-INF/version.txt">
+			<arg value="id"/>
+		</exec>
+
+		<jar destfile="jmetal.jar" >
+			<manifest>
+				<attribute name="Built-By" value="${user.name}"/>
+			</manifest>
+			<fileset dir=".">
+				<include name="META-INF/*"/>
+			</fileset>
+			<fileset dir=".">
+				<include name="jmetal/**"/>
+			</fileset>
+		</jar>
+	</target>
+
+	<!-- - - - - - - - - - - - - - - - - - 
+       target: depends                      
+       - - - - - - - - - - - - - - - - - -->
+	<target name="compile">
+		<javac srcdir="." destdir="." classpath="." optimize="true" debug="true" source="6" target="6" />
+	</target>
+
+</project>

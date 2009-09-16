@@ -475,36 +475,58 @@ public abstract class Experiment {
     String m, s;
     // write lines
     for (int i = 0; i < problemList_.length; i++) {
-      // find the best value
-      double bestValue;
-      double bestValueIQR;
-      int bestIndex = -1;
+      // find the best value and second best value
+      double bestValue       ;
+      double bestValueIQR    ;
+      double secondBestValue ;
+      double secondBestValueIQR ;
+      int bestIndex = -1 ;
       int secondBestIndex = -1 ;
       if ((Boolean) indicatorMinimize_.get(indicatorList_[indicator]) == true) {// minimize by default
         bestValue = Double.MAX_VALUE;
         bestValueIQR = Double.MAX_VALUE;
+        secondBestValue = Double.MAX_VALUE;
+        secondBestValueIQR = Double.MAX_VALUE;
         for (int j = 0; j < (algorithmNameList_.length); j++) {
           if ((mean[indicator][i][j] < bestValue) ||
                   ((mean[indicator][i][j] == bestValue) && (stdDev[indicator][i][j] < bestValueIQR))) {
             secondBestIndex = bestIndex ;
+            secondBestValue = bestValue ;
+            secondBestValueIQR = bestValueIQR ;
             bestValue = mean[indicator][i][j];
             bestValueIQR = stdDev[indicator][i][j];
             bestIndex = j;
           }
+          else if ((mean[indicator][i][j] < secondBestValue) ||
+              ((mean[indicator][i][j] == secondBestValue) && (stdDev[indicator][i][j] < secondBestValueIQR))) {
+            secondBestIndex = j ;
+            secondBestValue = mean[indicator][i][j] ;
+            secondBestValueIQR = stdDev[indicator][i][j] ;
+          } // else if
         }
       } // if
       else { // indicator to maximize e.g., the HV
         bestValue = Double.MIN_VALUE;
         bestValueIQR = Double.MIN_VALUE;
+        secondBestValue = Double.MIN_VALUE;
+        secondBestValueIQR = Double.MIN_VALUE;
         for (int j = 0; j < (algorithmNameList_.length); j++) {
           if ((mean[indicator][i][j] > bestValue) ||
                   ((mean[indicator][i][j] == bestValue) && (stdDev[indicator][i][j] < bestValueIQR))) {
             secondBestIndex = bestIndex ;
+            secondBestValue = bestValue ;
+            secondBestValueIQR = bestValueIQR ;
             bestValue = mean[indicator][i][j];
             bestValueIQR = stdDev[indicator][i][j];
             bestIndex = j;
           }
-        }
+          else if ((mean[indicator][i][j] > secondBestValue) ||
+              ((mean[indicator][i][j] == secondBestValue) && (stdDev[indicator][i][j] < secondBestValueIQR))) {
+            secondBestIndex = j ;
+            secondBestValue = mean[indicator][i][j] ;
+            secondBestValueIQR = stdDev[indicator][i][j] ;
+          } // else if
+        } // for
       } // else
 
       os.write(problemList_[i] + " & ");
@@ -568,36 +590,58 @@ public abstract class Experiment {
     String m, s;
     // write lines
     for (int i = 0; i < problemList_.length; i++) {
-      // find the best value
-      double bestValue;
-      double bestValueIQR;
+      // find the best value and second best value
+      double bestValue       ;
+      double bestValueIQR    ;
+      double secondBestValue ;
+      double secondBestValueIQR ;
       int bestIndex = -1 ;
       int secondBestIndex = -1 ;
       if ((Boolean) indicatorMinimize_.get(indicatorList_[indicator]) == true) {// minimize by default
         bestValue = Double.MAX_VALUE;
         bestValueIQR = Double.MAX_VALUE;
+        secondBestValue = Double.MAX_VALUE;
+        secondBestValueIQR = Double.MAX_VALUE;
         for (int j = 0; j < (algorithmNameList_.length); j++) {
           if ((median[indicator][i][j] < bestValue) ||
-                  ((median[indicator][i][j] == bestValue) && (IQR[indicator][i][j] < bestValueIQR))) {
+              ((median[indicator][i][j] == bestValue) && (IQR[indicator][i][j] < bestValueIQR))) {
             secondBestIndex = bestIndex ;
+            secondBestValue = bestValue ;
+            secondBestValueIQR = bestValueIQR ;
             bestValue = median[indicator][i][j];
             bestValueIQR = IQR[indicator][i][j];
             bestIndex = j;
           }
-        }
+          else if ((median[indicator][i][j] < secondBestValue) ||
+              ((median[indicator][i][j] == secondBestValue) && (IQR[indicator][i][j] < secondBestValueIQR))) {
+            secondBestIndex = j ;
+            secondBestValue = median[indicator][i][j] ;
+            secondBestValueIQR = IQR[indicator][i][j] ;
+          } // else if
+        } // for
       } // if
       else { // indicator to maximize e.g., the HV
         bestValue = Double.MIN_VALUE;
         bestValueIQR = Double.MIN_VALUE;
+        secondBestValue = Double.MIN_VALUE;
+        secondBestValueIQR = Double.MIN_VALUE;
         for (int j = 0; j < (algorithmNameList_.length); j++) {
           if ((median[indicator][i][j] > bestValue) ||
-                  ((median[indicator][i][j] == bestValue) && (IQR[indicator][i][j] < bestValueIQR))) {
+              ((median[indicator][i][j] == bestValue) && (IQR[indicator][i][j] < bestValueIQR))) {
             secondBestIndex = bestIndex ;
+            secondBestValue = bestValue ;
+            secondBestValueIQR = bestValueIQR ;
             bestValue = median[indicator][i][j];
             bestValueIQR = IQR[indicator][i][j];
             bestIndex = j;
           }
-        }
+          else if ((median[indicator][i][j] > secondBestValue) ||
+              ((median[indicator][i][j] == secondBestValue) && (IQR[indicator][i][j] < secondBestValueIQR))) {
+            secondBestIndex = j ;
+            secondBestValue = median[indicator][i][j] ;
+            secondBestValueIQR = IQR[indicator][i][j] ;
+          } // else if
+        } // for
       } // else
 
 

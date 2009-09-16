@@ -92,6 +92,22 @@ public class MOCHC <V extends Variable>
     return distance;
   } // hammingDistance 
 
+  private int convergenceValue ;
+  private double preservedPopulation;
+  private double initialConvergenceCount;
+
+	public void setConvergenceValue(int convergenceValue) {
+		this.convergenceValue = convergenceValue;
+	}
+	
+	public void setPreservedPopulation(double preservedPopulation) {
+		this.preservedPopulation = preservedPopulation;
+	}
+	
+	public void setInitialConvergenceCount(double initialConvergenceCount) {
+		this.initialConvergenceCount = initialConvergenceCount;
+	}
+  
   /**   
   * Runs of the MOCHC algorithm.
   * @return a <code>SolutionSet<V></code> that is a set of non dominated Solution<V>s
@@ -100,30 +116,18 @@ public class MOCHC <V extends Variable>
   public SolutionSet<V> execute() throws JMException {
     int iterations       ;
     int populationSize   ;
-    int convergenceValue ;
     int maxEvaluations   ;
     int minimumDistance  ;
     int evaluations      ;
     
     Comparator<Solution<V>> crowdingComparator = new CrowdingComparator<V>();
     
-    double preservedPopulation     ;
-    double initialConvergenceCount ;
     boolean condition = false;
     SolutionSet<V> SolutionSet, offspringPopulation,newPopulation;
 
     // Read parameters
-    initialConvergenceCount = 
-           ((Double)getInputParameter("initialConvergenceCount")).doubleValue();
-    preservedPopulation     = 
-           ((Double)getInputParameter("preservedPopulation")).doubleValue();
-    convergenceValue        = 
-           ((Integer)getInputParameter("convergenceValue")).intValue();
-    populationSize          = 
-           ((Integer)getInputParameter("populationSize")).intValue();
-    maxEvaluations          = 
-           ((Integer)getInputParameter("maxEvaluations")).intValue();
-
+    populationSize          = getPopulationSize();
+    maxEvaluations          = getMaxEvaluations(); 
 
     iterations  = 0 ;
     evaluations = 0 ;

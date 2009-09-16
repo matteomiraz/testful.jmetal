@@ -69,7 +69,17 @@ public class PAES<V extends Variable>
     
     return new Solution<V>(solution);          
   } // test
+
+  int biSections, archiveSize; 
     
+	public void setBiSections(int biSections) {
+		this.biSections = biSections;
+	}
+	
+	public void setArchiveSize(int archiveSize) {
+		this.archiveSize = archiveSize;
+	}
+	
   /**   
   * Runs of the Paes algorithm.
   * @return a <code>SolutionSet</code> that is a set of non dominated solutions
@@ -77,18 +87,16 @@ public class PAES<V extends Variable>
    * @throws JMException 
   */    
   public SolutionSet<V> execute() throws JMException{     
-    int bisections, archiveSize, maxEvaluations, evaluations;
+    int maxEvaluations, evaluations;
     AdaptiveGridArchive<V> archive;
     Comparator<Solution<V>> dominance;
     
     //Read the params
-    bisections     = ((Integer)this.getInputParameter("biSections")).intValue();
-    archiveSize    = ((Integer)this.getInputParameter("archiveSize")).intValue();
-    maxEvaluations = ((Integer)this.getInputParameter("maxEvaluations")).intValue();
+    maxEvaluations = getMaxEvaluations();
 
     //Initialize the variables                
     evaluations = 0;
-    archive     = new AdaptiveGridArchive<V>(archiveSize,bisections,problem_.getNumberOfObjectives());        
+    archive     = new AdaptiveGridArchive<V>(archiveSize,biSections,problem_.getNumberOfObjectives());        
     dominance = new DominanceComparator<V>();           
             
     //-> Create the initial solution and evaluate it and his constraints

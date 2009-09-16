@@ -53,11 +53,6 @@ public class OMOPSO
   private int archiveSize_;
   
   /**
-  * Stores the maximum number of iteration_
-  */
-  private int maxIterations_;
-  
-  /**
   * Stores the current number of iteration_
   */
   private int iteration_;
@@ -126,16 +121,24 @@ public class OMOPSO
     problem_ = problem;        
   } // OMOPSO
   
-  /**
+  
+	public void setSwarmSize(int particlesSize) {
+		particlesSize_ = particlesSize;
+	}
+  
+	public void setArchiveSize(int archiveSize) {
+		archiveSize_ = archiveSize;
+	}
+	
+	public void setPerturbationIndex(double perturbation) {
+		perturbation_ = perturbation;
+	}
+
+	/**
    * Initialize all parameter of the algorithm
    */
   @SuppressWarnings("unchecked")
 	public void initParams(){
-    particlesSize_ = ((Integer)getInputParameter("swarmSize")).intValue();
-    archiveSize_   = ((Integer)getInputParameter("archiveSize")).intValue();
-    maxIterations_ = ((Integer)getInputParameter("maxIterations")).intValue();
-    perturbation_  = ((Double)getInputParameter("perturbationIndex")).doubleValue() ;
-    
     particles_     = new SolutionSet<Real>(particlesSize_);        
     best_          = new Solution[particlesSize_];
     leaders_       = new CrowdingArchive<Real>(archiveSize_,problem_.getNumberOfObjectives());
@@ -154,7 +157,7 @@ public class OMOPSO
     uniformMutation_.setProbability(1.0/problem_.getNumberOfVariables());
     nonUniformMutation_ = new NonUniformMutation();
     nonUniformMutation_.setPerturbation(perturbation_);        
-    nonUniformMutation_.setMaxIterations(maxIterations_);
+    nonUniformMutation_.setMaxIterations(getMaxEvaluations());
     nonUniformMutation_.setProbability(1.0/problem_.getNumberOfVariables());
   } // initParams
            
@@ -291,7 +294,7 @@ public class OMOPSO
     Distance.crowdingDistanceAssignment(leaders_,problem_.getNumberOfObjectives());        
 
     //-> Step 7. Iterations ..        
-    while (iteration_ < maxIterations_){
+    while (iteration_ < getMaxEvaluations()){
       //Compute the speed_        
       computeSpeed();
             
@@ -299,7 +302,7 @@ public class OMOPSO
       computeNewPositions();
 
       //Mutate the particles_          
-      mopsoMutation(iteration_,maxIterations_);                       
+      mopsoMutation(iteration_,getMaxEvaluations());                       
             
       //Evaluate the new particles_ in new positions
       for (int i = 0; i < particles_.size(); i++){

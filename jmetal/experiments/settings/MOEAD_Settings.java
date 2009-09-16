@@ -18,7 +18,6 @@ import jmetal.base.operator.mutation.MutationFactory;
 import jmetal.base.operator.mutation.PolynomialMutation;
 import jmetal.experiments.Settings;
 import jmetal.metaheuristics.moead.MOEAD;
-import jmetal.qualityIndicator.QualityIndicator;
 import jmetal.util.JMException;
 
 /**
@@ -51,18 +50,16 @@ public class MOEAD_Settings extends Settings {
    * @throws jmetal.util.JMException
    */
   public Algorithm configure() throws JMException {
-    Algorithm algorithm;
+    MOEAD algorithm;
     DifferentialEvolutionCrossover crossover;
     PolynomialMutation mutation;
-
-    QualityIndicator indicators;
 
     // Creating the problem
     algorithm = new MOEAD(problem_);
 
     // Algorithm parameters
-    algorithm.setInputParameter("populationSize", populationSize_);
-    algorithm.setInputParameter("maxEvaluations", maxEvaluations_);
+    algorithm.setPopulationSize(populationSize_);
+    algorithm.setMaxEvaluations(maxEvaluations_);
 
     // Crossover operator 
     crossover = (DifferentialEvolutionCrossover) CrossoverFactory.getCrossoverOperator("DifferentialEvolutionCrossover");
@@ -77,11 +74,11 @@ public class MOEAD_Settings extends Settings {
     algorithm.setCrossover(crossover);
     algorithm.setMutation(mutation);
     
-    // Creating the indicator object
-    if (!paretoFrontFile_.equals("")) {
-      indicators = new QualityIndicator(problem_, paretoFrontFile_);
-      algorithm.setInputParameter("indicators", indicators);
-    } // if
+//    // Creating the indicator object
+//    if (!paretoFrontFile_.equals("")) {
+//      indicators = new QualityIndicator(problem_, paretoFrontFile_);
+//      algorithm.setIndicators(indicators);
+//    } // if
 
     return algorithm;
   }

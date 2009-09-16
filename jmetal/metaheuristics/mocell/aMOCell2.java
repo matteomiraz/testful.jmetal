@@ -45,7 +45,12 @@ extends Algorithm<V, Crossover<V>, Mutation<V>, Selection<V, Solution<V>>, Local
     problem_ = problem;
   } // aMOCell2
 
-
+  private int archiveSize;
+  
+	public void setArchiveSize(int archiveSize) {
+		this.archiveSize = archiveSize;
+	}
+	
   /**   
    * Runs of the aMOCell2 algorithm.
    * @return a <code>SolutionSet</code> that is a set of non dominated solutions
@@ -55,7 +60,7 @@ extends Algorithm<V, Crossover<V>, Mutation<V>, Selection<V, Solution<V>>, Local
   @SuppressWarnings("unchecked")
 	public SolutionSet<V> execute() throws JMException {
     //Init the param
-    int populationSize, archiveSize, maxEvaluations, evaluations;
+    int populationSize, maxEvaluations, evaluations;
     SolutionSet<V> currentSolutionSet;
     CrowdingArchive<V> archive;
     SolutionSet<V> [] neighbors;    
@@ -64,9 +69,8 @@ extends Algorithm<V, Crossover<V>, Mutation<V>, Selection<V, Solution<V>>, Local
     crowding  = new CrowdingComparator<V>();  
 
     //Read the params
-    populationSize    = ((Integer)getInputParameter("populationSize")).intValue();
-    archiveSize       = ((Integer)getInputParameter("archiveSize")).intValue();
-    maxEvaluations    = ((Integer)getInputParameter("maxEvaluations")).intValue();                                
+    populationSize    = getPopulationSize();
+    maxEvaluations    = getMaxEvaluations();                                
 
     //Initialize the variables
     currentSolutionSet  = new SolutionSet<V>(populationSize);        

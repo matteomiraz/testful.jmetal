@@ -61,9 +61,9 @@ public class PAES_main {
     algorithm = new PAES<Real>(problem);
     
     // Algorithm parameters
-    algorithm.setInputParameter("archiveSize",100);
-    algorithm.setInputParameter("biSections",5);
-    algorithm.setInputParameter("maxEvaluations",25000);
+    algorithm.setArchiveSize(100);
+    algorithm.setBiSections(5);
+    algorithm.setMaxEvaluations(25000);
       
     // Mutation (Real variables)
     mutation = (PolynomialMutation) MutationFactory.getMutationOperator("PolynomialMutation");                    

@@ -39,19 +39,23 @@ public class NSGAII<V extends Variable>
     this.problem_ = problem;
   } // NSGAII
 
+  private QualityIndicator<V> indicators; // QualityIndicator object
+  
+	public void setIndicators(QualityIndicator<V> indicators) {
+		this.indicators = indicators;
+	}
+  
   /**   
    * Runs the NSGA-II algorithm.
    * @return a <code>SolutionSet</code> that is a set of non dominated solutions
    * as a result of the algorithm execution
    * @throws JMException 
    */
-  @SuppressWarnings("unchecked")
 	public SolutionSet<V> execute() throws JMException {
     int populationSize;
     int maxEvaluations;
     int evaluations;
 
-    QualityIndicator<V> indicators; // QualityIndicator object
     int requiredEvaluations; // Use in the example of use of the
     // indicators object (see below)
 
@@ -60,9 +64,8 @@ public class NSGAII<V extends Variable>
     SolutionSet<V> union;
 
     //Read the parameters
-    populationSize = ((Integer) getInputParameter("populationSize")).intValue();
-    maxEvaluations = ((Integer) getInputParameter("maxEvaluations")).intValue();
-    indicators = (QualityIndicator<V>) getInputParameter("indicators");
+    populationSize = getPopulationSize();
+    maxEvaluations = getMaxEvaluations();
 
     //Initialize the variables
     population = new SolutionSet<V>(populationSize);

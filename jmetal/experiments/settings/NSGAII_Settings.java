@@ -54,7 +54,7 @@ public class NSGAII_Settings extends Settings {
    * @throws jmetal.util.JMException
    */
   public Algorithm configure() throws JMException {
-    Algorithm algorithm ;
+    NSGAII algorithm ;
     Selection selection ;
     SBXCrossover crossover ;
     PolynomialMutation mutation  ;
@@ -65,8 +65,8 @@ public class NSGAII_Settings extends Settings {
     algorithm = new NSGAII(problem_) ;
     
     // Algorithm parameters
-    algorithm.setInputParameter("populationSize", populationSize_);
-    algorithm.setInputParameter("maxEvaluations", maxEvaluations_);
+    algorithm.setPopulationSize(populationSize_);
+    algorithm.setMaxEvaluations(maxEvaluations_);
     
     // Mutation and Crossover for Real codification 
     crossover = (SBXCrossover) CrossoverFactory.getCrossoverOperator("SBXCrossover");                   
@@ -88,7 +88,7 @@ public class NSGAII_Settings extends Settings {
    // Creating the indicator object
    if (! paretoFrontFile_.equals("")) {
       indicators = new QualityIndicator(problem_, paretoFrontFile_);
-      algorithm.setInputParameter("indicators", indicators) ;  
+      algorithm.setIndicators(indicators) ;  
    } // if
     return algorithm ;
   } // configure

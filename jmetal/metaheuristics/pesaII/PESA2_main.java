@@ -60,10 +60,10 @@ public class PESA2_main {
     algorithm = new PESA2<Real>(problem);
     
     // Algorithm parameters 
-    algorithm.setInputParameter("populationSize",10);
-    algorithm.setInputParameter("archiveSize",100);
-    algorithm.setInputParameter("bisections",5);
-    algorithm.setInputParameter("maxEvaluations",25000);
+    algorithm.setPopulationSize(10);
+    algorithm.setArchiveSize(100);
+    algorithm.setBiSections(5);
+    algorithm.setMaxEvaluations(25000);
     
     // Mutation and Crossover for Real codification 
     crossover = (SBXCrossover) CrossoverFactory.getCrossoverOperator("SBXCrossover");                   

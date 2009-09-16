@@ -84,10 +84,10 @@ public class MOCell_main {
     algorithm = new aMOCell4<Real>(problem);
  
     // Algorithm parameters
-    algorithm.setInputParameter("populationSize",100);
-    algorithm.setInputParameter("archiveSize",100);
-    algorithm.setInputParameter("maxEvaluations",25000);
-    algorithm.setInputParameter("feedBack",20);
+    algorithm.setPopulationSize(100);
+    algorithm.setArchiveSize(100);
+    algorithm.setMaxEvaluations(25000);
+    //algorithm.setFeedBack(20);
       
     // Mutation and Crossover for Real codification 
     crossover = (SBXCrossover) CrossoverFactory.getCrossoverOperator("SBXCrossover");                   

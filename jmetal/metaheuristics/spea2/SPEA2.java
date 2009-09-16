@@ -46,6 +46,12 @@ public class SPEA2<V extends Variable>
     this.problem_ = problem;        
   } // Spea2
    
+  private int archiveSize;
+  
+	public void setArchiveSize(int archiveSize) {
+		this.archiveSize = archiveSize;
+	}
+  
   /**   
   * Runs of the Spea2 algorithm.
   * @return a <code>SolutionSet</code> that is a set of non dominated solutions
@@ -53,13 +59,12 @@ public class SPEA2<V extends Variable>
    * @throws JMException 
   */  
   public SolutionSet<V> execute() throws JMException{   
-    int populationSize, archiveSize, maxEvaluations, evaluations;
+    int populationSize, maxEvaluations, evaluations;
     SolutionSet<V> solutionSet, archive, offSpringSolutionSet;    
     
     //Read the params
-    populationSize = ((Integer)getInputParameter("populationSize")).intValue();
-    archiveSize    = ((Integer)getInputParameter("archiveSize")).intValue();
-    maxEvaluations = ((Integer)getInputParameter("maxEvaluations")).intValue();
+    populationSize = getPopulationSize();
+    maxEvaluations = getMaxEvaluations();
         
     //Initialize the variables
     solutionSet  = new SolutionSet<V>(populationSize);

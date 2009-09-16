@@ -45,6 +45,16 @@ extends Algorithm<V, Crossover<V>, Mutation<V>, Selection<V, Solution<V>>, Local
     problem_ = problem;
   } //aMOCell1       
 
+  private int archiveSize, feedBack;
+  
+	public void setArchiveSize(int archiveSize) {
+		this.archiveSize = archiveSize;
+	}
+	
+	public void setFeedBack(int feedBack) {
+		this.feedBack = feedBack;
+	}
+  
   /**   
    * Runs of the aMOCell1 algorithm.
    * @return a <code>SolutionSet</code> that is a set of non dominated solutions
@@ -53,7 +63,7 @@ extends Algorithm<V, Crossover<V>, Mutation<V>, Selection<V, Solution<V>>, Local
    */   
   @SuppressWarnings("unchecked")
 	public SolutionSet<V> execute() throws JMException {
-    int populationSize, archiveSize, maxEvaluations, evaluations, feedBack;
+    int populationSize, maxEvaluations, evaluations;
     SolutionSet<V> currentSolutionSet;
     CrowdingArchive<V> archive;
     SolutionSet<V> [] neighbors;    
@@ -62,10 +72,8 @@ extends Algorithm<V, Crossover<V>, Mutation<V>, Selection<V, Solution<V>>, Local
     crowding  = new CrowdingComparator<V>();                   
 
     //Read the params
-    populationSize    = ((Integer)getInputParameter("populationSize")).intValue();
-    archiveSize       = ((Integer)getInputParameter("archiveSize")).intValue();
-    maxEvaluations    = ((Integer)getInputParameter("maxEvaluations")).intValue();                
-    feedBack          = ((Integer)getInputParameter("feedBack")).intValue();
+    populationSize    = getPopulationSize();
+    maxEvaluations    = getMaxEvaluations();                
 
     //Init the variables
     //init the population and the archive

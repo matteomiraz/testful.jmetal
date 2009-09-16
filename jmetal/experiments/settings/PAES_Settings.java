@@ -16,7 +16,6 @@ import jmetal.base.operator.mutation.MutationFactory;
 import jmetal.base.operator.mutation.PolynomialMutation;
 import jmetal.experiments.Settings;
 import jmetal.metaheuristics.paes.PAES;
-import jmetal.qualityIndicator.QualityIndicator;
 import jmetal.util.JMException;
 
 /**
@@ -51,18 +50,16 @@ public class PAES_Settings extends Settings{
    * @throws jmetal.util.JMException
    */
   public Algorithm configure() throws JMException {
-    Algorithm algorithm ;
+    PAES algorithm ;
     PolynomialMutation  mutation  ;
-    
-    QualityIndicator indicators ;
     
     // Creating the problem
     algorithm = new PAES(problem_) ;
 
     // Algorithm parameters
-    algorithm.setInputParameter("maxEvaluations", maxEvaluations_);
-    algorithm.setInputParameter("biSections", biSections_);
-    algorithm.setInputParameter("archiveSize",archiveSize_ );
+    algorithm.setMaxEvaluations(maxEvaluations_);
+    algorithm.setBiSections(biSections_);
+    algorithm.setArchiveSize(archiveSize_ );
     
     // Mutation for Real codification 
     mutation = (PolynomialMutation) MutationFactory.getMutationOperator("PolynomialMutation");                    
@@ -72,11 +69,11 @@ public class PAES_Settings extends Settings{
     // Add the operators to the algorithm
     algorithm.setMutation(mutation);
     
-   // Creating the indicator object
-   if (! paretoFrontFile_.equals("")) {
-      indicators = new QualityIndicator(problem_, paretoFrontFile_);
-      algorithm.setInputParameter("indicators", indicators) ;  
-   } // if
+//   // Creating the indicator object
+//   if (! paretoFrontFile_.equals("")) {
+//      indicators = new QualityIndicator(problem_, paretoFrontFile_);
+//      algorithm.setIndicators(indicators) ;  
+//   } // if
     return algorithm ;
   }
   

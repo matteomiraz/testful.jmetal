@@ -47,8 +47,8 @@ public class TSPGA_main {
     algorithm = new GGA<Permutation>(problem) ;
     
     // Algorithm params
-    algorithm.setInputParameter("populationSize",512);
-    algorithm.setInputParameter("maxEvaluations",200000);
+    algorithm.setPopulationSize(512);
+    algorithm.setMaxEvaluations(200000);
     
     // Mutation and Crossover for Real codification */
     crossover = (Crossover<Permutation>) CrossoverFactory.getCrossoverOperator("TwoPointsCrossover");

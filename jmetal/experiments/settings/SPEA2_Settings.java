@@ -20,7 +20,6 @@ import jmetal.base.operator.selection.Selection;
 import jmetal.base.operator.selection.SelectionFactory;
 import jmetal.experiments.Settings;
 import jmetal.metaheuristics.spea2.SPEA2;
-import jmetal.qualityIndicator.QualityIndicator;
 import jmetal.util.JMException;
 
 /**
@@ -56,20 +55,18 @@ public class SPEA2_Settings extends Settings {
    * @throws jmetal.util.JMException
    */
   public Algorithm configure() throws JMException {
-    Algorithm algorithm ;
+    SPEA2 algorithm ;
     Selection  selection ;
     SBXCrossover crossover ;
     PolynomialMutation  mutation  ;
-    
-    QualityIndicator indicators ;
     
     // Creating the problem
     algorithm = new SPEA2(problem_) ;
     
     // Algorithm parameters
-    algorithm.setInputParameter("populationSize", populationSize_);
-    algorithm.setInputParameter("maxEvaluations", maxEvaluations_);
-    algorithm.setInputParameter("archiveSize", archiveSize_);
+    algorithm.setPopulationSize(populationSize_);
+    algorithm.setMaxEvaluations(maxEvaluations_);
+    algorithm.setArchiveSize(archiveSize_);
 
     
     // Mutation and Crossover for Real codification 
@@ -88,12 +85,13 @@ public class SPEA2_Settings extends Settings {
     algorithm.setCrossover(crossover);
     algorithm.setMutation(mutation);
     algorithm.setSelection(selection);
-    
-   // Creating the indicator object
-   if (! paretoFrontFile_.equals("")) {
-      indicators = new QualityIndicator(problem_, paretoFrontFile_);
-      algorithm.setInputParameter("indicators", indicators) ;  
-   } // if
+
+    // SPEA2 doesn't use indicators
+//   // Creating the indicator object
+//   if (! paretoFrontFile_.equals("")) {
+//      indicators = new QualityIndicator(problem_, paretoFrontFile_);
+//      algorithm.setIndicators(indicators) ;  
+//   } // if
     return algorithm ;
   }
   

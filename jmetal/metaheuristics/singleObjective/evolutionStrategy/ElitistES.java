@@ -58,7 +58,7 @@ public class ElitistES<V extends Variable>
     comparator = new ObjectiveComparator<V>(0) ; // Single objective comparator
     
     // Read the params
-    maxEvaluations = ((Integer)this.getInputParameter("maxEvaluations")).intValue();                
+    maxEvaluations = getMaxEvaluations();                
    
     // Initialize the variables
     population          = new SolutionSet<V>(mu_) ;   

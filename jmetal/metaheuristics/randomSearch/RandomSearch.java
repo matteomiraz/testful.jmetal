@@ -47,7 +47,7 @@ public class RandomSearch<V extends Variable>
     int maxEvaluations ;
     int evaluations    ;
 
-    maxEvaluations    = ((Integer)getInputParameter("maxEvaluations")).intValue();
+    maxEvaluations    = getMaxEvaluations();
 
     //Initialize the variables
     evaluations = 0;

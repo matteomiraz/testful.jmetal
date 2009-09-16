@@ -81,8 +81,8 @@ public class MOEAD <V extends Variable>
     int maxEvaluations;
 
     evaluations_ = 0;
-    maxEvaluations = ((Integer) this.getInputParameter("maxEvaluations")).intValue();
-    populationSize_ = ((Integer) this.getInputParameter("populationSize")).intValue();
+    maxEvaluations = getMaxEvaluations();
+    populationSize_ = getPopulationSize();
 
     population_ = new SolutionSet<V>(populationSize_);
     indArray_ = new Solution[problem_.getNumberOfObjectives()];

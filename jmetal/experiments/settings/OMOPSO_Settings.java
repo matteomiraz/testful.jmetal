@@ -15,7 +15,6 @@ import jmetal.base.ProblemValue;
 import jmetal.base.variable.Real;
 import jmetal.experiments.Settings;
 import jmetal.metaheuristics.omopso.OMOPSO;
-import jmetal.qualityIndicator.QualityIndicator;
 import jmetal.util.JMException;
 
 /**
@@ -46,24 +45,22 @@ public class OMOPSO_Settings extends Settings{
    * @throws jmetal.util.JMException
    */
   public Algorithm configure() throws JMException {
-    Algorithm algorithm ;
-    
-    QualityIndicator indicators ;
+    OMOPSO algorithm ;
     
     // Creating the problem
     algorithm = new OMOPSO((ProblemValue<Real>) problem_) ;
     
     // Algorithm parameters
-    algorithm.setInputParameter("swarmSize", swarmSize_);
-    algorithm.setInputParameter("maxIterations", maxIterations_);
-    algorithm.setInputParameter("archiveSize", archiveSize_);
-    algorithm.setInputParameter("perturbationIndex", perturbationIndex_);
+    algorithm.setSwarmSize(swarmSize_);
+    algorithm.setMaxEvaluations(maxIterations_);
+    algorithm.setArchiveSize(archiveSize_);
+    algorithm.setPerturbationIndex(perturbationIndex_);
     
-   // Creating the indicator object
-   if (! paretoFrontFile_.equals("")) {
-      indicators = new QualityIndicator(problem_, paretoFrontFile_);
-      algorithm.setInputParameter("indicators", indicators) ;  
-   } // if
+//   // Creating the indicator object
+//   if (! paretoFrontFile_.equals("")) {
+//      indicators = new QualityIndicator(problem_, paretoFrontFile_);
+//      algorithm.setIndicators(indicators) ;  
+//   } // if
     return algorithm ;
   }
   

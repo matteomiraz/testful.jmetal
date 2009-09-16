@@ -21,7 +21,6 @@ import jmetal.base.operator.selection.BinaryTournament;
 import jmetal.base.operator.selection.Selection;
 import jmetal.experiments.Settings;
 import jmetal.metaheuristics.ibea.IBEA;
-import jmetal.qualityIndicator.QualityIndicator;
 import jmetal.util.JMException;
 
 /**
@@ -56,20 +55,18 @@ public class IBEA_Settings extends Settings{
    * @throws jmetal.util.JMException
    */
   public Algorithm configure() throws JMException {
-    Algorithm algorithm ;
+    IBEA algorithm ;
     Selection  selection ;
     SBXCrossover  crossover ;
     PolynomialMutation mutation  ;
-    
-    QualityIndicator indicators ;
     
     // Creating the problem
     algorithm = new IBEA(problem_) ;
     
     // Algorithm parameters
-    algorithm.setInputParameter("populationSize", populationSize_);
-    algorithm.setInputParameter("maxEvaluations", maxEvaluations_);
-    algorithm.setInputParameter("archiveSize", archiveSize_);
+    algorithm.setPopulationSize(populationSize_);
+    algorithm.setMaxEvaluations(maxEvaluations_);
+    algorithm.setArchiveSize(archiveSize_);
     
     // Mutation and Crossover for Real codification 
     crossover = (SBXCrossover) CrossoverFactory.getCrossoverOperator("SBXCrossover");                   
@@ -88,11 +85,11 @@ public class IBEA_Settings extends Settings{
     algorithm.setMutation(mutation);
     algorithm.setSelection(selection);
 
-    // Creating the indicator object
-   if (! paretoFrontFile_.equals("")) {
-      indicators = new QualityIndicator(problem_, paretoFrontFile_);
-      algorithm.setInputParameter("indicators", indicators) ;  
-   } // if
+//    // Creating the indicator object
+//   if (! paretoFrontFile_.equals("")) {
+//      indicators = new QualityIndicator(problem_, paretoFrontFile_);
+//      algorithm.setIndicators(indicators) ;  
+//   } // if
     return algorithm ;
   }
   

@@ -20,7 +20,6 @@ import jmetal.base.operator.selection.Selection;
 import jmetal.base.operator.selection.SelectionFactory;
 import jmetal.experiments.Settings;
 import jmetal.metaheuristics.cellde.CellDE;
-import jmetal.qualityIndicator.QualityIndicator;
 import jmetal.util.JMException;
 
 /**
@@ -58,21 +57,19 @@ public class CellDE_Settings extends Settings{
    * @throws jmetal.util.JMException
    */
   public Algorithm configure() throws JMException {
-    Algorithm algorithm ;
+    CellDE algorithm ;
     Selection selection ;
     DifferentialEvolutionCrossover  crossover ;
     PolynomialMutation mutation  ;
-    
-    QualityIndicator indicators ;
     
     // Creating the problem
     algorithm = new CellDE(problem_) ;
     
     // Algorithm parameters
-    algorithm.setInputParameter("populationSize", populationSize_);
-    algorithm.setInputParameter("archiveSize", archiveSize_);
-    algorithm.setInputParameter("maxEvaluations",maxEvaluations_);
-    algorithm.setInputParameter("feedBack", archiveFeedback_);
+    algorithm.setPopulationSize(populationSize_);
+    algorithm.setArchiveSize(archiveSize_);
+    algorithm.setMaxEvaluations(maxEvaluations_);
+    algorithm.setFeedBack(archiveFeedback_);
     
     // Crossover operator 
     crossover = (DifferentialEvolutionCrossover) CrossoverFactory.getCrossoverOperator("DifferentialEvolutionCrossover");                   
@@ -93,11 +90,11 @@ public class CellDE_Settings extends Settings{
       algorithm.setMutation(mutation);
    } // if
     
-   // Creating the indicator object
-   if (! paretoFrontFile_.equals("")) {
-      indicators = new QualityIndicator(problem_, paretoFrontFile_);
-      algorithm.setInputParameter("indicators", indicators) ;  
-   } // if
+//   // Creating the indicator object
+//   if (! paretoFrontFile_.equals("")) {
+//      indicators = new QualityIndicator(problem_, paretoFrontFile_);
+//      algorithm.setIndicators(indicators) ;  
+//   } // if
     
     return algorithm ;
   }

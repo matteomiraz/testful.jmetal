@@ -59,11 +59,11 @@ public class SMPSO_main {
     algorithm = new SMPSO<Real>(problem) ;
     
     // Algorithm parameters
-    algorithm.setInputParameter("swarmSize",100);
-    algorithm.setInputParameter("archiveSize",100);
-    algorithm.setInputParameter("maxIterations",250);
-    algorithm.setInputParameter("perturbationIndex",0.5);
-    algorithm.setInputParameter("mutationDistributionIndex",20.0);
+    algorithm.setSwarmSize(100);
+    algorithm.setArchiveSize(100);
+    algorithm.setMaxEvaluations(250);
+//    algorithm.setPerturbationIndex(0.5);
+    algorithm.setMutationDistributionIndex(20.0);
     
     // Execute the Algorithm 
     long initTime = System.currentTimeMillis();

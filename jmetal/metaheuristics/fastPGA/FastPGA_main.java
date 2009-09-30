@@ -18,7 +18,7 @@ import jmetal.problems.*                  ;
 import jmetal.problems.ZDT.*              ;
 import jmetal.problems.WFG.*              ;
 import jmetal.problems.DTLZ.*             ;
-import jmetal.problems.LZ07.* ;
+import jmetal.problems.LZ07.*;
 
 import jmetal.util.JMException;
 import java.util.logging.FileHandler;

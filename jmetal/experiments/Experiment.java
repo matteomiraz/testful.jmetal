@@ -249,7 +249,7 @@ public abstract class Experiment {
       stdDeviation[indicator] = new double[problemList_.length][];
       iqr[indicator] = new double[problemList_.length][];
       min[indicator] = new double[problemList_.length][];
-      max[indicator] = new double[problemList_.length][];
+      max[indicator] = new double[problemList_.length][]; 
       numberOfValues[indicator] = new int[problemList_.length][];
 
       for (int problem = 0; problem < problemList_.length; problem++) {

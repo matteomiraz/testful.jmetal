@@ -36,8 +36,8 @@ public class ProblemFactory {
       base += "ZDT.";    
     else if (name.substring(0,name.length()-3).equalsIgnoreCase("ZZJ07"))
       base += "ZZJ07.";        
-    else if (name.substring(0,name.length()-3).equalsIgnoreCase("LZ07"))
-      base += "LZ07.";        
+    else if (name.substring(0,name.length()-3).equalsIgnoreCase("LZ09"))
+      base += "LZ09.";        
     else if (name.substring(0,name.length()-4).equalsIgnoreCase("ZZJ07"))
         base += "ZZJ07.";    
     else if (name.substring(0,name.length()-3).equalsIgnoreCase("LZ06"))

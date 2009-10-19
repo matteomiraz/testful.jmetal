@@ -822,20 +822,28 @@ public abstract class Experiment {
               "  write(problem, \"" + texFile + "\", append=TRUE)" + "\n" +
               "  write(\"." + indicatorList_[indicator] + ".}\", \"" + texFile + "\", append=TRUE)" + "\n";
       latexTabularAlignment = "l";
-      latexTableFirstLine = "  write(\"\\\\hline ";
+      latexTableFirstLine = "\\\\hline ";
 
-      for (int i = 0; i < algorithmNameList_.length; i++) {
+      for (int i = 1; i < algorithmNameList_.length; i++) {
         latexTabularAlignment += "c";
         latexTableFirstLine += " & " + algorithmNameList_[i];
       } // for
-      latexTableFirstLine += "\\\\\\\\\",\"" + texFile + "\", append=TRUE)" + "\n";
-      output = "latexTableHeader <- function(problem) {" + "\n" +
+      //latexTableFirstLine += "\\\\\\\\\",\"" + texFile + "\", append=TRUE)" + "\n";
+      latexTableFirstLine += "\\\\\\\\ \"";
+
+      // Generate function latexTableHeader()
+      output = "latexTableHeader <- function(problem, tabularString, latexTableFirstLine) {" + "\n" +
               "  write(\"\\\\begin{table}\", \"" + texFile + "\", append=TRUE)" + "\n" +
               latexTableCaption + "\n" +
               latexTableLabel + "\n" +
               "  write(\"\\\\centering\", \"" + texFile + "\", append=TRUE)" + "\n" +
-              "  write(\"\\\\begin{tabular}{" + latexTabularAlignment + "}\", \"" + texFile + "\", append=TRUE)" + "\n" +
-              latexTableFirstLine +
+              "  write(\"\\\\begin{scriptsize}\", \"" + texFile + "\", append=TRUE)" + "\n" +
+              //"  write(\"\\\\begin{tabular}{" + latexTabularAlignment + "}\", \"" + texFile + "\", append=TRUE)" + "\n" +
+              "  write(\"\\\\begin{tabular}{\", \"" + texFile + "\", append=TRUE)" + "\n" +
+              "  write(tabularString, \"" + texFile + "\", append=TRUE)" + "\n" +
+              "  write(\"}\", \"" + texFile + "\", append=TRUE)" + "\n" +
+              //latexTableFirstLine +
+              "  write(latexTableFirstLine, \"" + texFile + "\", append=TRUE)" + "\n" +
               "  write(\"\\\\hline \", \"" + texFile + "\", append=TRUE)" + "\n" + "}" + "\n";
       os.write(output + "\n");
 
@@ -843,6 +851,7 @@ public abstract class Experiment {
       output = "latexTableTail <- function() { " + "\n" +
               "  write(\"\\\\hline\", \"" + texFile + "\", append=TRUE)" + "\n" +
               "  write(\"\\\\end{tabular}\", \"" + texFile + "\", append=TRUE)" + "\n" +
+              "  write(\"\\\\end{scriptsize}\", \"" + texFile + "\", append=TRUE)" + "\n" +
               "  write(\"\\\\end{table}\", \"" + texFile + "\", append=TRUE)" + "\n" + "}" + "\n";
       os.write(output + "\n");
 
@@ -863,7 +872,7 @@ public abstract class Experiment {
                 "  file2<-paste(file2, indicator, sep=\"/\")" + "\n" +
                 "  data2<-scan(file2)" + "\n" +
                 "  if (i == j) {" + "\n" +
-                "    write(\"--\", \"" + texFile + "\", append=TRUE)" + "\n" +
+                "    write(\"-- \", \"" + texFile + "\", append=TRUE)" + "\n" +
                 "  }" + "\n" +
                 "  else if (i < j) {" + "\n" +
                 "    if (wilcox.test(data1, data2)$p.value <= 0.05) {" + "\n" +
@@ -934,11 +943,21 @@ public abstract class Experiment {
       }
       algorithmList += "\"" + algorithmNameList_[algorithmNameList_.length - 1] + "\") ";
 
+      latexTabularAlignment = "l";
+      for (int i = 1; i < algorithmNameList_.length; i++) {
+        latexTabularAlignment += "c";
+      } // for
+      String tabularString = "tabularString <-c(" + "\""+ latexTabularAlignment + "\""+ ") " ;
+      String tableFirstLine = "latexTableFirstLine <-c(" + "\"" + latexTableFirstLine + ") " ;
+
       output = "# Constants" + "\n" +
               problemList + "\n" +
               algorithmList + "\n" +
+              tabularString + "\n" +
+              tableFirstLine + "\n" +
               "indicator<-\"" + indicatorList_[indicator] + "\"";
       os.write(output + "\n");
+
 
       output = "\n # Step 1.  Writes the latex header" + "\n" +
               "latexHeader()";
@@ -947,28 +966,32 @@ public abstract class Experiment {
       // Generate tables per problem
       output = "# Step 2. Problem loop " + "\n" +
               "for (problem in problemList) {" + "\n" +
-              "  latexTableHeader(problem)" + "\n\n" +
+              "  latexTableHeader(problem,  tabularString, latexTableFirstLine)" + "\n\n" +
               "  indx = 0" + "\n" +
               "  for (i in algorithmList) {" + "\n" +
-              "    write(i , \"" + texFile + "\", append=TRUE)" + "\n" +
-              "    write(\" & \", \"" + texFile + "\", append=TRUE)" + "\n" +
-              "    jndx = 0 " + "\n" +
-              "    for (j in algorithmList) {" + "\n" +
-              "      if (indx != jndx) {" + "\n" +
-              "        printTableLine(indicator, i, j, indx, jndx, problem)" + "\n" +
+              "    if (i != \"" + algorithmNameList_[algorithmNameList_.length - 1]+ "\") {" + "\n" +
+              "      write(i , \"" + texFile + "\", append=TRUE)" + "\n" +
+              "      write(\" & \", \"" + texFile + "\", append=TRUE)" + "\n" +
+              "      jndx = 0 " + "\n" +
+              "      for (j in algorithmList) {" + "\n" +
+              "        if (jndx != 0) {" + "\n" +
+              "          if (indx != jndx) {" + "\n" +
+              "            printTableLine(indicator, i, j, indx, jndx, problem)" + "\n" +
+              "          }" + "\n" +
+              "          else {" + "\n" +
+              "            write(\"  \", \"" + texFile + "\", append=TRUE)" + "\n" +
+              "          }" + "\n" +
+              "          if (j != \"" + algorithmNameList_[algorithmNameList_.length - 1] + "\") {" + "\n" +
+              "            write(\" & \", \"" + texFile + "\", append=TRUE)" + "\n" +
+              "          }" + "\n" +
+              "          else {" + "\n" +
+              "            write(\" \\\\\\\\ \", \"" + texFile + "\", append=TRUE)" + "\n" +
+              "          }" + "\n" +
+              "        }" + "\n" +
+              "        jndx = jndx + 1" + "\n" +
               "      }" + "\n" +
-              "      else {" + "\n" +
-              "        write(\"--\", \"" + texFile + "\", append=TRUE)" + "\n" +
-              "      }" + "\n" +
-              "      if (j != \"" + algorithmNameList_[algorithmNameList_.length - 1] + "\") {" + "\n" +
-              "        write(\" & \", \"" + texFile + "\", append=TRUE)" + "\n" +
-              "      }" + "\n" +
-              "      else {" + "\n" +
-              "        write(\" \\\\\\\\ \", \"" + texFile + "\", append=TRUE)" + "\n" +
-              "      }" + "\n" +
-              "      jndx = jndx + 1" + "\n" +
+              "      indx = indx + 1" + "\n" +
               "    }" + "\n" +
-              "    indx = indx + 1" + "\n" +
               "  }" + "\n" + "\n" +
               "  latexTableTail()" + "\n" +
               "} # for problem" + "\n";
@@ -979,34 +1002,61 @@ public abstract class Experiment {
       for (int i = 0; i < problems.length; i++) {
         problemList += problems[i] + " ";
       }
+      // The tabular environment and the latexTableFirstLine variable must be redefined
+      latexTabularAlignment = "| l | ";
+      latexTableFirstLine = "\\\\hline \\\\multicolumn{1}{|c|}{}";
+      for (int i = 1; i < algorithmNameList_.length; i++) {
+        for (int j = 0; j < problems.length; j++) {
+          latexTabularAlignment += "p{0.15cm}  ";
+          //latexTabularAlignment += "c ";
+        } // for
+        latexTableFirstLine += " & \\\\multicolumn{" + problems.length + "}{c|}{" + algorithmNameList_[i]+"}";
+        latexTabularAlignment += " | " ;
+      } // for
+      latexTableFirstLine += " \\\\\\\\";
+
+      tabularString = "tabularString <-c(" + "\""+ latexTabularAlignment + "\""+ ") " ;
+      latexTableFirstLine = "latexTableFirstLine <-c(" + "\""+ latexTableFirstLine + "\""+ ") " ;
+
+      output = tabularString;
+      os.write(output + "\n" + "\n");
+      output = latexTableFirstLine ;
+      os.write(output + "\n" + "\n");
 
       output = "# Step 3. Problem loop " + "\n" +
-              "latexTableHeader(\"" + problemList + "\")" + "\n\n" +
+              "latexTableHeader(\"" + problemList + "\", tabularString, latexTableFirstLine)" + "\n\n" +
               "indx = 0" + "\n" +
               "for (i in algorithmList) {" + "\n" +
-              "  write(i , \"" + texFile + "\", append=TRUE)" + "\n" +
-              "  write(\" & \", \"" + texFile + "\", append=TRUE)" + "\n" + "\n" +
-              "  jndx = 0" + "\n" +
-              "  for (j in algorithmList) {" + "\n" +
-              "    for (problem in problemList) {" + "\n" +
-              "      if (i != j) {" + "\n" +
-              "        printTableLine(indicator, i, j, indx, jndx, problem)" + "\n" +
-              "      }" + "\n" +
-              "      else {" + "\n" +
-              "        write(\"--\", \"" + texFile + "\", append=TRUE)" + "\n" +
-              "      } " + "\n" +
-              "      if (problem == \"" + problems[problems.length - 1] + "\") {" + "\n" +
-              "        if (j == \"" + algorithmNameList_[algorithmNameList_.length - 1] + "\") {" + "\n" +
-              "          write(\" \\\\\\\\ \", \"" + texFile + "\", append=TRUE)" + "\n" +
-              "        } " + "\n" +
-              "        else {" + "\n" +
-              "          write(\" & \", \"" + texFile + "\", append=TRUE)" + "\n" +
+              "  if (i != \"" + algorithmNameList_[algorithmNameList_.length - 1]+ "\") {" + "\n" +
+              "    write(i , \"" + texFile + "\", append=TRUE)" + "\n" +
+              "    write(\" & \", \"" + texFile + "\", append=TRUE)" + "\n" + "\n" +
+              "    jndx = 0" + "\n" +
+              "    for (j in algorithmList) {" + "\n" +
+              "      for (problem in problemList) {" + "\n" +
+              "        if (jndx != 0) {" + "\n" +
+              "          if (i != j) {" + "\n" +
+              "            printTableLine(indicator, i, j, indx, jndx, problem)" + "\n" +
+              "          }" + "\n" +
+              "          else {" + "\n" +
+              "            write(\"  \", \"" + texFile + "\", append=TRUE)" + "\n" +
+              "          } " + "\n" +
+              "          if (problem == \"" + problems[problems.length - 1] + "\") {" + "\n" +
+              "            if (j == \"" + algorithmNameList_[algorithmNameList_.length - 1] + "\") {" + "\n" +
+              "              write(\" \\\\\\\\ \", \"" + texFile + "\", append=TRUE)" + "\n" +
+              "            } " + "\n" +
+              "            else {" + "\n" +
+              "              write(\" & \", \"" + texFile + "\", append=TRUE)" + "\n" +
+              "            }" + "\n" +
+              "          }" + "\n" +
+              "     else {" + "\n" +
+              "    write(\"&\", \"" + texFile + "\", append=TRUE)" + "\n" +
+              "     }" + "\n" +
               "        }" + "\n" +
               "      }" + "\n" +
+              "      jndx = jndx + 1" + "\n" +
               "    }" + "\n" +
-              "    jndx = jndx + 1" + "\n" +
+              "    indx = indx + 1" + "\n" +
               "  }" + "\n" +
-              "  indx = indx + 1" + "\n" +
               "} # for algorithm" + "\n" + "\n" +
               "  latexTableTail()" + "\n";
 

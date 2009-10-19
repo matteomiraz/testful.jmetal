@@ -9,16 +9,18 @@
 package jmetal.base;
 
 import java.io.Serializable;
+import java.util.List;
 
-import jmetal.base.Configuration.*;
 import jmetal.util.JMException;
 
 /**
  * Abstract class representing a multiobjective optimization problem
  */
-public abstract class Problem implements Serializable {
+public abstract class Problem<T extends Variable> implements Serializable {
   
-  /**
+	private static final long serialVersionUID = -3280347869784909859L;
+
+	/**
    * Stores the number of variables of the problem
    */
   protected int numberOfVariables_ ;
@@ -38,43 +40,13 @@ public abstract class Problem implements Serializable {
    */
   protected String problemName_;
   
-  /**
-   * Stores the type of the solutions of the problem
-   */
-  protected SolutionType_ solutionType_ ;
+  /** Stores the current generation */ 
+  protected int currentGeneration = -1;
   
-  /**
-   * Stores the lower bound values for each variable (only if needed)
-   */
-  protected double [] lowerLimit_ ;
-  
-  /**
-   * Stores the upper bound values for each variable (only if needed)
-   */
-  protected double [] upperLimit_ ;
-  
-  /**
-   * Stores the number of bits used by binary coded variables (e.g., BinaryReal
-   * variables). By default, they are initialized to DEFAULT_PRECISION)
-   */
-  protected int    [] precision_  ;
-    
-  /**
-   * Stores the length of each variable when applicable (e.g., Binary and 
-   * Permutation variables)
-   */
-  protected int    [] length_  ;
-  
-  /**
-   * Stores the type of each variable
-   */
-  public VariableType_[] variableType_;
-    
   /** 
    * Constructor. 
    */
   public Problem() {
-	solutionType_ = SolutionType_.Undefined ;
   } // Problem
         
   /** 
@@ -93,30 +65,24 @@ public abstract class Problem implements Serializable {
     return numberOfObjectives_ ;
   } // getNumberOfObjectives
     
-  /** 
-   * Gets the lower bound of the ith variable of the problem.
-   * @param i The index of the variable.
-   * @return The lower bound.
-   */
-  public double getLowerLimit(int i) {
-    return lowerLimit_[i] ;
-  } // getLowerLimit
-    
-  /** 
-   * Gets the upper bound of the ith variable of the problem.
-   * @param i The index of the variable.
-   * @return The upper bound.
-   */
-  public double getUpperLimit(int i) {
-    return upperLimit_[i] ;
-  } // getUpperLimit 
-    
   /**
    * Evaluates a <code>Solution</code> object.
    * @param solution The <code>Solution</code> to evaluate.
    */    
-  public abstract void evaluate(Solution solution) throws JMException ;    
-    
+  public abstract void evaluate(Solution<T> solution) throws JMException ;    
+
+  /**
+   * Evaluates a set of <code>Solution</code>s.
+   * @param solution The set of <code>Solution</code>s to evaluate.
+   * @return the number of evaluations done
+   */    
+  public int evaluate(final SolutionSet<T> set) throws JMException {
+  	for(Solution<T> solution : set)
+  		evaluate(solution);
+  	
+  	return set.size();
+  }
+
   /**
    * Gets the number of side constraints in the problem.
    * @return the number of constraints.
@@ -130,61 +96,11 @@ public abstract class Problem implements Serializable {
    * object.
    * @param solution The <code>Solution</code> to evaluate.
    */    
-  public void evaluateConstraints(Solution solution) throws JMException {
+  public void evaluateConstraints(Solution<T> solution) throws JMException {
     // The default behavior is to do nothing. Only constrained problems have to
     // re-define this method
   } // evaluateConstraints
 
-  /**
-   * Returns the number of bits that must be used to encode variable.
-   * @return the number of bits.
-   */
-  public int getPrecision(int var) {
-    return precision_[var] ;
-  } // getPrecision
-
-  /**
-   * Returns array containing the number of bits that must be used to encode 
-   * the variables.
-   * @return the number of bits.
-   */
-  public int [] getPrecision() {
-    return precision_ ;
-  } // getPrecision
-
-  /**
-   * Sets the array containing the number of bits that must be used to encode 
-   * the variables.
-   * @param precision The array
-   */
-  public void setPrecision(int [] precision) {
-    precision_ = precision;
-  } // getPrecision
-
-  /**
-   * Returns the length of the variable.
-   * @return the variable length.
-   */
-  public int getLength(int var) {
-    return length_[var] ;
-  } // getLength
-
-  /**
-   * Sets the type of the variables of the problem.
-   * @param type The type of the variables
-   */
-  public void setSolutionType(SolutionType_ type) {
-    solutionType_ = type;
-  } // setSolutionType
-
-  /**
-   * Returns the type of the variables of the problem.
-   * @return type of the variables of the problem.
-   */
-  public SolutionType_ getSolutionType() {
-    return solutionType_ ;
-  } // getSolutionType
-  
   /**
    * Returns the problem name
    * @return The problem name
@@ -192,4 +108,15 @@ public abstract class Problem implements Serializable {
   public String getName() {
     return problemName_ ;
   }
+
+	public abstract List<T> generateNewDecisionVariable() ;
+	
+	public void setCurrentGeneration(int currentGeneration) {
+		System.out.println("Evaluating generation " + currentGeneration);
+		this.currentGeneration = currentGeneration;
+	}
+	
+	public int getCurrentGeneration() {
+		return currentGeneration;
+	}
 } // Problem

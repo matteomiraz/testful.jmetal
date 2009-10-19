@@ -7,22 +7,29 @@
  */
 package jmetal.problems;
 
-import jmetal.base.*;
-import jmetal.base.Configuration.SolutionType_;
-import jmetal.base.Configuration.VariableType_;
+import java.util.List;
+
+import jmetal.base.DecisionVariables;
+import jmetal.base.ProblemValue;
+import jmetal.base.Solution;
+import jmetal.base.VariableValue;
 import jmetal.util.JMException;
 
 /**
  * Class representing problem Srinivas
  */
-public class Srinivas extends Problem{    
+public class Srinivas<T extends VariableValue> extends ProblemValue<T> {    
     
+ private static final long serialVersionUID = 2570357706582532681L;
+
+ private final Class<T> solutionType_;
+
  /**
   * Constructor.
   * Creates a default instance of the Srinivas problem
   * @param solutionType The solution type must "Real" or "BinaryReal".
   */
-  public Srinivas(String solutionType) {
+  public Srinivas(Class<T> solutionType) {
     numberOfVariables_  = 2;
     numberOfObjectives_ = 2;
     numberOfConstraints_= 2;
@@ -35,14 +42,7 @@ public class Srinivas extends Problem{
       upperLimit_[var] =  20.0;
     } //for
         
-    solutionType_ = Enum.valueOf(SolutionType_.class, solutionType) ; 
-    
-    // All the variables are of the same type, so the solutionType name is the
-    // same than the variableType name
-    variableType_ = new VariableType_[numberOfVariables_];
-    for (int var = 0; var < numberOfVariables_; var++){
-      variableType_[var] = Enum.valueOf(VariableType_.class, solutionType) ;    
-    } // for
+    solutionType_ = solutionType; 
   } //Srinivas
     
   /** 
@@ -50,13 +50,13 @@ public class Srinivas extends Problem{
   * @param solution The solution to evaluate
    * @throws JMException 
   */
-  public void evaluate(Solution solution) throws JMException {
-    DecisionVariables decisionVariables  = solution.getDecisionVariables();
+  public void evaluate(Solution<T> solution) throws JMException {
+    DecisionVariables<T> decisionVariables  = solution.getDecisionVariables();
     
     double [] f = new double[numberOfObjectives_];
     
-    double x1 = decisionVariables.variables_[0].getValue();
-    double x2 = decisionVariables.variables_[1].getValue();        
+    double x1 = decisionVariables.variables_.get(0).getValue();
+    double x2 = decisionVariables.variables_.get(1).getValue();        
     f[0] = 2.0 + (x1-2.0)*(x1-2.0) + (x2-1.0)*(x2-1.0);                        
     f[1] = 9.0 * x1 - (x2-1.0)*(x2-1.0);        
         
@@ -70,11 +70,11 @@ public class Srinivas extends Problem{
    * @param solution The solution
    * @throws JMException 
    */  
-  public void evaluateConstraints(Solution solution) throws JMException {
+  public void evaluateConstraints(Solution<T> solution) throws JMException {
     double [] constraint = new double[this.getNumberOfConstraints()];
         
-    double x1 = solution.getDecisionVariables().variables_[0].getValue();
-    double x2 = solution.getDecisionVariables().variables_[1].getValue();
+    double x1 = solution.getDecisionVariables().variables_.get(0).getValue();
+    double x2 = solution.getDecisionVariables().variables_.get(1).getValue();
         
     constraint[0] = 1.0 - (x1*x1 + x2*x2)/225.0;
     constraint[1] = (3.0*x2 - x1)/10.0 - 1.0;
@@ -90,4 +90,9 @@ public class Srinivas extends Problem{
     solution.setOverallConstraintViolation(total);    
     solution.setNumberOfViolatedConstraint(number);
   } // evaluateConstraints
+
+  @Override
+  public List<T> generateNewDecisionVariable() {
+  	return generate(solutionType_);
+  }
 } // Srinivas

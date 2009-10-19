@@ -8,23 +8,23 @@
  */
 package jmetal.experiments.settings;
 
-import jmetal.metaheuristics.moead.*;
 import java.util.Properties;
+
 import jmetal.base.Algorithm;
-import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.operator.crossover.CrossoverFactory;
+import jmetal.base.operator.crossover.DifferentialEvolutionCrossover;
 import jmetal.base.operator.mutation.MutationFactory;
-import jmetal.base.operator.selection.SelectionFactory;
+import jmetal.base.operator.mutation.PolynomialMutation;
 import jmetal.experiments.Settings;
-import jmetal.problems.ProblemFactory;
-import jmetal.qualityIndicator.QualityIndicator;
+import jmetal.metaheuristics.moead.MOEAD;
 import jmetal.util.JMException;
 
 /**
  *
  * @author Antonio
  */
+@SuppressWarnings("unchecked")
 public class MOEAD_Settings extends Settings {
   // Default settings
   double CR_ = 0.1;
@@ -50,37 +50,35 @@ public class MOEAD_Settings extends Settings {
    * @throws jmetal.util.JMException
    */
   public Algorithm configure() throws JMException {
-    Algorithm algorithm;
-    Operator crossover;
-    Operator mutation;
-
-    QualityIndicator indicators;
+    MOEAD algorithm;
+    DifferentialEvolutionCrossover crossover;
+    PolynomialMutation mutation;
 
     // Creating the problem
     algorithm = new MOEAD(problem_);
 
     // Algorithm parameters
-    algorithm.setInputParameter("populationSize", populationSize_);
-    algorithm.setInputParameter("maxEvaluations", maxEvaluations_);
+    algorithm.setPopulationSize(populationSize_);
+    algorithm.setMaxEvaluations(maxEvaluations_);
 
     // Crossover operator 
-    crossover = CrossoverFactory.getCrossoverOperator("DifferentialEvolutionCrossover");
-    crossover.setParameter("CR", CR_);
-    crossover.setParameter("F", F_);   
+    crossover = (DifferentialEvolutionCrossover) CrossoverFactory.getCrossoverOperator("DifferentialEvolutionCrossover");
+    crossover.setCR(CR_);
+    crossover.setF(F_);   
     
     // Mutation operator
-    mutation = MutationFactory.getMutationOperator("PolynomialMutation");                    
-    mutation.setParameter("probability", mutationProbability_);
-    mutation.setParameter("distributionIndex", distributionIndexForMutation_); 
+    mutation = (PolynomialMutation) MutationFactory.getMutationOperator("PolynomialMutation");                    
+    mutation.setProbability(mutationProbability_);
+    mutation.setDistributionIndex(distributionIndexForMutation_);    
     
-    algorithm.addOperator("crossover", crossover);
-    algorithm.addOperator("mutation", mutation);
+    algorithm.setCrossover(crossover);
+    algorithm.setMutation(mutation);
     
-    // Creating the indicator object
-    if (!paretoFrontFile_.equals("")) {
-      indicators = new QualityIndicator(problem_, paretoFrontFile_);
-      algorithm.setInputParameter("indicators", indicators);
-    } // if
+//    // Creating the indicator object
+//    if (!paretoFrontFile_.equals("")) {
+//      indicators = new QualityIndicator(problem_, paretoFrontFile_);
+//      algorithm.setIndicators(indicators);
+//    } // if
 
     return algorithm;
   }

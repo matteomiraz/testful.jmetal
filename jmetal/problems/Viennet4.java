@@ -8,22 +8,29 @@
 
 package jmetal.problems;
 
-import jmetal.base.*;
-import jmetal.base.Configuration.SolutionType_;
-import jmetal.base.Configuration.VariableType_;
+import java.util.List;
+
+import jmetal.base.ProblemValue;
+import jmetal.base.Solution;
+import jmetal.base.variable.Real;
 import jmetal.util.JMException;
 
 /**
  * Class representing problem Viennet4
  */
-public class Viennet4 extends Problem{           
+public class Viennet4<T extends Real> extends ProblemValue<T> {           
   
- /** 
+ private static final long serialVersionUID = -204356646191092787L;
+
+ private final Class<T> solutionType_;
+
+
+/** 
   * Constructor.
   * Creates a default instance of the Viennet4 problem.
   * @param solutionType The solution type must "Real" or "BinaryReal".
   */
-  public Viennet4(String solutionType) {
+  public Viennet4(Class<T> solutionType) {
     numberOfVariables_   = 2 ;
     numberOfObjectives_  = 3 ;
     numberOfConstraints_ = 3 ;
@@ -36,14 +43,7 @@ public class Viennet4 extends Problem{
       upperLimit_[var] =   4.0;
     } // for
         
-    solutionType_ = Enum.valueOf(SolutionType_.class, solutionType) ; 
-    
-    // All the variables are of the same type, so the solutionType name is the
-    // same than the variableType name
-    variableType_ = new VariableType_[numberOfVariables_];
-    for (int var = 0; var < numberOfVariables_; var++){
-      variableType_[var] = Enum.valueOf(VariableType_.class, solutionType) ;    
-    } // for
+    solutionType_ = solutionType; 
   } //Viennet4
   
   
@@ -52,12 +52,12 @@ public class Viennet4 extends Problem{
    * @param solution The solution to evaluate
    * @throws JMException 
    */  
-  public void evaluate(Solution solution) throws JMException {          
+  public void evaluate(Solution<T> solution) throws JMException {          
     double [] x = new double[numberOfVariables_];
     double [] f = new double[numberOfObjectives_];
         
     for (int i = 0; i < numberOfVariables_; i++) {
-      x[i] = solution.getDecisionVariables().variables_[i].getValue();
+      x[i] = solution.getDecisionVariables().variables_.get(i).getValue();
     }
         
     f[0] = (x[0]-2.0)*(x[0]-2.0)/2.0 + 
@@ -81,11 +81,11 @@ public class Viennet4 extends Problem{
    * @param solution The solution
    * @throws JMException 
    */  
-  public void evaluateConstraints(Solution solution) throws JMException {
+  public void evaluateConstraints(Solution<T> solution) throws JMException {
     double [] constraint = new double[numberOfConstraints_];
         
-    double x1 = solution.getDecisionVariables().variables_[0].getValue();
-    double x2 = solution.getDecisionVariables().variables_[1].getValue();
+    double x1 = solution.getDecisionVariables().variables_.get(0).getValue();
+    double x2 = solution.getDecisionVariables().variables_.get(1).getValue();
         
     constraint[0] = -x2 - (4.0 * x1) + 4.0  ;
     constraint[1] = x1 + 1.0 ;
@@ -102,5 +102,10 @@ public class Viennet4 extends Problem{
     solution.setOverallConstraintViolation(total);    
     solution.setNumberOfViolatedConstraint(number);
   } // evaluateConstraints
+
+  @Override
+  	public List<T> generateNewDecisionVariable() {
+  		return generate(solutionType_);
+  	}
 } // Viennet4
 

@@ -6,15 +6,17 @@
  */
 package jmetal.base.operator.comparator;
 
-import jmetal.base.Solution;
 import java.util.Comparator;
+
+import jmetal.base.Solution;
+import jmetal.base.Variable;
 
 /**
  * This class implements a <code>Comparator</code> (a method for comparing
  * <code>Solution</code> objects) based on the overall constraint violation of
  * the solucions, as in NSGA-II.
  */
-public class OverallConstraintViolationComparator implements Comparator {
+public class OverallConstraintViolationComparator<T extends Variable> implements Comparator<Solution<T>> {
    
  /** 
   * Compares two solutions.
@@ -23,10 +25,9 @@ public class OverallConstraintViolationComparator implements Comparator {
   * @return -1, or 0, or 1 if o1 is less than, equal, or greater than o2,
   * respectively.
   */
-  public int compare(Object o1, Object o2) {    
-    double overall1, overall2;
-    overall1 = ((Solution)o1).getOverallConstraintViolation();
-    overall2 = ((Solution)o2).getOverallConstraintViolation();
+  public int compare(Solution<T> o1, Solution<T> o2) {    
+    double overall1 = o1.getOverallConstraintViolation();
+    double overall2 = o2.getOverallConstraintViolation();
         
     if ((overall1 < 0) && (overall2 < 0)) {
       if (overall1 > overall2){

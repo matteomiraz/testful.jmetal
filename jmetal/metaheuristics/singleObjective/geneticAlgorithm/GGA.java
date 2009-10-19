@@ -5,17 +5,27 @@
  */
 package jmetal.metaheuristics.singleObjective.geneticAlgorithm;
 
-import jmetal.base.*;
-import jmetal.base.operator.comparator.* ;
-import jmetal.base.Algorithm;
 import java.util.Comparator;
-import jmetal.util.*;
+
+import jmetal.base.Algorithm;
+import jmetal.base.Problem;
+import jmetal.base.Solution;
+import jmetal.base.SolutionSet;
+import jmetal.base.Variable;
+import jmetal.base.operator.comparator.ObjectiveComparator;
+import jmetal.base.operator.crossover.Crossover;
+import jmetal.base.operator.localSearch.LocalSearch;
+import jmetal.base.operator.mutation.Mutation;
+import jmetal.base.operator.selection.Selection;
+import jmetal.util.JMException;
 
 /** 
  * Class implementing a generational genetic algorithm
  */
-public class GGA extends Algorithm {
-  private Problem           problem_;        
+public class GGA<V extends Variable>
+	extends Algorithm<V, Crossover<V>, Mutation<V>, Selection<V, Solution<V>>, LocalSearch<V>> {
+  private static final long serialVersionUID = -6298837211531862606L;
+	private Problem<V>           problem_;        
   
  /**
   *
@@ -23,7 +33,7 @@ public class GGA extends Algorithm {
   * Create a new GGA instance.
   * @param problem Problem to solve.
   */
-  public GGA(Problem problem){
+  public GGA(Problem<V> problem){
     this.problem_ = problem;                        
   } // GGA
   
@@ -31,42 +41,32 @@ public class GGA extends Algorithm {
   * Execute the GGA algorithm
  * @throws JMException 
   */
-  public SolutionSet execute() throws JMException {
+  public SolutionSet<V> execute() throws JMException {
     int populationSize ;
     int maxEvaluations ;
     int evaluations    ;
 
-    SolutionSet population          ;
-    SolutionSet offspringPopulation ;
-    SolutionSet swapPopulation      ;    
+    SolutionSet<V> population          ;
+    SolutionSet<V> offspringPopulation ;
 
-    Operator    mutationOperator  ;
-    Operator    crossoverOperator ;
-    Operator    selectionOperator ;
+    Comparator<Solution<V>>  comparator        ;
     
-    Comparator  comparator        ;
-    
-    comparator = new ObjectiveComparator(0) ; // Single objective comparator
+    comparator = new ObjectiveComparator<V>(0) ; // Single objective comparator
     
     // Read the params
-    populationSize = ((Integer)this.getInputParameter("populationSize")).intValue();
-    maxEvaluations = ((Integer)this.getInputParameter("maxEvaluations")).intValue();                
+    populationSize = getPopulationSize();
+    maxEvaluations = getMaxEvaluations();                
    
     // Initialize the variables
-    population          = new SolutionSet(populationSize) ;   
-    offspringPopulation = new SolutionSet(populationSize) ;
+    population          = new SolutionSet<V>(populationSize) ;   
+    offspringPopulation = new SolutionSet<V>(populationSize) ;
     
     evaluations  = 0;                
 
-    // Read the operators
-    mutationOperator  = this.operators_.get("mutation");
-    crossoverOperator = this.operators_.get("crossover");
-    selectionOperator = this.operators_.get("selection");  
-
     // Create the initial population
-    Solution newIndividual;
+    Solution<V> newIndividual;
     for (int i = 0; i < populationSize; i++) {
-      newIndividual = new Solution(problem_);                    
+      newIndividual = new Solution<V>(problem_);                    
       problem_.evaluate(newIndividual);            
       evaluations++;
       population.add(newIndividual);
@@ -87,19 +87,18 @@ public class GGA extends Algorithm {
       //}      
       
       // Copy the best two individuals to the offspring population
-      offspringPopulation.add(new Solution(population.get(0))) ;	
-      offspringPopulation.add(new Solution(population.get(1))) ;	
+      offspringPopulation.add(new Solution<V>(population.get(0))) ;	
+      offspringPopulation.add(new Solution<V>(population.get(1))) ;	
         
       // Reproductive cycle
       for (int i = 0 ; i < (populationSize / 2 - 1) ; i ++) {
         // Selection
-        Solution [] parents = new Solution[2];
 
-        parents[0] = (Solution)selectionOperator.execute(population);
-        parents[1] = (Solution)selectionOperator.execute(population);
+        Solution<V> parent1 = (Solution<V>)selectionOperator.execute(population);
+        Solution<V> parent2 = (Solution<V>)selectionOperator.execute(population);
  
         // Crossover
-        Solution [] offspring = (Solution []) crossoverOperator.execute(parents);                
+        Solution<V> [] offspring = (Solution<V> []) crossoverOperator.execute(parent1, parent2);                
           
         // Mutation
         mutationOperator.execute(offspring[0]);
@@ -127,7 +126,7 @@ public class GGA extends Algorithm {
     } // while
     
     // Return a population with the best individual
-    SolutionSet resultPopulation = new SolutionSet(1) ;
+    SolutionSet<V> resultPopulation = new SolutionSet<V>(1) ;
     resultPopulation.add(population.get(0)) ;
     
     System.out.println("Evaluations: " + evaluations ) ;

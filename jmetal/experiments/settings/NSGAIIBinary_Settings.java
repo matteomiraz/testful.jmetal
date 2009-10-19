@@ -8,17 +8,19 @@
  */
 package jmetal.experiments.settings;
 
-import jmetal.metaheuristics.nsgaII.*;
 import java.util.Properties;
+
 import jmetal.base.Algorithm;
-import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
+import jmetal.base.operator.crossover.Crossover;
 import jmetal.base.operator.crossover.CrossoverFactory;
+import jmetal.base.operator.mutation.Mutation;
 import jmetal.base.operator.mutation.MutationFactory;
+import jmetal.base.operator.selection.Selection;
 import jmetal.base.operator.selection.SelectionFactory;
 import jmetal.experiments.Settings;
-import jmetal.problems.ProblemFactory;
+import jmetal.metaheuristics.nsgaII.NSGAII;
 import jmetal.qualityIndicator.QualityIndicator;
 import jmetal.util.JMException;
 
@@ -26,6 +28,7 @@ import jmetal.util.JMException;
  *
  * @author Antonio J. Nebro
  */
+@SuppressWarnings("unchecked")
 public class NSGAIIBinary_Settings extends Settings{
   
   // Default settings
@@ -37,7 +40,7 @@ public class NSGAIIBinary_Settings extends Settings{
   // applied to a solution
   Solution dummy = new Solution(problem_) ;
   
-  double mutationProbability_  = 1.0/dummy.getNumberOfBits() ;
+  double mutationProbability_  = 1.0/Solution.getNumberOfBits(dummy) ;
   double crossoverProbability_ = 0.9 ;
   
   String paretoFrontFile_ = "" ;
@@ -55,10 +58,10 @@ public class NSGAIIBinary_Settings extends Settings{
    * @throws jmetal.util.JMException
    */
   public Algorithm configure() throws JMException {
-    Algorithm algorithm ;
-    Operator  selection ;
-    Operator  crossover ;
-    Operator  mutation  ;
+    NSGAII algorithm ;
+    Selection  selection ;
+    Crossover  crossover ;
+    Mutation mutation  ;
     
     QualityIndicator indicators ;
     
@@ -66,29 +69,29 @@ public class NSGAIIBinary_Settings extends Settings{
     algorithm = new NSGAII(problem_) ;
     
     // Algorithm parameters
-    algorithm.setInputParameter("populationSize", populationSize_);
-    algorithm.setInputParameter("maxEvaluations", maxEvaluations_);
+    algorithm.setPopulationSize(populationSize_);
+    algorithm.setMaxEvaluations(maxEvaluations_);
 
     
     // Mutation and Crossover Binary codification
     crossover = CrossoverFactory.getCrossoverOperator("SinglePointCrossover");                   
-    crossover.setParameter("probability",0.9);                   
+    crossover.setProbability(0.9);                   
     mutation = MutationFactory.getMutationOperator("BitFlipMutation");     
     Solution dummy = new Solution(problem_) ;
-    mutation.setParameter("probability",1.0/dummy.getNumberOfBits());
+    mutation.setProbability(1.0/Solution.getNumberOfBits(dummy));
     
     // Selection Operator 
     selection = SelectionFactory.getSelectionOperator("BinaryTournament2") ;   
     
     // Add the operators to the algorithm
-    algorithm.addOperator("crossover",crossover);
-    algorithm.addOperator("mutation",mutation);
-    algorithm.addOperator("selection",selection);
+    algorithm.setCrossover(crossover);
+    algorithm.setMutation(mutation);
+    algorithm.setSelection(selection);
     
    // Creating the indicator object
    if (! paretoFrontFile_.equals("")) {
       indicators = new QualityIndicator(problem_, paretoFrontFile_);
-      algorithm.setInputParameter("indicators", indicators) ;  
+      algorithm.setIndicators(indicators) ;  
    } // if
     return algorithm ;
   } // configure

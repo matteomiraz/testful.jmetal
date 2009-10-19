@@ -8,7 +8,6 @@
 package jmetal.base.operator.crossover;
 
 import jmetal.base.Configuration;
-import jmetal.base.Operator;
 import jmetal.util.JMException;
 
 /**
@@ -21,15 +20,15 @@ public class CrossoverFactory {
    * @param name Name of the operator
    * @return The operator
    */
-  public static Operator getCrossoverOperator(String name) throws JMException {
+  public static Crossover<?> getCrossoverOperator(String name) throws JMException {
     if (name.equalsIgnoreCase("SBXCrossover"))
       return new SBXCrossover(20);
     else if (name.equalsIgnoreCase("SinglePointCrossover"))
-        return new SinglePointCrossover();
+        return new SinglePointCrossoverBinary();
     else if (name.equalsIgnoreCase("PMXCrossover"))
       return new PMXCrossover();
     else if (name.equalsIgnoreCase("TwoPointsCrossover"))
-      return new TwoPointsCrossover();
+      return new TwoPointsCrossoverPermutation();
     else if (name.equalsIgnoreCase("HUXCrossover"))
       return new HUXCrossover();
     else if (name.equalsIgnoreCase("DifferentialEvolutionCrossover"))

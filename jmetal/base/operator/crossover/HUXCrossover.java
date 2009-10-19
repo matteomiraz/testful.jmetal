@@ -6,10 +6,9 @@
  */
 package jmetal.base.operator.crossover;
 
-import jmetal.base.*;
-import jmetal.base.Configuration.SolutionType_;
-import jmetal.base.variable.*;
-import jmetal.base.*;    
+import jmetal.base.Configuration;
+import jmetal.base.Solution;
+import jmetal.base.variable.Binary;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
 
@@ -21,9 +20,12 @@ import jmetal.util.PseudoRandom;
  * (e.g., <code>SolutionType_.Binary</code> or 
  * <code>SolutionType_.BinaryReal</code>.
  */
-public class HUXCrossover extends Operator{
+public class HUXCrossover extends Crossover<Binary>{
 
-  /**
+  private static final long serialVersionUID = -98268788775592756L;
+
+
+	/**
    * Constructor
    * Create a new intance of the HUX crossover operator.
    */
@@ -39,25 +41,26 @@ public class HUXCrossover extends Operator{
    * @return An array containig the two offsprings
    * @throws JMException 
    */
-  public Solution[] doCrossover(double   probability, 
-                                Solution parent1, 
-                                Solution parent2) throws JMException {
-    Solution [] offSpring = new Solution[2];
-    offSpring[0] = new Solution(parent1);
-    offSpring[1] = new Solution(parent2);
+  @SuppressWarnings("unchecked")
+	public Solution<Binary>[] doCrossover(double   probability, 
+                                Solution<Binary> parent1, 
+                                Solution<Binary> parent2) throws JMException {
+    Solution<Binary> [] offSpring = new Solution[2];
+    offSpring[0] = new Solution<Binary>(parent1);
+    offSpring[1] = new Solution<Binary>(parent2);
     try {         
       if (PseudoRandom.randDouble() < probability)
       {
-        for (int var = 0; var < parent1.getDecisionVariables().variables_.length; var++) {
-          Binary p1 = (Binary)parent1.getDecisionVariables().variables_[var];
-          Binary p2 = (Binary)parent2.getDecisionVariables().variables_[var];
+        for (int var = 0; var < parent1.getDecisionVariables().variables_.size(); var++) {
+          Binary p1 = (Binary)parent1.getDecisionVariables().variables_.get(var);
+          Binary p2 = (Binary)parent2.getDecisionVariables().variables_.get(var);
 
           for (int bit = 0; bit < p1.getNumberOfBits(); bit++) {
             if (p1.bits_.get(bit) != p2.bits_.get(bit)) {
               if (PseudoRandom.randDouble() < 0.5) {
-                ((Binary)offSpring[0].getDecisionVariables().variables_[var])
+                ((Binary)offSpring[0].getDecisionVariables().variables_.get(var))
                 .bits_.set(bit,p2.bits_.get(bit));
-                ((Binary)offSpring[1].getDecisionVariables().variables_[var])
+                ((Binary)offSpring[1].getDecisionVariables().variables_.get(var))
                 .bits_.set(bit,p1.bits_.get(bit));
               }
             }
@@ -66,17 +69,15 @@ public class HUXCrossover extends Operator{
         //7. Decode the results
         for (int i = 0; i < offSpring[0].getDecisionVariables().size(); i++)
         {
-          ((Binary)offSpring[0].getDecisionVariables().variables_[i]).decode();
-          ((Binary)offSpring[1].getDecisionVariables().variables_[i]).decode();
+          ((Binary)offSpring[0].getDecisionVariables().variables_.get(i)).decode();
+          ((Binary)offSpring[1].getDecisionVariables().variables_.get(i)).decode();
         }
       }          
     }catch (ClassCastException e1) {
       
-      Configuration.logger_.severe("HUXCrossover.doCrossover: Cannot perfom " +
-          "SinglePointCrossover ") ;
-      Class cls = java.lang.String.class;
-      String name = cls.getName(); 
-      throw new JMException("Exception in " + name + ".doCrossover()") ;
+      String msg = "HUXCrossover.doCrossover: Cannot perfom SinglePointCrossover ";
+			Configuration.logger_.severe(msg) ;
+      throw new JMException(msg) ; 
     }        
     return offSpring;                                                                                      
   } // doCrossover
@@ -87,47 +88,8 @@ public class HUXCrossover extends Operator{
   * @param object An object containing an array of two solutions 
   * @return An object containing the offSprings
   */
-  public Object execute(Object object) throws JMException {
-    Solution [] parents = (Solution [])object;
-    
-    if ( ((parents[0].getType() != SolutionType_.Binary) ||
-          (parents[1].getType() != SolutionType_.Binary)) && 
-         ((parents[0].getType() != SolutionType_.BinaryReal) ||
-          (parents[1].getType() != SolutionType_.BinaryReal))) {
-      
-      Configuration.logger_.severe("HUXCrossover.execute: the solutions " +
-          "are not of the right type. The type should be 'Binary' of " +
-          "'BinaryReal', but " +
-          parents[0].getType() + " and " + 
-          parents[1].getType() + " are obtained");
-
-      Class cls = java.lang.String.class;
-      String name = cls.getName(); 
-      throw new JMException("Exception in " + name + ".execute()") ;
-
-    } // if 
-    
-    Double probability = (Double)getParameter("probability");
-    if (parents.length < 2)
-    {
-      Configuration.logger_.severe("HUXCrossover.execute: operator needs two " +
-          "parents");
-      Class cls = java.lang.String.class;
-      String name = cls.getName(); 
-      throw new JMException("Exception in " + name + ".execute()") ;      
-    }
-    else if (probability == null)
-    {
-      Configuration.logger_.severe("HUXCrossover.execute: probability not " +
-      "specified");
-      Class cls = java.lang.String.class;
-      String name = cls.getName(); 
-      throw new JMException("Exception in " + name + ".execute()") ;  
-    }         
-    
-    Solution [] offSpring = doCrossover(probability.doubleValue(),
-                                                       parents[0],
-                                                       parents[1]);
+  public Solution<Binary>[] execute(Solution<Binary> parent1, Solution<Binary> parent2) throws JMException {
+    Solution<Binary>[] offSpring = doCrossover(probability, parent1, parent2);
     
     for (int i = 0; i < offSpring.length; i++)
     {

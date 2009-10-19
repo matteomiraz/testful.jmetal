@@ -5,18 +5,27 @@
  */
 package jmetal.metaheuristics.singleObjective.geneticAlgorithm;
 
-import jmetal.base.*;
-import jmetal.base.operator.comparator.* ;
-import jmetal.base.variable.Permutation;
-import jmetal.base.Algorithm;
 import java.util.Comparator;
-import jmetal.util.*;
+
+import jmetal.base.Algorithm;
+import jmetal.base.Problem;
+import jmetal.base.Solution;
+import jmetal.base.SolutionSet;
+import jmetal.base.Variable;
+import jmetal.base.operator.comparator.ObjectiveComparator;
+import jmetal.base.operator.crossover.Crossover;
+import jmetal.base.operator.localSearch.LocalSearch;
+import jmetal.base.operator.mutation.Mutation;
+import jmetal.base.operator.selection.Selection;
+import jmetal.util.JMException;
 
 /** 
  * Class implementing a steady state genetic algorithm
  */
-public class SSGA extends Algorithm {
-  private Problem           problem_;        
+public class SSGA<V extends Variable>
+	extends Algorithm<V, Crossover<V>, Mutation<V>, Selection<V, Solution<V>>, LocalSearch<V>> {
+  private static final long serialVersionUID = -1246866956324724184L;
+	private Problem<V>           problem_;        
   
  /**
   *
@@ -25,7 +34,7 @@ public class SSGA extends Algorithm {
   * @param problem Problem to solve
   *
   */
-  public SSGA(Problem problem){
+  public SSGA(Problem<V> problem){
     this.problem_ = problem;                        
   } // SSGA
   
@@ -33,37 +42,29 @@ public class SSGA extends Algorithm {
   * Execute the SSGA algorithm
  * @throws JMException 
   */
-  public SolutionSet execute() throws JMException {
+  public SolutionSet<V> execute() throws JMException {
     int populationSize ;
     int maxEvaluations ;
     int evaluations    ;
 
-    SolutionSet population        ;
-    Operator    mutationOperator  ;
-    Operator    crossoverOperator ;
-    Operator    selectionOperator ;
+    SolutionSet<V> population        ;
     
-    Comparator  comparator        ;
+    Comparator<Solution<V>>  comparator        ;
     
-    comparator = new ObjectiveComparator(0) ; // Single objective comparator
+    comparator = new ObjectiveComparator<V>(0) ; // Single objective comparator
     
     // Read the params
-    populationSize = ((Integer)this.getInputParameter("populationSize")).intValue();
-    maxEvaluations = ((Integer)this.getInputParameter("maxEvaluations")).intValue();                
+    populationSize = getPopulationSize();
+    maxEvaluations = getMaxEvaluations();                
    
     // Initialize the variables
-    population   = new SolutionSet(populationSize);        
+    population   = new SolutionSet<V>(populationSize);        
     evaluations  = 0;                
 
-    // Read the operators
-    mutationOperator  = this.operators_.get("mutation");
-    crossoverOperator = this.operators_.get("crossover");
-    selectionOperator = this.operators_.get("selection");  
-
     // Create the initial population
-    Solution newIndividual;
+    Solution<V> newIndividual;
     for (int i = 0; i < populationSize; i++) {
-      newIndividual = new Solution(problem_);                    
+      newIndividual = new Solution<V>(problem_);                    
       problem_.evaluate(newIndividual);            
       evaluations++;
       population.add(newIndividual);
@@ -74,14 +75,13 @@ public class SSGA extends Algorithm {
       if ((evaluations % 10000) == 0) {
         System.out.println(evaluations + ": " + population.get(0).getObjective(0)) ;
       } //
-      Solution [] parents = new Solution[2];
       
       // Selection
-      parents[0] = (Solution)selectionOperator.execute(population);
-      parents[1] = (Solution)selectionOperator.execute(population);
+      Solution<V> parent1 = (Solution<V>)selectionOperator.execute(population);
+      Solution<V> parent2 = (Solution<V>)selectionOperator.execute(population);
  
       // Crossover
-      Solution [] offspring = (Solution []) crossoverOperator.execute(parents);  
+      Solution<V> [] offspring = (Solution<V> []) crossoverOperator.execute(parent1, parent2);  
 
       // Mutation
       mutationOperator.execute(offspring[0]);
@@ -94,7 +94,7 @@ public class SSGA extends Algorithm {
       // Replacement: replace the last individual is the new one is better
       population.sort(comparator) ;
 
-      Solution lastIndividual = population.get(populationSize - 1) ;
+      Solution<V> lastIndividual = population.get(populationSize - 1) ;
       
       if (lastIndividual.getObjective(0) > offspring[0].getObjective(0)) {
         population.remove(populationSize -1) ;
@@ -105,7 +105,7 @@ public class SSGA extends Algorithm {
     // Return a population with the best individual
     population.sort(comparator) ;
 
-    SolutionSet resultPopulation = new SolutionSet(1) ;
+    SolutionSet<V> resultPopulation = new SolutionSet<V>(1) ;
     resultPopulation.add(population.get(0)) ;
     
     System.out.println("Evaluations: " + evaluations ) ;

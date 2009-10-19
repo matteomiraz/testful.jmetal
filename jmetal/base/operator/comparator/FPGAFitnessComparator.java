@@ -6,15 +6,16 @@
  */
 package jmetal.base.operator.comparator;
 
-import java.util.*;
-import jmetal.base.*;
-import jmetal.util.PseudoRandom;
+import java.util.Comparator;
+
+import jmetal.base.Solution;
+import jmetal.base.Variable;
 
 /**
  * This class implements a <code>Comparator</code> (a method for comparing
  * <code>Solution</code> objects) based on the rank used in FPGA.
  */
-public class FPGAFitnessComparator implements Comparator {
+public class FPGAFitnessComparator<T extends Variable> implements Comparator<Solution<T>> {
   
  /**
   * Compares two solutions.
@@ -23,11 +24,7 @@ public class FPGAFitnessComparator implements Comparator {
   * @return -1, or 0, or 1 if o1 is less than, equal, or greater than o2,
   * respectively.
   */
-  public int compare(Object o1, Object o2) {
-    Solution solution1, solution2;
-    solution1 = (Solution) o1;
-    solution2 = (Solution) o2;
-    
+  public int compare(Solution<T> solution1, Solution<T> solution2) {
     if (solution1.getRank()==0 && solution2.getRank()> 0) {
       return -1;      
     } else if (solution1.getRank() > 0 &&  solution2.getRank() == 0) {

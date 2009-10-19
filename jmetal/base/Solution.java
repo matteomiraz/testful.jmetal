@@ -8,34 +8,26 @@
 package jmetal.base;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
-import jmetal.base.Configuration.* ;
 import jmetal.base.variable.Binary;
 
 /**
  * Class representing a solution for a problem.
  */
-public class Solution implements Serializable {        
+public class Solution<T extends Variable> implements Serializable {        
   
-  /**
-   * Stores the type of the variable
-   */	
-  private SolutionType_ type_ ; 
+  private static final long serialVersionUID = 8458216795302135603L;
 
   /**
    * Stores the decision variables of the solution.
    */
-  private DecisionVariables decisionVariable_ ;
+  private DecisionVariables<T> decisionVariable_ ;
 
   /**
    * Stores the objectives values of the solution.
    */
   private double [] objective_ ;
-
-  /**
-   * Stores the number of objective values of the solution
-   */
-  private int numberOfObjectives_ ;
 
   /**
    * Stores the so called fitness value. Used in some metaheuristics
@@ -94,7 +86,6 @@ public class Solution implements Serializable {
     marked_                       = false ;
     overallConstraintViolation_   = 0.0   ;
     numberOfViolatedConstraints_  = 0     ;  
-    type_                         = SolutionType_.Undefined ;
     decisionVariable_             = null ;
     objective_                    = null ;
   } // Solution
@@ -107,7 +98,6 @@ public class Solution implements Serializable {
    * variables of a SolutionSet to apply quality indicators
    */
   public Solution(int numberOfObjectives) {
-    numberOfObjectives_ = numberOfObjectives;
     objective_          = new double[numberOfObjectives];
   }
   
@@ -115,11 +105,9 @@ public class Solution implements Serializable {
    * Constructor.
    * @param problem The problem to solve
    */
-  public Solution(Problem problem){
+  public Solution(Problem<T> problem){
     //-> Initializing state variables and allocating memory
-    type_ = problem.getSolutionType() ;
-    numberOfObjectives_ = problem.getNumberOfObjectives() ;
-    objective_          = new double[numberOfObjectives_] ;
+    objective_          = new double[problem.numberOfObjectives_] ;
 
     // Setting initial values
     fitness_              = 0.0 ;
@@ -127,23 +115,17 @@ public class Solution implements Serializable {
     crowdingDistance_     = 0.0 ;        
     distanceToSolutionSet_ = Double.POSITIVE_INFINITY ;
     //<-
-
-    decisionVariable_ = new DecisionVariables(problem);
+    
+    decisionVariable_ = new DecisionVariables<T>(problem);
   } // Solution
-  
-  static public Solution getNewSolution(Problem problem) {
-    return new Solution(problem) ;
-  }
   
   /** 
    * Constructor
    * @param problem The problem to solve
    */
-  public Solution(Problem problem, DecisionVariables variables){
+  public Solution(Problem<T>  problem, DecisionVariables<T> variables){
     //-> Initializing state variables and allocating memory
-    type_ = problem.getSolutionType() ;
-    numberOfObjectives_ = problem.getNumberOfObjectives() ;
-    objective_          = new double[numberOfObjectives_] ;
+    objective_          = new double[problem.numberOfObjectives_] ;
 
     // Setting initial values
     fitness_              = 0.0 ;
@@ -159,18 +141,12 @@ public class Solution implements Serializable {
    * Copy constructor.
    * @param solution Solution to copy.
    */    
-  public Solution(Solution solution) {            
+  public Solution(Solution<T> solution) {            
     //-> Initializing state variables
-    type_ = solution.type_;
-
-    numberOfObjectives_ = solution.numberOfObjectives();
-    objective_ = new double[numberOfObjectives_];
-    for (int i = 0; i < objective_.length;i++) {
-      objective_[i] = solution.getObjective(i);
-    } // for
+  	objective_ = Arrays.copyOf(solution.objective_, solution.objective_.length);
     //<-
 
-    decisionVariable_ = new DecisionVariables(solution.getDecisionVariables());
+    decisionVariable_ = new DecisionVariables<T>(solution.getDecisionVariables());
     overallConstraintViolation_  = solution.getOverallConstraintViolation();
     numberOfViolatedConstraints_ = solution.getNumberOfViolatedConstraint();
     distanceToSolutionSet_ = solution.getDistanceToSolutionSet();
@@ -280,6 +256,11 @@ public class Solution implements Serializable {
     return objective_[i];
   } // getObjective
 
+  public double[] getObjectives() {
+    return objective_;
+  } // getObjective
+
+  
   /**
    * Returns the number of objectives.
    * @return The number of objectives.
@@ -288,7 +269,7 @@ public class Solution implements Serializable {
     if (objective_ == null)
       return 0 ;
     else
-      return numberOfObjectives_;
+      return objective_.length;
   } // numberOfObjectives
 
   /**  
@@ -307,11 +288,12 @@ public class Solution implements Serializable {
    * @return The string.
    */
   public String toString() {
-    String aux="";
-    for (int i = 0; i < this.numberOfObjectives_; i++)
-      aux = aux + this.getObjective(i) + " ";
+  	StringBuilder sb = new StringBuilder();
 
-    return aux;
+  	for(double o : objective_)
+			sb.append(o).append(" ");
+
+    return sb.toString();
   } // toString
 
   /**
@@ -319,7 +301,7 @@ public class Solution implements Serializable {
    * @return the <code>DecisionVariables</code> object representing the decision
    * variables of the solution.
    */
-  public DecisionVariables getDecisionVariables() {
+  public DecisionVariables<T> getDecisionVariables() {
     return this.decisionVariable_;
   } // getDecisionVariables
 
@@ -328,7 +310,7 @@ public class Solution implements Serializable {
    * @param decisionVariables The <code>DecisionVariables</code> object 
    * representing the decision variables of the solution.
    */
-  public void setDecisionVariables(DecisionVariables decisionVariables) {
+  public void setDecisionVariables(DecisionVariables<T> decisionVariables) {
     this.decisionVariable_ = decisionVariables;
   } // setDecisionVariables
 
@@ -429,41 +411,16 @@ public class Solution implements Serializable {
     return this.location_;
   } // getLocation
 
-  /**
-   * Sets the type of the variable. 
-   * @param type The type of the variable.
-   */
-  public void setType(String type) {
-    type_ = Enum.valueOf(SolutionType_.class,type) ;
-  } // setType
-
-  /**
-   * Sets the type of the variable. 
-   * @param type The type of the variable.
-   */
-  public void setType(SolutionType_ type) {
-    type_ = type ;
-  } // setType
-
-  /**
-   * Gets the type of the variable
-   * @return the type of the variable
-   */
-  public SolutionType_ getType() {
-    return type_;
-  } // getType
-
-
-
   /** 
    * Returns the aggregative value of the solution
    * @return The aggregative value.
    */
   public double getAggregativeValue() {
     double value = 0.0;                
-    for (int i = 0; i < numberOfObjectives(); i++){            
-      value += getObjective(i);
-    }                
+
+    for(double o : objective_)
+    	value += o;
+    
     return value;
   } // getAggregativeValue
 
@@ -472,13 +429,11 @@ public class Solution implements Serializable {
    * representation
    * @return The number of bits if the case of binary variables, 0 otherwise
    */
-  public int getNumberOfBits() {
+  public static int getNumberOfBits(Solution<? extends Binary> s) {
     int bits = 0 ;
     
-    for (int i = 0;  i < decisionVariable_.size()  ; i++)
-      if ((decisionVariable_.variables_[i].getVariableType() == VariableType_.BinaryReal) ||
-          (decisionVariable_.variables_[i].getVariableType() == VariableType_.Binary))
-        bits += ((Binary)(decisionVariable_.variables_[i])).getNumberOfBits() ;
+    for (int i = 0;  i < s.decisionVariable_.size()  ; i++)
+    	bits += s.decisionVariable_.variables_.get(i).getNumberOfBits() ;
     
     return bits ;
   } // getNumberOfBits

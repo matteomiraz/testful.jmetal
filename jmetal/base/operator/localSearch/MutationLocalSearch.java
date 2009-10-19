@@ -7,46 +7,50 @@
 
 package jmetal.base.operator.localSearch;
 
+import java.util.Comparator;
+
 import jmetal.base.Problem;
 import jmetal.base.Solution;
-import jmetal.base.Operator;
 import jmetal.base.SolutionSet;
-import jmetal.base.operator.comparator.OverallConstraintViolationComparator;
+import jmetal.base.Variable;
+import jmetal.base.archive.CrowdingArchive;
 import jmetal.base.operator.comparator.DominanceComparator;
+import jmetal.base.operator.comparator.OverallConstraintViolationComparator;
+import jmetal.base.operator.mutation.Mutation;
 import jmetal.util.JMException;
-
-import java.util.Comparator;
 
 /**
  * This class implements an local search operator based in the use of a 
  * mutation operator. An archive is used to store the non-dominated solutions
  * found during the search.
  */
-public class MutationLocalSearch extends LocalSearch {
+public class MutationLocalSearch<T extends Variable> extends LocalSearch<T> {
     
-  /**
+  private static final long serialVersionUID = 6132501458863378035L;
+
+	/**
    * Stores the problem to solve
    */
-  private Problem problem_;
+  private Problem<T> problem_;
     
   /**
   * Stores a reference to the archive in which the non-dominated solutions are
   * inserted
   */
-  private SolutionSet archive_;
+  private SolutionSet<T> archive_;
 
 
   /**
    * Stores comparators for dealing with constraints and dominance checking, 
    * respectively.
    */
-  private Comparator constraintComparator_ ;
-  private Comparator dominanceComparator_ ;
+  private Comparator<Solution<T>> constraintComparator_ ;
+  private Comparator<Solution<T>> dominanceComparator_ ;
   
   /**
    * Stores the mutation operator 
    */
-  private Operator mutationOperator_;
+  private Mutation<T> mutationOperator_;
   
   /**
    * Stores the number of evaluations_ carried out
@@ -61,14 +65,14 @@ public class MutationLocalSearch extends LocalSearch {
   * @param mutationOperator The mutation operator 
   * @param archive The archive
   */
-  public MutationLocalSearch(Problem     problem,
-                             Operator    mutationOperator,
-                             SolutionSet archive) {
+  public MutationLocalSearch(Problem<T>     problem,
+                             Mutation<T>    mutationOperator,
+                             SolutionSet<T> archive) {
     evaluations_          = 0      ;
     problem_              = problem;
     archive_              = archive;
-    dominanceComparator_  = new DominanceComparator();
-    constraintComparator_ = new OverallConstraintViolationComparator();
+    dominanceComparator_  = new DominanceComparator<T>();
+    constraintComparator_ = new OverallConstraintViolationComparator<T>();
   } //Mutation improvement
 
 
@@ -78,12 +82,12 @@ public class MutationLocalSearch extends LocalSearch {
   * @param problem The problem to solve
   * @param mutationOperator The mutation operator 
   */
-  public MutationLocalSearch(Problem problem, Operator mutationOperator) {
+  public MutationLocalSearch(Problem<T> problem, Mutation<T> mutationOperator) {
     evaluations_ = 0 ;
     problem_ = problem;
     mutationOperator_ = mutationOperator;
-    dominanceComparator_ = new DominanceComparator();
-    constraintComparator_ = new OverallConstraintViolationComparator();
+    dominanceComparator_ = new DominanceComparator<T>();
+    constraintComparator_ = new OverallConstraintViolationComparator<T>();
   } // MutationLocalSearch
   
  /**
@@ -95,28 +99,20 @@ public class MutationLocalSearch extends LocalSearch {
    * @return An object containing the new improved solution
  * @throws JMException 
    */
-  public Object execute(Object object) throws JMException {
+  @Override
+  public Solution<T> execute(Solution<T> solution) throws JMException {
     int i = 0;
     int best = 0;
     evaluations_ = 0;        
-    Solution solution = (Solution)object;
-    Integer roundsParam = (Integer)getParameter("improvementRounds");
-    archive_ = (SolutionSet)getParameter("archive");
-    int rounds;
-    if (roundsParam == null)
-      rounds = 0;
-    else
-      rounds = roundsParam.intValue();
-                            
-    if (rounds <= 0)
-      return new Solution(solution);
+
+    if (improvementRounds <= 0)
+      return new Solution<T>(solution);
         
     do 
     {
       i++;
-      Solution mutatedSolution = new Solution(solution);
+      Solution<T> mutatedSolution = new Solution<T>(solution);
       mutationOperator_.execute(mutatedSolution);
-            
             
       // Evaluate the getNumberOfConstraints
       if (problem_.getNumberOfConstraints() > 0)
@@ -154,8 +150,8 @@ public class MutationLocalSearch extends LocalSearch {
           archive_.add(mutatedSolution);
       }                            
     }
-    while (i < rounds);
-    return new Solution(solution);
+    while (i < improvementRounds);
+    return new Solution<T>(solution);
   } // execute
   
    
@@ -165,4 +161,9 @@ public class MutationLocalSearch extends LocalSearch {
   public int getEvaluations() {
     return evaluations_;
   } // evaluations
+
+
+	public void setArchive(CrowdingArchive<T> archive) {
+		this.archive_ = archive;
+	}
 } // MutationLocalSearch

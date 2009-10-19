@@ -7,25 +7,31 @@
  */
 package jmetal.problems;
 
-import jmetal.base.*;
-import jmetal.base.Configuration.*;
+import java.util.List;
+
+import jmetal.base.ProblemValue;
+import jmetal.base.Solution;
+import jmetal.base.variable.IReal;
 import jmetal.util.JMException;
 
 /** 
  * Class representing problem Golinski.
  */
-public class Golinski extends Problem{
+public class Golinski<T extends IReal> extends ProblemValue<T>{
 
-  // defining lowerLimits and upperLimits for the problem
+  private static final long serialVersionUID = 7529477649719646295L;
+	// defining lowerLimits and upperLimits for the problem
   public static final double [] LOWERLIMIT = {2.6, 0.7, 17.0, 7.3, 7.3, 2.9, 5.0};
   public static final double [] UPPERLIMIT = {3.6, 0.8, 28.0, 8.3, 8.3, 3.9, 5.5};                          
-    
+
+  private final Class<T> solutionType_;
+
  /** 
   * Constructor.
   * Creates a defalut instance of the Golinski problem.
   * @param solutionType The solution type must "Real" or "BinaryReal". 
   */
-  public Golinski(String solutionType) {
+  public Golinski(Class<T> solutionType) {
     numberOfVariables_   = 7 ;
     numberOfObjectives_  = 2 ;
     numberOfConstraints_ = 11;
@@ -38,14 +44,7 @@ public class Golinski extends Problem{
       upperLimit_[var] =  UPPERLIMIT[var];
     } // for
         
-    solutionType_ = Enum.valueOf(SolutionType_.class, solutionType) ; 
-    
-    // All the variables are of the same type, so the solutionType name is the
-    // same than the variableType name
-    variableType_ = new VariableType_[numberOfVariables_];
-    for (int var = 0; var < numberOfVariables_; var++){
-      variableType_[var] = Enum.valueOf(VariableType_.class, solutionType) ;    
-    } // for
+    solutionType_ = solutionType; 
   } //Golinski
   
   /**
@@ -53,15 +52,15 @@ public class Golinski extends Problem{
    * @param solution The solution to evaluate.
    * @throws JMException 
    */
-  public void evaluate(Solution solution) throws JMException {         
+  public void evaluate(Solution<T> solution) throws JMException {         
     double x1,x2,x3,x4,x5,x6,x7;
-    x1 = solution.getDecisionVariables().variables_[0].getValue();
-    x2 = solution.getDecisionVariables().variables_[1].getValue();
-    x3 = solution.getDecisionVariables().variables_[2].getValue();
-    x4 = solution.getDecisionVariables().variables_[3].getValue();
-    x5 = solution.getDecisionVariables().variables_[4].getValue();
-    x6 = solution.getDecisionVariables().variables_[5].getValue();
-    x7 = solution.getDecisionVariables().variables_[6].getValue();
+    x1 = solution.getDecisionVariables().variables_.get(0).getValue();
+    x2 = solution.getDecisionVariables().variables_.get(1).getValue();
+    x3 = solution.getDecisionVariables().variables_.get(2).getValue();
+    x4 = solution.getDecisionVariables().variables_.get(3).getValue();
+    x5 = solution.getDecisionVariables().variables_.get(4).getValue();
+    x6 = solution.getDecisionVariables().variables_.get(5).getValue();
+    x7 = solution.getDecisionVariables().variables_.get(6).getValue();
         
     double f1 = 0.7854 * x1 *x2 *x2 * ((10*x3*x3)/3.0 + 14.933*x3 - 43.0934) - 
                 1.508*x1*(x6*x6 + x7*x7)+7.477*(x6*x6*x6 + x7*x7*x7) + 
@@ -79,17 +78,17 @@ public class Golinski extends Problem{
    * @param solution The solution
    * @throws JMException 
    */  
- public void evaluateConstraints(Solution solution) throws JMException {
+ public void evaluateConstraints(Solution<T> solution) throws JMException {
     double [] constraint = new double[numberOfConstraints_];
     double x1,x2,x3,x4,x5,x6,x7;
         
-    x1 = solution.getDecisionVariables().variables_[0].getValue();
-    x2 = solution.getDecisionVariables().variables_[1].getValue();
-    x3 = solution.getDecisionVariables().variables_[2].getValue();
-    x4 = solution.getDecisionVariables().variables_[3].getValue();
-    x5 = solution.getDecisionVariables().variables_[4].getValue();
-    x6 = solution.getDecisionVariables().variables_[5].getValue();
-    x7 = solution.getDecisionVariables().variables_[6].getValue();
+    x1 = solution.getDecisionVariables().variables_.get(0).getValue();
+    x2 = solution.getDecisionVariables().variables_.get(1).getValue();
+    x3 = solution.getDecisionVariables().variables_.get(2).getValue();
+    x4 = solution.getDecisionVariables().variables_.get(3).getValue();
+    x5 = solution.getDecisionVariables().variables_.get(4).getValue();
+    x6 = solution.getDecisionVariables().variables_.get(5).getValue();
+    x7 = solution.getDecisionVariables().variables_.get(6).getValue();
         
         
     constraint[0] = -((1.0/(x1*x2*x2*x3)) -(1.0/27.0));
@@ -121,5 +120,10 @@ public class Golinski extends Problem{
     solution.setOverallConstraintViolation(total);    
     solution.setNumberOfViolatedConstraint(number);        
   } // evaluateConstraints
+
+ @Override
+ public List<T> generateNewDecisionVariable() {
+ 	return generate(solutionType_);
+ }
 } // Golinski
 

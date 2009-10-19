@@ -11,18 +11,20 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import jmetal.base.Algorithm;
-import jmetal.base.Problem;
+import jmetal.base.ProblemValue;
 import jmetal.base.SolutionSet;
 import jmetal.experiments.Experiment;
 import jmetal.experiments.Settings;
 import jmetal.problems.ProblemFactory;
+import jmetal.qualityIndicator.QualityIndicator;
 import jmetal.util.JMException;
-import jmetal.qualityIndicator.* ;
 /**
  *
  * @author antonio
  */
+@SuppressWarnings("unchecked")
 public class runExperiment extends Thread {
 
   public Experiment experiment_ ;
@@ -106,14 +108,14 @@ public class runExperiment extends Thread {
     
         
     for (int problemId = first_; problemId <= last_; problemId++) {
-      Problem problem;   // The problem to solve
+      ProblemValue problem;   // The problem to solve
 
       problem = null ;
       // STEP 2: get the problem from the list
       Object[] params = {"Real"}; // Parameters of the problem
       try {
         // Parameters of the problem
-        problem = (new ProblemFactory()).getProblem(problemList_[problemId], params);
+        problem = (ProblemValue) ProblemFactory.getProblem(problemList_[problemId], params);
       } catch (JMException ex) {
         Logger.getLogger(Experiment.class.getName()).log(Level.SEVERE, null, ex);
       }
@@ -146,7 +148,7 @@ synchronized(experiment_) {
 
           experimentDirectory = new File(directory);
           if (!experimentDirectory.exists()) {
-            boolean result = new File(directory).mkdirs();
+            new File(directory).mkdirs();
             System.out.println("Creating " + directory);
           }
 

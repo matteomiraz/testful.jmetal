@@ -6,21 +6,20 @@
  */
 package jmetal.base.operator.mutation;
 
-import jmetal.base.Configuration;
 import jmetal.base.Solution;
-import jmetal.base.DecisionVariables;
+import jmetal.base.variable.Real;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
-import jmetal.base.Operator;
-import jmetal.base.Configuration.SolutionType_;
 
 /**
   * This class implements a non-uniform mutation operator.
   * NOTE: the type of the solutions must be <code>SolutionType_.Real</code>
   */
-public class NonUniformMutation extends Operator{
+public class NonUniformMutation extends Mutation<Real> {
     
-  /**
+  private static final long serialVersionUID = 7432414654294815093L;
+
+	/**
    * perturbation_ stores the perturbation value used in the Non Uniform 
    * mutation operator
    */
@@ -52,7 +51,7 @@ public class NonUniformMutation extends Operator{
   * @param solution The solution to mutate
    * @throws JMException 
   */
-  public void doMutation(double probability, Solution solution) throws JMException {                
+  public void doMutation(double probability, Solution<Real> solution) throws JMException {                
 
     for (int var = 0; var < solution.getDecisionVariables().size(); var++) {         
       if (PseudoRandom.randDouble() < probability) {
@@ -62,26 +61,26 @@ public class NonUniformMutation extends Operator{
         if (rand <= 0.5)
         {
           tmp = delta(
-                  solution.getDecisionVariables().variables_[var].getUpperBound() -
-                  solution.getDecisionVariables().variables_[var].getValue(),
+                  solution.getDecisionVariables().variables_.get(var).getUpperBound() -
+                  solution.getDecisionVariables().variables_.get(var).getValue(),
                   perturbation_.doubleValue());
-          tmp += solution.getDecisionVariables().variables_[var].getValue();
+          tmp += solution.getDecisionVariables().variables_.get(var).getValue();
         }
         else
         {
           tmp = delta(
-                  solution.getDecisionVariables().variables_[var].getLowerBound() - 
-                  solution.getDecisionVariables().variables_[var].getValue(),
+                  solution.getDecisionVariables().variables_.get(var).getLowerBound() - 
+                  solution.getDecisionVariables().variables_.get(var).getValue(),
                   perturbation_.doubleValue());
-          tmp += solution.getDecisionVariables().variables_[var].getValue();
+          tmp += solution.getDecisionVariables().variables_.get(var).getValue();
         }
                 
-        if (tmp < solution.getDecisionVariables().variables_[var].getLowerBound())
-          tmp = solution.getDecisionVariables().variables_[var].getLowerBound();
-        else if (tmp > solution.getDecisionVariables().variables_[var].getUpperBound())
-          tmp = solution.getDecisionVariables().variables_[var].getUpperBound();
+        if (tmp < solution.getDecisionVariables().variables_.get(var).getLowerBound())
+          tmp = solution.getDecisionVariables().variables_.get(var).getLowerBound();
+        else if (tmp > solution.getDecisionVariables().variables_.get(var).getUpperBound())
+          tmp = solution.getDecisionVariables().variables_.get(var).getUpperBound();
                 
-        solution.getDecisionVariables().variables_[var].setValue(tmp);
+        solution.getDecisionVariables().variables_.get(var).setValue(tmp);
       }
     }
   } // doMutation
@@ -102,47 +101,27 @@ public class NonUniformMutation extends Operator{
                          )));
   } // delta
 
+  
+	public void setPerturbation(double perturbation) {
+		perturbation_ = perturbation;
+	}
+	
+	
+	public void setMaxIterations(int maxIterations) {
+		maxIterations_ = maxIterations;
+	}
+  
+	public void setCurrentIteration(int actualIteration) {
+		actualIteration_ = actualIteration;
+	}
+	
   /**
   * Executes the operation
   * @param object An object containing a solution
   * @return An object containing the mutated solution
    * @throws JMException 
   */
-  public Object execute(Object object) throws JMException {
-    Solution solution = (Solution )object;
-    
-    if (solution.getType() != SolutionType_.Real) {
-      Configuration.logger_.severe("NonUniformMutation.execute: the solution " +
-          "is not of the right type. The type should be 'Real', but " +
-          solution.getType() + " is obtained");
-
-      Class cls = java.lang.String.class;
-      String name = cls.getName(); 
-      throw new JMException("Exception in " + name + ".execute()") ;
-    } // if 
-    
-    Double probability;
-      
-    if (perturbation_ == null)
-      perturbation_ = (Double) getParameter("perturbationIndex");
-        
-    if (maxIterations_ == null)
-      maxIterations_ = (Integer) getParameter("maxIterations");
-        
-    actualIteration_ = (Integer) getParameter("currentIteration");
-    probability =(Double) parameters_.get("probability");
-    
-    if (probability == null)
-    {
-      Configuration.logger_.severe("NonUniformMutation.execute: probability " +
-          "not specified");
-      Class cls = java.lang.String.class;
-      String name = cls.getName(); 
-      throw new JMException("Exception in " + name + ".execute()") ;  
-    }         
-    
-    doMutation(probability.doubleValue(),solution);
-        
-    return solution;    
+  public void execute(Solution<Real> solution) throws JMException {
+    doMutation(probability,solution);
   } // execute
 } // NonUniformMutation

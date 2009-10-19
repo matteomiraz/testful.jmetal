@@ -5,11 +5,11 @@
  */
 package jmetal.problems.WFG;
 
-import java.io.*;
+import java.util.List;
 import java.util.Random;
-import jmetal.base.*;
-import jmetal.base.Configuration.SolutionType_;
-import jmetal.base.Configuration.VariableType_;
+
+import jmetal.base.ProblemValue;
+import jmetal.base.variable.IReal;
 
 /**
  * Implements a reference abstract class for all WFG test problems
@@ -19,9 +19,13 @@ import jmetal.base.Configuration.VariableType_;
  *            Third International Conference, EMO 2005. 
  *            Proceedings, volume 3410 of Lecture Notes in Computer Science
  */
-public abstract class WFG extends Problem{
+public abstract class WFG<V extends IReal> extends ProblemValue<V> {
   
-  /**
+  private static final long serialVersionUID = -3511776882893579601L;
+
+  private final Class<V> solutionType_;
+
+	/**
    * stores a epsilon default value
    */
   private final float epsilon = (float)1e-7;
@@ -42,7 +46,7 @@ public abstract class WFG extends Problem{
   * @param M Number of objectives
   * @param solutionType The solution type must "Real" or "BinaryReal". 
   */
-  public WFG (Integer k, Integer l, Integer M, String solutionType){      
+  public WFG (Integer k, Integer l, Integer M, Class<V> solutionType){      
     this.k_ = k.intValue();
     this.l_ = l.intValue();
     this.M_ = M.intValue();        
@@ -57,14 +61,7 @@ public abstract class WFG extends Problem{
       upperLimit_[var] = 2 * (var + 1);
     }
       
-    solutionType_ = Enum.valueOf(SolutionType_.class, solutionType) ; 
-    
-    // All the variables are of the same type, so the solutionType name is the
-    // same than the variableType name
-    variableType_ = new VariableType_[numberOfVariables_];
-    for (int var = 0; var < numberOfVariables_; var++){
-      variableType_[var] = Enum.valueOf(VariableType_.class, solutionType) ;    
-    } // for      
+    solutionType_ = solutionType; 
   } // WFG
     
   /**
@@ -140,4 +137,9 @@ public abstract class WFG extends Problem{
   */  
   abstract public float[] evaluate(float[] variables);
   // evaluate
+
+  @Override
+  public List<V> generateNewDecisionVariable() {
+  	return generate(solutionType_);
+  }
 }

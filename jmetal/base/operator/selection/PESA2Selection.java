@@ -6,8 +6,11 @@
 
 package jmetal.base.operator.selection;
 
-import jmetal.base.*;
-import jmetal.base.archive.*;
+import jmetal.base.Configuration;
+import jmetal.base.Solution;
+import jmetal.base.SolutionSet;
+import jmetal.base.Variable;
+import jmetal.base.archive.AdaptiveGridArchive;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
 
@@ -15,18 +18,21 @@ import jmetal.util.PseudoRandom;
  * This class implements a selection operator as the used in PESA-II 
  * algorithm
  */
-public class PESA2Selection extends Operator{      
+public class PESA2Selection<T extends Variable> extends Selection<T, Solution<T>> {      
         
-  /**
+  private static final long serialVersionUID = 345701401946064303L;
+
+	/**
   * Performs the operation
   * @param object Object representing a SolutionSet. This solution set
   * must be an instancen <code>AdaptiveGridArchive</code>
   * @return the selected solution
    * @throws JMException 
   */
-  public Object execute(Object object) throws JMException    {
+  @Override
+  public Solution<T> execute(SolutionSet<T> set) throws JMException {
     try {
-      AdaptiveGridArchive archive = (AdaptiveGridArchive)object;
+      AdaptiveGridArchive<T> archive = (AdaptiveGridArchive<T>)set;
       int selected;        
       int hypercube1 = archive.getGrid().randomOccupiedHypercube();
       int hypercube2 = archive.getGrid().randomOccupiedHypercube();                                        
@@ -54,7 +60,7 @@ public class PESA2Selection extends Operator{
       int base = PseudoRandom.randInt(0,archive.size()-1);
       int cnt = 0;
       while (cnt < archive.size()){   
-        Solution individual = archive.get((base + cnt)% archive.size());        
+        Solution<T> individual = archive.get((base + cnt)% archive.size());        
         if (archive.getGrid().location(individual) != selected){
           cnt++;                
         } else {
@@ -63,11 +69,9 @@ public class PESA2Selection extends Operator{
       }        
       return archive.get((base + cnt) % archive.size());
     } catch (ClassCastException e) {
-      Configuration.logger_.severe("PESA2Selection.execute: ClassCastException. " +
-          "Found" + object.getClass() + "Expected: AdaptativeGridArchive") ;
-      Class cls = java.lang.String.class;
-      String name = cls.getName(); 
-      throw new JMException("Exception in " + name + ".execute()") ;  
+      String msg = "PESA2Selection.execute: ClassCastException. Found" + set.getClass().getCanonicalName() + "Expected: AdaptativeGridArchive";
+			Configuration.logger_.severe(msg) ;
+      throw new JMException(msg) ; 
     }
   } //execute
 } // PESA2Selection

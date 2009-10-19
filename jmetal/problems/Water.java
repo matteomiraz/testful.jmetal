@@ -6,27 +6,34 @@
  */
 package jmetal.problems;
 
-import jmetal.base.*;
-import jmetal.base.Configuration.SolutionType_;
-import jmetal.base.Configuration.VariableType_;
+import java.util.List;
+
+import jmetal.base.ProblemValue;
+import jmetal.base.Solution;
+import jmetal.base.variable.Real;
 import jmetal.util.JMException;
 
 /**
  * Class representing problem Water
  */
-public class Water extends Problem {
+public class Water<T extends Real> extends ProblemValue<T> {
   
-  // defining the lower and upper limits
+  private static final long serialVersionUID = 8970858463920311741L;
+	// defining the lower and upper limits
   public static final double [] LOWERLIMIT = {0.01, 0.01, 0.01};
   public static final double [] UPPERLIMIT = {0.45, 0.10, 0.10};                          
 
+  private Class<T> type;
+  
  /**
   * Constructor.
   * Creates a default instance of the Water problem.
   * @param solutionType The solution type must "Real" or "BinaryReal".
   */
-  public Water(String solutionType) {
-    numberOfVariables_   = 3 ;
+  public Water(Class<T> type) {
+  	this.type = type;
+  	
+  	numberOfVariables_   = 3 ;
     numberOfObjectives_  = 5 ;
     numberOfConstraints_ = 7 ;
     problemName_         = "Water";
@@ -39,15 +46,7 @@ public class Water extends Problem {
       lowerLimit_[var] = LOWERLIMIT[var];
       upperLimit_[var] = UPPERLIMIT[var];
     } // for
-	        
-    solutionType_ = Enum.valueOf(SolutionType_.class, solutionType) ; 
-    
-    // All the variables are of the same type, so the solutionType name is the
-    // same than the variableType name
-    variableType_ = new VariableType_[numberOfVariables_];
-    for (int var = 0; var < numberOfVariables_; var++){
-      variableType_[var] = Enum.valueOf(VariableType_.class, solutionType) ;    
-    } // for
+
   } // Water
 	
   /**
@@ -55,12 +54,12 @@ public class Water extends Problem {
    * @param solution The solution to evaluate
    * @throws JMException 
    */
-  public void evaluate(Solution solution) throws JMException {         
+  public void evaluate(Solution<T> solution) throws JMException {         
     double [] x = new double[3] ; // 3 decision variables
     double [] f = new double[5] ; // 5 functions
-    x[0] = solution.getDecisionVariables().variables_[0].getValue();
-    x[1] = solution.getDecisionVariables().variables_[1].getValue();
-    x[2] = solution.getDecisionVariables().variables_[2].getValue();
+    x[0] = solution.getDecisionVariables().variables_.get(0).getValue();
+    x[1] = solution.getDecisionVariables().variables_.get(1).getValue();
+    x[2] = solution.getDecisionVariables().variables_.get(2).getValue();
 
     
     // First function
@@ -86,13 +85,13 @@ public class Water extends Problem {
    * @param solution The solution
    * @throws JMException 
    */  
-  public void evaluateConstraints(Solution solution) throws JMException {
+  public void evaluateConstraints(Solution<T> solution) throws JMException {
     double [] constraint = new double[7]; // 7 constraints
     double [] x          = new double[3]; // 3 objectives
         
-    x[0] = solution.getDecisionVariables().variables_[0].getValue();
-    x[1] = solution.getDecisionVariables().variables_[1].getValue();
-    x[2] = solution.getDecisionVariables().variables_[2].getValue();
+    x[0] = solution.getDecisionVariables().variables_.get(0).getValue();
+    x[1] = solution.getDecisionVariables().variables_.get(1).getValue();
+    x[2] = solution.getDecisionVariables().variables_.get(2).getValue();
  
     constraint[0] = 1 - (0.00139/(x[0]*x[1])+4.94*x[2]-0.08)             ;
     constraint[1] = 1 - (0.000306/(x[0]*x[1])+1.082*x[2]-0.0986)         ;
@@ -113,5 +112,10 @@ public class Water extends Problem {
         
     solution.setOverallConstraintViolation(total);    
     solution.setNumberOfViolatedConstraint(number);        
-  } // evaluateConstraints   
+  } // evaluateConstraints
+  
+  @Override
+  public List<T> generateNewDecisionVariable() {
+  	return generate(type);
+  }
 } // Water

@@ -8,11 +8,12 @@
  */
 package jmetal.experiments.settings;
 
-import jmetal.metaheuristics.smpso.*;
 import java.util.Properties;
+
 import jmetal.base.Algorithm;
-import jmetal.base.Problem;
+import jmetal.base.ProblemValue;
 import jmetal.experiments.Settings;
+import jmetal.metaheuristics.smpso.SMPSO;
 import jmetal.qualityIndicator.QualityIndicator;
 import jmetal.util.JMException;
 
@@ -20,6 +21,7 @@ import jmetal.util.JMException;
  *
  * @author Antonio
  */
+@SuppressWarnings("unchecked")
 public class SMPSO_Settings extends Settings{
   
   // Default settings
@@ -34,7 +36,7 @@ public class SMPSO_Settings extends Settings{
   /**
    * Constructor
    */
-  public SMPSO_Settings(Problem problem) {
+  public SMPSO_Settings(ProblemValue problem) {
     super(problem) ;
   } // SMPSO_Settings
   
@@ -44,24 +46,24 @@ public class SMPSO_Settings extends Settings{
    * @throws jmetal.util.JMException
    */
   public Algorithm configure() throws JMException {
-    Algorithm algorithm ;
+    SMPSO algorithm ;
     
     QualityIndicator indicators ;
     
     // Creating the problem
-    algorithm = new SMPSO(problem_) ;
+    algorithm = new SMPSO((ProblemValue) problem_) ;
     
     // Algorithm parameters
-    algorithm.setInputParameter("swarmSize", swarmSize_);
-    algorithm.setInputParameter("maxIterations", maxIterations_);
-    algorithm.setInputParameter("archiveSize", archiveSize_);
-    algorithm.setInputParameter("perturbationIndex", perturbationIndex_);
-    algorithm.setInputParameter("mutationDistributionIndex", mutationDistributionIndex_);
+    algorithm.setSwarmSize(swarmSize_);
+    algorithm.setMaxEvaluations(maxIterations_);
+    algorithm.setArchiveSize(archiveSize_);
+//    algorithm.setPerturbationIndex(perturbationIndex_);
+    algorithm.setMutationDistributionIndex(mutationDistributionIndex_);
     
    // Creating the indicator object
    if (! paretoFrontFile_.equals("")) {
       indicators = new QualityIndicator(problem_, paretoFrontFile_);
-      algorithm.setInputParameter("indicators", indicators) ;  
+      algorithm.setIndicators(indicators) ;  
    } // if
     return algorithm ;
   }

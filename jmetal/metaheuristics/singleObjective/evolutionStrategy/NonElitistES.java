@@ -5,17 +5,27 @@
  */
 package jmetal.metaheuristics.singleObjective.evolutionStrategy;
 
-import jmetal.base.*;
-import jmetal.base.operator.comparator.* ;
-import jmetal.base.Algorithm;
 import java.util.Comparator;
-import jmetal.util.*;
+
+import jmetal.base.Algorithm;
+import jmetal.base.Problem;
+import jmetal.base.Solution;
+import jmetal.base.SolutionSet;
+import jmetal.base.Variable;
+import jmetal.base.operator.comparator.ObjectiveComparator;
+import jmetal.base.operator.crossover.Crossover;
+import jmetal.base.operator.localSearch.LocalSearch;
+import jmetal.base.operator.mutation.Mutation;
+import jmetal.base.operator.selection.Selection;
+import jmetal.util.JMException;
 
 /** 
  * Class implementing a (mu,lambda) ES. Lambda must be divisible by mu.
  */
-public class NonElitistES extends Algorithm {
-  private Problem problem_; 
+public class NonElitistES<V extends Variable>
+	extends Algorithm<V, Crossover<V>, Mutation<V>, Selection<V, Solution<V>>, LocalSearch<V>> {
+  private static final long serialVersionUID = -4024387936798043455L;
+	private Problem<V> problem_; 
   private int     mu_     ;
   private int     lambda_ ;
   
@@ -26,7 +36,7 @@ public class NonElitistES extends Algorithm {
   * @mu Mu
   * @lambda Lambda
   */
-  public NonElitistES(Problem problem, int mu, int lambda){
+  public NonElitistES(Problem<V> problem, int mu, int lambda){
     problem_ = problem;  
     mu_      = mu     ;
     lambda_  = lambda ;
@@ -36,51 +46,48 @@ public class NonElitistES extends Algorithm {
   * Execute the NonElitistES algorithm
  * @throws JMException 
   */
-  public SolutionSet execute() throws JMException {
+  public SolutionSet<V> execute() throws JMException {
     int maxEvaluations ;
     int evaluations    ;
 
-    Solution bestIndividual ;
+    Solution<V> bestIndividual ;
     
-    SolutionSet population          ;
-    SolutionSet offspringPopulation ;  
+    SolutionSet<V> population          ;
+    SolutionSet<V> offspringPopulation ;  
 
-    Operator   mutationOperator ;
-    Comparator comparator       ;
+    Comparator<Solution<V>> comparator       ;
     
-    comparator = new ObjectiveComparator(0) ; // Single objective comparator
+    comparator = new ObjectiveComparator<V>(0) ; // Single objective comparator
     
     // Read the params
-    maxEvaluations = ((Integer)this.getInputParameter("maxEvaluations")).intValue();                
+    maxEvaluations = getMaxEvaluations();                
    
     // Initialize the variables
-    population          = new SolutionSet(mu_ + 1) ;   
-    offspringPopulation = new SolutionSet(lambda_) ;
+    population          = new SolutionSet<V>(mu_ + 1) ;   
+    offspringPopulation = new SolutionSet<V>(lambda_) ;
     
     evaluations  = 0;                
 
     // Read the operators
-    mutationOperator  = this.operators_.get("mutation");
-
     System.out.println("(" + mu_ + " , " + lambda_+")ES") ;
      
     // Create the parent population of mu solutions
-    Solution newIndividual;
-    newIndividual = new Solution(problem_) ;
+    Solution<V> newIndividual;
+    newIndividual = new Solution<V>(problem_) ;
     problem_.evaluate(newIndividual);
     evaluations ++ ;
     population.add(newIndividual);
-    bestIndividual = new Solution(newIndividual) ;
+    bestIndividual = new Solution<V>(newIndividual) ;
     
     for (int i = 1; i < mu_; i++) {
       System.out.println(i) ;
-      newIndividual = new Solution(problem_);                    
+      newIndividual = new Solution<V>(problem_);                    
       problem_.evaluate(newIndividual);            
       evaluations++;
       population.add(newIndividual);
       
       if (comparator.compare(bestIndividual, newIndividual) > 0 )
-        bestIndividual = new Solution(newIndividual) ;
+        bestIndividual = new Solution<V>(newIndividual) ;
     } //for       
      
     // Main loop
@@ -90,7 +97,7 @@ public class NonElitistES extends Algorithm {
       // STEP 1. Generate the lambda population
       for (int i = 0; i < mu_; i++) {
         for (int j = 0; j < offsprings; j++) {
-          Solution offspring = new Solution(population.get(i)) ;
+          Solution<V> offspring = new Solution<V>(population.get(i)) ;
           mutationOperator.execute(offspring);
           problem_.evaluate(offspring) ;
           offspringPopulation.add(offspring) ;
@@ -103,7 +110,7 @@ public class NonElitistES extends Algorithm {
             
       // STEP 3. Update the best individual 
       if (comparator.compare(bestIndividual, offspringPopulation.get(0)) > 0 )
-        bestIndividual = new Solution(offspringPopulation.get(0)) ;
+        bestIndividual = new Solution<V>(offspringPopulation.get(0)) ;
       
       // STEP 4. Create the new mu population
       population.clear() ;
@@ -119,7 +126,7 @@ public class NonElitistES extends Algorithm {
     } // while
     
     // Return a population with the best individual
-    SolutionSet resultPopulation = new SolutionSet(1) ;
+    SolutionSet<V> resultPopulation = new SolutionSet<V>(1) ;
     resultPopulation.add(population.get(0)) ;
     
     return resultPopulation ;

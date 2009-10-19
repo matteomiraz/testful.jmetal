@@ -8,17 +8,16 @@
 package jmetal.metaheuristics.omopso;
 
 import java.io.IOException;
-import jmetal.base.*;
-import jmetal.problems.*;
-import jmetal.problems.DTLZ.*;
-import jmetal.problems.ZDT.*;
-import jmetal.problems.WFG.*;
-import jmetal.problems.LZ07.* ;
-import jmetal.util.JMException ;
-
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
-import jmetal.qualityIndicator.QualityIndicator;
+
+import jmetal.base.Configuration;
+import jmetal.base.ProblemValue;
+import jmetal.base.SolutionSet;
+import jmetal.base.variable.Real;
+import jmetal.problems.Kursawe;
+import jmetal.problems.ProblemFactory;
+import jmetal.util.JMException;
 
 public class OMOPSO_main {
   public static Logger      logger_ ;      // Logger object
@@ -29,29 +28,26 @@ public class OMOPSO_main {
    *             the problem to solve.
    * @throws JMException 
    */
-  public static void main(String [] args) throws JMException, IOException {
-    Problem   problem   ;         // The problem to solve
-    Algorithm algorithm ;         // The algorithm to use
+  @SuppressWarnings("unchecked")
+	public static void main(String [] args) throws JMException, IOException {
+    ProblemValue<Real>   problem   ;         // The problem to solve
+    OMOPSO algorithm ;         // The algorithm to use
     
-    QualityIndicator indicators ; // Object to get quality indicators
-        
     // Logger object and file to store log messages
     logger_      = Configuration.logger_ ;
     fileHandler_ = new FileHandler("OMOPSO_main.log"); 
     logger_.addHandler(fileHandler_) ;
     
-    indicators = null ;
     if (args.length == 1) {
       Object [] params = {"Real"};
-      problem = (new ProblemFactory()).getProblem(args[0],params);
+      problem = (ProblemValue<Real>) ProblemFactory.getProblem(args[0],params);
     } // if
     else if (args.length == 2) {
       Object [] params = {"Real"};
-      problem = (new ProblemFactory()).getProblem(args[0],params);
-      indicators = new QualityIndicator(problem, args[1]) ;
+      problem = (ProblemValue<Real>) ProblemFactory.getProblem(args[0],params);
     } // if
     else { // Default problem
-      problem = new Kursawe(3, "Real"); 
+      problem = new Kursawe(3, Real.class); 
       //problem = new Kursawe(3,"BinaryReal");
       //problem = new Water("Real");
       //problem = new ZDT4("Real");
@@ -63,14 +59,14 @@ public class OMOPSO_main {
     algorithm = new OMOPSO(problem) ;
     
     // Algorithm parameters
-    algorithm.setInputParameter("swarmSize",100);
-    algorithm.setInputParameter("archiveSize",100);
-    algorithm.setInputParameter("maxIterations",250);
-    algorithm.setInputParameter("perturbationIndex",0.5);
+    algorithm.setSwarmSize(100);
+    algorithm.setArchiveSize(100);
+    algorithm.setMaxEvaluations(250);
+    algorithm.setPerturbationIndex(0.5);
     
     // Execute the Algorithm 
     long initTime = System.currentTimeMillis();
-    SolutionSet population = algorithm.execute();
+    SolutionSet<Real> population = algorithm.execute();
     long estimatedTime = System.currentTimeMillis() - initTime;
     
     // Result messages 

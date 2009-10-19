@@ -6,18 +6,16 @@
  */
 package jmetal.base.variable;
 
-import java.util.BitSet;
-
-import jmetal.base.Configuration.*;
-import jmetal.base.Variable;
-import jmetal.util.PseudoRandom;
+import jmetal.base.VariableValue;
 
 /** This class extends the Binary class to represent a Real variable encoded by
  * a binary string
  */
-public class BinaryReal extends Binary {
+public class BinaryReal extends Binary implements IReal {
    
-  /**
+  private static final long serialVersionUID = 6445337596110083477L;
+
+	/**
    * Stores the real value of the variable
    */
   private double value_;
@@ -37,7 +35,6 @@ public class BinaryReal extends Binary {
    */
   public BinaryReal() {    
     super();
-    setVariableType(VariableType_.BinaryReal) ;
   } //BinaryReal
 
   /**
@@ -51,8 +48,6 @@ public class BinaryReal extends Binary {
     lowerBound_     = lowerBound;
     upperBound_     = upperBound;
 
-    setVariableType(VariableType_.BinaryReal) ;
-    
     decode();                              
   } //BinaryReal
     
@@ -62,7 +57,6 @@ public class BinaryReal extends Binary {
    */
   public BinaryReal(BinaryReal variable){
     super(variable);
-    setVariableType(VariableType_.BinaryReal) ;
 
     lowerBound_   = variable.lowerBound_;
     upperBound_   = variable.upperBound_;
@@ -108,7 +102,7 @@ public class BinaryReal extends Binary {
    * Creates an exact copy of a <code>BinaryReal</code> object.
    * @return The copy of the object
    */
-  public Variable deepCopy() {
+  public VariableValue clone() {
     return new BinaryReal(this);
   } //deepCopy
 

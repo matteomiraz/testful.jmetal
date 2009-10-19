@@ -7,11 +7,16 @@
 
 package jmetal.metaheuristics.singleObjective.geneticAlgorithm;
 
-import jmetal.base.*;
-import jmetal.base.operator.crossover.*   ;
-import jmetal.base.operator.mutation.*    ; 
-import jmetal.base.operator.selection.*   ;
-import jmetal.problems.singleObjective.*  ; 
+import jmetal.base.Problem;
+import jmetal.base.SolutionSet;
+import jmetal.base.operator.crossover.CrossoverFactory;
+import jmetal.base.operator.crossover.SBXCrossover;
+import jmetal.base.operator.mutation.MutationFactory;
+import jmetal.base.operator.mutation.PolynomialMutation;
+import jmetal.base.operator.selection.BinaryTournament;
+import jmetal.base.operator.selection.SelectionFactory;
+import jmetal.base.variable.Real;
+import jmetal.problems.singleObjective.Griewank;
 import jmetal.util.JMException;
 
 /**
@@ -21,36 +26,34 @@ import jmetal.util.JMException;
  */
 public class GA_main {
 
-  public static void main(String [] args) throws JMException {
-    Problem   problem   ;         // The problem to solve
-    Algorithm algorithm ;         // The algorithm to use
-    Operator  crossover ;         // Crossover operator
-    Operator  mutation  ;         // Mutation operator
-    Operator  selection ;         // Selection operator
+  @SuppressWarnings("unchecked")
+	public static void main(String [] args) throws JMException {
+    Problem<Real>   problem   ;         // The problem to solve
+    GGA<Real> algorithm ;         // The algorithm to use
+    SBXCrossover  crossover ;         // Crossover operator
+    PolynomialMutation<Real>  mutation  ;         // Mutation operator
+    BinaryTournament<Real>  selection ;         // Selection operator
             
-    int bits ; // Length of bit string in the OneMax problem
-    
-    bits = 512 ;
     //problem = new OneMax(bits);
     //problem = new Sphere(20, "Real") ;
     //problem = new Easom("Real") ;
-    problem = new Griewank(20, "Real") ;
+    problem = new Griewank(20, Real.class) ;
     
     // algorithm = new SSGA(problem);
-    algorithm = new GGA(problem) ;
+    algorithm = new GGA<Real>(problem) ;
     
     /* Algorithm parameters*/
-    algorithm.setInputParameter("populationSize",100);
-    algorithm.setInputParameter("maxEvaluations",100000);
+    algorithm.setPopulationSize(100);
+    algorithm.setMaxEvaluations(00000);
     
     // Mutation and Crossover for Real codification 
-    crossover = CrossoverFactory.getCrossoverOperator("SBXCrossover");                   
-    crossover.setParameter("probability",1.0);                   
-    crossover.setParameter("distributionIndex",10.0);
+    crossover = (SBXCrossover) CrossoverFactory.getCrossoverOperator("SBXCrossover");                   
+    crossover.setProbability(1.0);                   
+    crossover.setDistributionIndex(10.0);
 
-    mutation = MutationFactory.getMutationOperator("PolynomialMutation");                    
-    mutation.setParameter("probability",1.0/problem.getNumberOfVariables());
-    mutation.setParameter("distributionIndex",10.0);    
+    mutation = (PolynomialMutation<Real>) MutationFactory.getMutationOperator("PolynomialMutation");                    
+    mutation.setProbability(1.0/problem.getNumberOfVariables());
+    mutation.setDistributionIndex(10.0);    
     
     /**
     // Mutation and Crossover for Binary codification 
@@ -61,16 +64,16 @@ public class GA_main {
     */
     
     /* Selection Operator */
-    selection = SelectionFactory.getSelectionOperator("BinaryTournament") ;                            
+    selection = (BinaryTournament<Real>) SelectionFactory.getSelectionOperator("BinaryTournament") ;                            
     
     /* Add the operators to the algorithm*/
-    algorithm.addOperator("crossover",crossover);
-    algorithm.addOperator("mutation",mutation);
-    algorithm.addOperator("selection",selection);
+    algorithm.setCrossover(crossover);
+    algorithm.setMutation(mutation);
+    algorithm.setSelection(selection);
  
     /* Execute the Algorithm */
     long initTime = System.currentTimeMillis();
-    SolutionSet population = algorithm.execute();
+    SolutionSet<Real> population = algorithm.execute();
     long estimatedTime = System.currentTimeMillis() - initTime;
     System.out.println("Total execution time: " + estimatedTime);
 

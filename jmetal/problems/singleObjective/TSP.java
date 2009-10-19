@@ -7,20 +7,25 @@
 
 package jmetal.problems.singleObjective;
 
-import jmetal.base.*;
-import jmetal.base.Configuration.SolutionType_;
-import jmetal.base.Configuration.VariableType_;
-import jmetal.base.variable.Binary;
-import jmetal.base.variable.Permutation;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StreamTokenizer;
 
-import java.io.* ;
+import jmetal.base.ProblemValue;
+import jmetal.base.Solution;
+import jmetal.base.variable.Permutation;
 
 /**
  * Class representing a TSP (Traveling Salesman Problem) problem.
  */
-public class TSP extends Problem {
+public class TSP extends ProblemValue.ProblemPermutation {
 
-  public int         numberOfCities_ ; 
+  private static final long serialVersionUID = -7417724855350746012L;
+	public int         numberOfCities_ ; 
   public double [][] distanceMatrix_ ;
 
   
@@ -34,12 +39,7 @@ public class TSP extends Problem {
     numberOfConstraints_= 0;
     problemName_        = "TSP";
              
-    solutionType_ = SolutionType_.Permutation ; 
-    
-    variableType_ = new VariableType_[numberOfVariables_] ;
     length_       = new int[numberOfVariables_];
-    
-    variableType_[0] = Enum.valueOf(VariableType_.class, "Permutation") ;
     
     readProblem(filename) ;
     System.out.println(numberOfCities_) ;
@@ -50,7 +50,7 @@ public class TSP extends Problem {
   * Evaluates a solution 
   * @param solution The solution to evaluate
   */      
-  public void evaluate(Solution solution) {
+  public void evaluate(Solution<Permutation> solution) {
     double fitness   ;
     
     fitness   = 0.0 ;
@@ -59,16 +59,16 @@ public class TSP extends Problem {
       int x ; 
       int y ;
       
-      x = ((Permutation)solution.getDecisionVariables().variables_[0]).vector_[i] ;
-      y = ((Permutation)solution.getDecisionVariables().variables_[0]).vector_[i+1] ;
+      x = ((Permutation)solution.getDecisionVariables().variables_.get(0)).vector_[i] ;
+      y = ((Permutation)solution.getDecisionVariables().variables_.get(0)).vector_[i+1] ;
 //  cout << "I : " << i << ", x = " << x << ", y = " << y << endl ;    
       fitness += distanceMatrix_[x][y] ;
     } // for
     int firstCity ;
     int lastCity  ;
     
-    firstCity = ((Permutation)solution.getDecisionVariables().variables_[0]).vector_[0] ;
-    lastCity  = ((Permutation)solution.getDecisionVariables().variables_[0]).vector_[numberOfCities_ - 1] ;
+    firstCity = ((Permutation)solution.getDecisionVariables().variables_.get(0)).vector_[0] ;
+    lastCity  = ((Permutation)solution.getDecisionVariables().variables_.get(0)).vector_[numberOfCities_ - 1] ;
     fitness += distanceMatrix_[firstCity][lastCity] ;
     
     solution.setObjective(0, fitness);            

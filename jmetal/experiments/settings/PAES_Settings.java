@@ -8,21 +8,21 @@
  */
 package jmetal.experiments.settings;
 
-import jmetal.metaheuristics.paes.*;
 import java.util.Properties;
+
 import jmetal.base.Algorithm;
-import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.operator.mutation.MutationFactory;
+import jmetal.base.operator.mutation.PolynomialMutation;
 import jmetal.experiments.Settings;
-import jmetal.problems.ProblemFactory;
-import jmetal.qualityIndicator.QualityIndicator;
+import jmetal.metaheuristics.paes.PAES;
 import jmetal.util.JMException;
 
 /**
  *
  * @author Antonio
  */
+@SuppressWarnings("unchecked")
 public class PAES_Settings extends Settings{
   
   // Default settings
@@ -50,32 +50,30 @@ public class PAES_Settings extends Settings{
    * @throws jmetal.util.JMException
    */
   public Algorithm configure() throws JMException {
-    Algorithm algorithm ;
-    Operator  mutation  ;
-    
-    QualityIndicator indicators ;
+    PAES algorithm ;
+    PolynomialMutation  mutation  ;
     
     // Creating the problem
     algorithm = new PAES(problem_) ;
 
     // Algorithm parameters
-    algorithm.setInputParameter("maxEvaluations", maxEvaluations_);
-    algorithm.setInputParameter("biSections", biSections_);
-    algorithm.setInputParameter("archiveSize",archiveSize_ );
+    algorithm.setMaxEvaluations(maxEvaluations_);
+    algorithm.setBiSections(biSections_);
+    algorithm.setArchiveSize(archiveSize_ );
     
     // Mutation for Real codification 
-    mutation = MutationFactory.getMutationOperator("PolynomialMutation");                    
-    mutation.setParameter("probability", mutationProbability_);
-    mutation.setParameter("distributionIndex",distributionIndexForMutation_);    
+    mutation = (PolynomialMutation) MutationFactory.getMutationOperator("PolynomialMutation");                    
+    mutation.setProbability(mutationProbability_);
+    mutation.setDistributionIndex(distributionIndexForMutation_);    
         
     // Add the operators to the algorithm
-    algorithm.addOperator("mutation",mutation);
+    algorithm.setMutation(mutation);
     
-   // Creating the indicator object
-   if (! paretoFrontFile_.equals("")) {
-      indicators = new QualityIndicator(problem_, paretoFrontFile_);
-      algorithm.setInputParameter("indicators", indicators) ;  
-   } // if
+//   // Creating the indicator object
+//   if (! paretoFrontFile_.equals("")) {
+//      indicators = new QualityIndicator(problem_, paretoFrontFile_);
+//      algorithm.setIndicators(indicators) ;  
+//   } // if
     return algorithm ;
   }
   

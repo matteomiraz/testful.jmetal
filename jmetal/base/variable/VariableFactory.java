@@ -7,8 +7,7 @@
 package jmetal.base.variable;
 
 import jmetal.base.Configuration;
-import jmetal.base.Variable;
-import jmetal.base.variable.*;
+import jmetal.base.VariableValue;
 import jmetal.util.JMException;
 
 /**
@@ -22,31 +21,24 @@ public class VariableFactory {
    * object
    * @throws JMException 
    */
-  public static Variable getVariable(String name) throws JMException{
-    Variable variable   = null;
+  public static VariableValue getVariable(String name) throws JMException{
+    VariableValue variable   = null;
     String baseLocation = "jmetal.base.variable.";
     try {
-      Class c = Class.forName(baseLocation + name);
-      variable = (Variable) c.newInstance();
+      Class<?> c = Class.forName(baseLocation + name);
+      variable = (VariableValue) c.newInstance();
       return variable;
     } catch (ClassNotFoundException e1) {
-      Configuration.logger_.severe("VariableFactory.getVariable: " +
-      "ClassNotFoundException ");
-      Class cls = java.lang.String.class;
-      String name2 = cls.getName() ;    
-      throw new JMException("Exception in " + name2 + ".getVariable()") ;
+      Configuration.logger_.severe("VariableFactory.getVariable: ClassNotFoundException ");
+      throw new JMException(e1) ;
     } catch (InstantiationException e2) {
       Configuration.logger_.severe("VariableFactory.getVariable: " +
       "InstantiationException ");
-      Class cls = java.lang.String.class;
-      String name2 = cls.getName() ;    
-      throw new JMException("Exception in " + name2 + ".getVariable()") ;
+      throw new JMException(e2) ;
     } catch (IllegalAccessException e3) {
       Configuration.logger_.severe("VariableFactory.getVariable: " +
       "IllegalAccessException ");
-      Class cls = java.lang.String.class;
-      String name2 = cls.getName() ;    
-      throw new JMException("Exception in " + name2 + ".getVariable()") ;
+      throw new JMException(e3) ;
     }
   } // getVariable      
 } //VariabeFactory

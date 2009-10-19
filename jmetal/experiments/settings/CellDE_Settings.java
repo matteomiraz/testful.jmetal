@@ -8,23 +8,25 @@
  */
 package jmetal.experiments.settings;
 
-import jmetal.metaheuristics.cellde.*;
 import java.util.Properties;
+
 import jmetal.base.Algorithm;
-import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.operator.crossover.CrossoverFactory;
+import jmetal.base.operator.crossover.DifferentialEvolutionCrossover;
 import jmetal.base.operator.mutation.MutationFactory;
+import jmetal.base.operator.mutation.PolynomialMutation;
+import jmetal.base.operator.selection.Selection;
 import jmetal.base.operator.selection.SelectionFactory;
 import jmetal.experiments.Settings;
-import jmetal.problems.ProblemFactory;
-import jmetal.qualityIndicator.QualityIndicator;
+import jmetal.metaheuristics.cellde.CellDE;
 import jmetal.util.JMException;
 
 /**
  *
  * @author Antonio
  */
+@SuppressWarnings("unchecked")
 public class CellDE_Settings extends Settings{
   
   // Default settings
@@ -55,46 +57,44 @@ public class CellDE_Settings extends Settings{
    * @throws jmetal.util.JMException
    */
   public Algorithm configure() throws JMException {
-    Algorithm algorithm ;
-    Operator  selection ;
-    Operator  crossover ;
-    Operator  mutation  ;
-    
-    QualityIndicator indicators ;
+    CellDE algorithm ;
+    Selection selection ;
+    DifferentialEvolutionCrossover  crossover ;
+    PolynomialMutation mutation  ;
     
     // Creating the problem
     algorithm = new CellDE(problem_) ;
     
     // Algorithm parameters
-    algorithm.setInputParameter("populationSize", populationSize_);
-    algorithm.setInputParameter("archiveSize", archiveSize_);
-    algorithm.setInputParameter("maxEvaluations",maxEvaluations_);
-    algorithm.setInputParameter("feedBack", archiveFeedback_);
+    algorithm.setPopulationSize(populationSize_);
+    algorithm.setArchiveSize(archiveSize_);
+    algorithm.setMaxEvaluations(maxEvaluations_);
+    algorithm.setFeedBack(archiveFeedback_);
     
     // Crossover operator 
-    crossover = CrossoverFactory.getCrossoverOperator("DifferentialEvolutionCrossover");                   
-    crossover.setParameter("CR", CR_);                   
-    crossover.setParameter("F", F_);
+    crossover = (DifferentialEvolutionCrossover) CrossoverFactory.getCrossoverOperator("DifferentialEvolutionCrossover");                   
+    crossover.setCR(CR_);                   
+    crossover.setF(F_);
     
     // Add the operators to the algorithm
     selection = SelectionFactory.getSelectionOperator("BinaryTournament") ; 
 
-    algorithm.addOperator("crossover",crossover);
-    algorithm.addOperator("selection",selection);
+    algorithm.setCrossover(crossover);
+    algorithm.setSelection(selection);
 
     if (applyMutation_) {        
-      mutation = MutationFactory.getMutationOperator("PolynomialMutation");                    
-      mutation.setParameter("probability", mutationProbability_);
-      mutation.setParameter("distributionIndex", distributionIndex_);  
+      mutation = (PolynomialMutation) MutationFactory.getMutationOperator("PolynomialMutation");                    
+      mutation.setProbability(mutationProbability_);
+      mutation.setDistributionIndex(distributionIndex_);    
  
-      algorithm.addOperator("mutation",mutation);
+      algorithm.setMutation(mutation);
    } // if
     
-   // Creating the indicator object
-   if (! paretoFrontFile_.equals("")) {
-      indicators = new QualityIndicator(problem_, paretoFrontFile_);
-      algorithm.setInputParameter("indicators", indicators) ;  
-   } // if
+//   // Creating the indicator object
+//   if (! paretoFrontFile_.equals("")) {
+//      indicators = new QualityIndicator(problem_, paretoFrontFile_);
+//      algorithm.setIndicators(indicators) ;  
+//   } // if
     
     return algorithm ;
   }

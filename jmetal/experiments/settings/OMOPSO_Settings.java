@@ -8,18 +8,20 @@
  */
 package jmetal.experiments.settings;
 
-import jmetal.metaheuristics.omopso.*;
 import java.util.Properties;
+
 import jmetal.base.Algorithm;
-import jmetal.base.Problem;
+import jmetal.base.ProblemValue;
+import jmetal.base.variable.Real;
 import jmetal.experiments.Settings;
-import jmetal.qualityIndicator.QualityIndicator;
+import jmetal.metaheuristics.omopso.OMOPSO;
 import jmetal.util.JMException;
 
 /**
  *
  * @author Antonio
  */
+@SuppressWarnings("unchecked")
 public class OMOPSO_Settings extends Settings{
   
   // Default settings
@@ -33,7 +35,7 @@ public class OMOPSO_Settings extends Settings{
   /**
    * Constructor
    */
-  public OMOPSO_Settings(Problem problem) {
+  public OMOPSO_Settings(ProblemValue<Real> problem) {
     super(problem) ;
   } // OMOPSO_Settings
   
@@ -43,24 +45,22 @@ public class OMOPSO_Settings extends Settings{
    * @throws jmetal.util.JMException
    */
   public Algorithm configure() throws JMException {
-    Algorithm algorithm ;
-    
-    QualityIndicator indicators ;
+    OMOPSO algorithm ;
     
     // Creating the problem
-    algorithm = new OMOPSO(problem_) ;
+    algorithm = new OMOPSO((ProblemValue<Real>) problem_) ;
     
     // Algorithm parameters
-    algorithm.setInputParameter("swarmSize", swarmSize_);
-    algorithm.setInputParameter("maxIterations", maxIterations_);
-    algorithm.setInputParameter("archiveSize", archiveSize_);
-    algorithm.setInputParameter("perturbationIndex", perturbationIndex_);
+    algorithm.setSwarmSize(swarmSize_);
+    algorithm.setMaxEvaluations(maxIterations_);
+    algorithm.setArchiveSize(archiveSize_);
+    algorithm.setPerturbationIndex(perturbationIndex_);
     
-   // Creating the indicator object
-   if (! paretoFrontFile_.equals("")) {
-      indicators = new QualityIndicator(problem_, paretoFrontFile_);
-      algorithm.setInputParameter("indicators", indicators) ;  
-   } // if
+//   // Creating the indicator object
+//   if (! paretoFrontFile_.equals("")) {
+//      indicators = new QualityIndicator(problem_, paretoFrontFile_);
+//      algorithm.setIndicators(indicators) ;  
+//   } // if
     return algorithm ;
   }
   

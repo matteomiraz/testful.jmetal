@@ -6,30 +6,34 @@
  */
 package jmetal.util;
 
-import jmetal.base.*                    ;
-import jmetal.base.operator.comparator.*;
-import java.util.*                      ;
+import java.util.Comparator;
+
+import jmetal.base.Problem;
+import jmetal.base.Solution;
+import jmetal.base.SolutionSet;
+import jmetal.base.Variable;
+import jmetal.base.operator.comparator.DominanceComparator;
 
 /**
  * This class implements facilities for calculating the fitness for the
  * FPGA algorithm
  */
-public class FPGAFitness {
+public class FPGAFitness<T extends Variable> {
   /**
   * Need the population to assign the fitness, this population may contain
   * solutions in the population and the archive
   */
-  private SolutionSet solutionSet_ = null;
+  private SolutionSet<T> solutionSet_ = null;
   
-  /**
-   * problem to solve
-   */
-  private Problem     problem_     = null;
+//  /**
+//   * problem to solve
+//   */
+//  private Problem     problem_     = null;
         
   /**
    * stores a <code>Comparator</code> for dominance checking
    */
-  private static final Comparator dominance_ = new DominanceComparator();
+  private final Comparator<Solution<T>> dominance_ = new DominanceComparator<T>();
   
   /**
    * Constructor.
@@ -37,9 +41,9 @@ public class FPGAFitness {
    * @param solutionSet The solutionSet to assign the fitness
    * @param problem The problem to solve
    */
-  public FPGAFitness(SolutionSet solutionSet, Problem problem) {   
+  public FPGAFitness(SolutionSet<T> solutionSet, Problem<T> problem) {   
     solutionSet_ = solutionSet;
-    problem_    = problem;
+//    problem_    = problem;
     for (int i = 0; i < solutionSet_.size(); i++) {
       solutionSet_.get(i).setLocation(i);
     } // for
@@ -51,7 +55,7 @@ public class FPGAFitness {
    */
   public void fitnessAssign() {
     double [] strength    = new double[solutionSet_.size()];
-    double [] rawFitness  = new double[solutionSet_.size()];  
+//    double [] rawFitness  = new double[solutionSet_.size()];  
     
     //Ranking  ranking  = new Ranking(solutionSet_);
     //Distance distance = new Distance();

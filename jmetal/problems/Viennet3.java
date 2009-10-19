@@ -8,22 +8,28 @@
 
 package jmetal.problems;
 
-import jmetal.base.*;
-import jmetal.base.Configuration.SolutionType_;
-import jmetal.base.Configuration.VariableType_;
+import java.util.List;
+
+import jmetal.base.ProblemValue;
+import jmetal.base.Solution;
+import jmetal.base.VariableValue;
 import jmetal.util.JMException;
 
 /**
  * Class representing problem Viennet3
  */
-public class Viennet3 extends Problem{           
+public class Viennet3<T extends VariableValue> extends ProblemValue<T> {           
   
- /** 
+ private static final long serialVersionUID = 4453468598271961362L;
+ 
+ private final Class<T> solutionType_;
+
+/** 
   * Constructor.
   * Creates a default instance of the Viennet3 problem.
   * @param solutionType The solution type must "Real" or "BinaryReal".
   */
-  public Viennet3(String solutionType) {
+  public Viennet3(Class<T> solutionType) {
     numberOfVariables_   = 2 ;
     numberOfObjectives_  = 3 ;
     numberOfConstraints_ = 0;
@@ -36,14 +42,7 @@ public class Viennet3 extends Problem{
       upperLimit_[var] =   3.0;
     } // for
         
-    solutionType_ = Enum.valueOf(SolutionType_.class, solutionType) ; 
-    
-    // All the variables are of the same type, so the solutionType name is the
-    // same than the variableType name
-    variableType_ = new VariableType_[numberOfVariables_];
-    for (int var = 0; var < numberOfVariables_; var++){
-      variableType_[var] = Enum.valueOf(VariableType_.class, solutionType) ;    
-    } // for
+    solutionType_ = solutionType; 
   } //Viennet3
       
 
@@ -52,12 +51,12 @@ public class Viennet3 extends Problem{
    * @param solution The solution to evaluate.
    * @throws JMException 
    */
-  public void evaluate(Solution solution) throws JMException {                
+  public void evaluate(Solution<T> solution) throws JMException {                
     double [] x = new double[numberOfVariables_];
     double [] f = new double[numberOfObjectives_];
         
     for (int i = 0; i < numberOfVariables_; i++)
-      x[i] = solution.getDecisionVariables().variables_[i].getValue();
+      x[i] = solution.getDecisionVariables().variables_.get(i).getValue();
                  
     f[0] = 0.5 * (x[0]*x[0] + x[1]*x[1]) + Math.sin(x[0]*x[0] + x[1]*x[1]) ;
 
@@ -74,6 +73,11 @@ public class Viennet3 extends Problem{
     for (int i = 0; i < numberOfObjectives_; i++)
       solution.setObjective(i,f[i]);        
   } // evaluate
+
+  @Override
+  public List<T> generateNewDecisionVariable() {
+  	return generate(solutionType_);
+  }
 } // Viennet3
 
 

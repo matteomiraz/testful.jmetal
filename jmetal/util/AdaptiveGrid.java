@@ -5,14 +5,15 @@
 */
 package jmetal.util;
 
-import jmetal.base.*;
-import jmetal.util.PseudoRandom;
+import jmetal.base.Solution;
+import jmetal.base.SolutionSet;
+import jmetal.base.Variable;
 
 /**
  * This class defines an adaptative grid over a SolutionSet as the one used the
  * algorithm PAES.
  */
-public class AdaptiveGrid {
+public class AdaptiveGrid<T extends Variable> {
    
   /**
    * Number of bi-divisions of the objective space
@@ -79,7 +80,7 @@ public class AdaptiveGrid {
   *  <code>SolutionSet</code>.
   *  @param solutionSet The <code>SolutionSet</code> considered.
   */
-  private void updateLimits(SolutionSet solutionSet){          
+  private void updateLimits(SolutionSet<T> solutionSet){          
     //Init the lower and upper limits 
     for (int obj = 0; obj < objectives_; obj++){
       //Set the lower limits to the max real
@@ -89,15 +90,11 @@ public class AdaptiveGrid {
     } // for
 	   
     //Find the max and min limits of objetives into the population
-    for (int ind = 0; ind < solutionSet.size(); ind++){
-      Solution tmpIndividual = solutionSet.get(ind);
+    for(Solution<T> tmpIndividual : solutionSet) {
       for (int obj = 0; obj < objectives_; obj++) {
-        if (tmpIndividual.getObjective(obj) < lowerLimits_[obj]) {
-          lowerLimits_[obj] = tmpIndividual.getObjective(obj);
-        }
-        if (tmpIndividual.getObjective(obj) > upperLimits_[obj]) {
-          upperLimits_[obj] = tmpIndividual.getObjective(obj);
-        }
+        double[] indObjs = tmpIndividual.getObjectives();
+				if (indObjs[obj] < lowerLimits_[obj]) lowerLimits_[obj] = indObjs[obj];
+        if (indObjs[obj] > upperLimits_[obj]) upperLimits_[obj] = indObjs[obj];
       } // for
     } // for   
  } //updateLimits
@@ -108,7 +105,7 @@ public class AdaptiveGrid {
    * <b>REQUIRE</b> The grid limits must have been previously calculated.
    * @param solutionSet The <code>SolutionSet</code> considered.
    */
-  private void addSolutionSet(SolutionSet solutionSet){
+  private void addSolutionSet(SolutionSet<T> solutionSet){
     //Calculate the location of all individuals and update the grid
     mostPopulated_ = 0;
     int location;              
@@ -130,7 +127,7 @@ public class AdaptiveGrid {
    * in a specific <code>SolutionSet</code>.
    * @param solutionSet The <code>SolutionSet</code>.
    */
-  public void updateGrid(SolutionSet solutionSet){	   
+  public void updateGrid(SolutionSet<T> solutionSet){	   
     //Update lower and upper limits
     updateLimits(solutionSet);
 
@@ -157,19 +154,21 @@ public class AdaptiveGrid {
    * @param solution <code>Solution</code> considered to update the grid.
    * @param solutionSet <code>SolutionSet</code> used to update the grid.
    */
-  public void updateGrid(Solution solution, SolutionSet solutionSet){	   
+  public void updateGrid(Solution<T> solution, SolutionSet<T> solutionSet){	   
     
     int location = location(solution);
     if (location == -1) {//Re-build the Adaptative-Grid
       //Update lower and upper limits
       updateLimits(solutionSet);
       
+      double[] solObjs = solution.getObjectives();
+      
       //Actualize the lower and upper limits whit the individual      
       for (int obj = 0; obj < objectives_; obj++){                    
-        if (solution.getObjective(obj) < lowerLimits_[obj])
-          lowerLimits_[obj] = solution.getObjective(obj);
-        if (solution.getObjective(obj) > upperLimits_[obj])
-          upperLimits_[obj] = solution.getObjective(obj);                    
+				if (solObjs[obj] < lowerLimits_[obj])
+          lowerLimits_[obj] = solObjs[obj];
+        if (solObjs[obj] > upperLimits_[obj])
+          upperLimits_[obj] = solObjs[obj];                    
       } // for
                
       //Calculate the division size
@@ -192,23 +191,25 @@ public class AdaptiveGrid {
    * Calculates the hypercube of a solution.
    * @param solution The <code>Solution</code>.
    */
-  public int location(Solution solution){                 
+  public int location(Solution<T> solution){                 
     //Create a int [] to store the range of each objetive
     int [] position = new int[objectives_];
+
+    double[] solObjs = solution.getObjectives();
 
     //Calculate the position for each objetive
     for (int obj = 0; obj < objectives_; obj++) {           
       
-      if ((solution.getObjective(obj) > upperLimits_[obj])
-          || (solution.getObjective(obj) < lowerLimits_[obj]))
+			if ((solObjs[obj] > upperLimits_[obj])
+          || (solObjs[obj] < lowerLimits_[obj]))
         return -1;      
-      else if (solution.getObjective(obj) ==lowerLimits_[obj])
+      else if (solObjs[obj] ==lowerLimits_[obj])
         position[obj] = 0;           
-      else if (solution.getObjective(obj) ==upperLimits_[obj])
+      else if (solObjs[obj] ==upperLimits_[obj])
         position[obj] = ((int)Math.pow(2.0,bisections_))-1;    	              
       else {
         double tmpSize = divisionSize_[obj];               
-        double value   = solution.getObjective(obj);
+        double value   = solObjs[obj];
         double account = lowerLimits_[obj];
         int ranges     = (int)Math.pow(2.0,bisections_);               
         for (int b = 0; b < bisections_; b++){

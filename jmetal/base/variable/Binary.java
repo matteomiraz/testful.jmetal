@@ -9,8 +9,8 @@ package jmetal.base.variable;
 
 import java.util.BitSet;
 
-import jmetal.base.Configuration.*;
-import jmetal.base.Variable;
+import jmetal.base.VariableValue;
+import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
 
 /**
@@ -18,9 +18,11 @@ import jmetal.util.PseudoRandom;
  * a base class other binary string based classes (e.g., binary coded integer
  * or real variables).
  */ 
-public class Binary extends Variable {
+public class Binary implements VariableValue {
   
-  /**
+  private static final long serialVersionUID = -7777100119877645273L;
+
+	/**
    * Stores the bits constituting the binary string. It is
    * implemented using a BitSet object
    */
@@ -35,7 +37,6 @@ public class Binary extends Variable {
    * Default constructor.
    */
   public Binary() {       
-    setVariableType(VariableType_.Binary) ;
   } //Binary
 
   
@@ -44,17 +45,12 @@ public class Binary extends Variable {
    *  @param numberOfBits Length of the bit string
    */
   public Binary(int numberOfBits){
-    setVariableType(VariableType_.Binary) ;
    
     numberOfBits_ = numberOfBits;
 
     bits_ = new BitSet(numberOfBits_);      
     for (int i = 0; i < numberOfBits_; i++){
-      if (PseudoRandom.randDouble() < 0.5) {
-        bits_.set(i,true);
-      } else {
-        bits_.set(i,false);                      
-      }
+    	bits_.set(i, PseudoRandom.randDouble() < 0.5);
     }
   } //Binary
   
@@ -63,7 +59,6 @@ public class Binary extends Variable {
    * @param variable The Binary variable to copy.
    */
   public Binary(Binary variable){
-	setVariableType(VariableType_.Binary) ;
 
     numberOfBits_ = variable.numberOfBits_;
         
@@ -88,7 +83,7 @@ public class Binary extends Variable {
    * Creates an exact copy of a Binary object
    * @return An exact copy of the object.
    **/
-  public Variable deepCopy() {
+  public VariableValue clone() {
     return new Binary(this);
   } //deepCopy
 
@@ -150,4 +145,35 @@ public class Binary extends Variable {
         
     return result ;
   } // toString
+
+
+  public double getLowerBound() throws JMException {
+  	throw new JMException("Not Implemented");
+  }
+
+
+  public double getUpperBound() throws JMException {
+  	throw new JMException("Not Implemented");
+  }
+
+
+  public double getValue() throws JMException {
+  	throw new JMException("Not Implemented");
+  }
+
+
+  public void setLowerBound(double lowerBound) throws JMException {
+  	throw new JMException("Not Implemented");
+  }
+
+
+  public void setUpperBound(double upperBound) throws JMException {
+  	throw new JMException("Not Implemented");
+  }
+
+
+  public void setValue(double value) throws JMException {
+  	throw new JMException("Not Implemented");
+  }
+
 } // Binary

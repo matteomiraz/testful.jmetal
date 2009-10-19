@@ -19,15 +19,14 @@ import java.util.Arrays;
  */
 public class Spread {
 
-  static jmetal.qualityIndicator.util.MetricsUtil utils_;//utils_ is used to access to 
-                                                //the MetricsUtil funcionalities
-  
+  //utils_ is used to access to the MetricsUtil funcionalities
+  static jmetal.qualityIndicator.util.MetricsUtil utils_ = new jmetal.qualityIndicator.util.MetricsUtil();
+
   /** 
    * Constructor.
    * Creates a new instance of a Spread object 
    */
   public Spread() {
-    utils_ = new jmetal.qualityIndicator.util.MetricsUtil();
   } // Delta
   
   
@@ -131,8 +130,8 @@ public class Spread {
 	Spread qualityIndicator = new Spread();
 
 	// STEP 2. Read the fronts from the files
-	double [][] solutionFront = qualityIndicator.utils_.readFront(args[0]);
-	double [][] trueFront     = qualityIndicator.utils_.readFront(args[1]);
+	double [][] solutionFront = Spread.utils_.readFront(args[0]);
+	double [][] trueFront     = Spread.utils_.readFront(args[1]);
 
 	// STEP 3. Obtain the metric value
 	double value = qualityIndicator.spread(solutionFront,trueFront,2);

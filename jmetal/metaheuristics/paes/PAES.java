@@ -6,28 +6,38 @@
  */
 package jmetal.metaheuristics.paes;
 
-import jmetal.base.*;
-import jmetal.base.archive.AdaptiveGridArchive;
-import jmetal.base.operator.comparator.*;
-import jmetal.util.JMException;
-
 import java.util.Comparator;
+
+import jmetal.base.Algorithm;
+import jmetal.base.Problem;
+import jmetal.base.Solution;
+import jmetal.base.SolutionSet;
+import jmetal.base.Variable;
+import jmetal.base.archive.AdaptiveGridArchive;
+import jmetal.base.operator.comparator.DominanceComparator;
+import jmetal.base.operator.crossover.Crossover;
+import jmetal.base.operator.localSearch.LocalSearch;
+import jmetal.base.operator.mutation.Mutation;
+import jmetal.base.operator.selection.Selection;
+import jmetal.util.JMException;
 
 /**
  * This class implements the NSGA-II algorithm. 
  */
-public class PAES extends Algorithm {        
+public class PAES<V extends Variable>
+	extends Algorithm<V, Crossover<V>, Mutation<V>, Selection<V, Solution<V>>, LocalSearch<V>> {
     
-  /**
+  private static final long serialVersionUID = 4817205693804417123L;
+	/**
    * Stores the problem to solve
    */
-  private Problem problem_;  
+  private Problem<V> problem_;  
    
   /** 
   * Create a new PAES instance for resolve a problem
   * @param problem Problem to solve
   */                 
-  public PAES(Problem problem) {                
+  public PAES(Problem<V> problem) {                
     problem_ = problem;        
   } // Paes
     
@@ -37,69 +47,73 @@ public class PAES extends Algorithm {
    * @param solution The actual guide of PAES
    * @param mutatedSolution A candidate guide
    */
-  public Solution test(Solution solution, 
-                       Solution mutatedSolution, 
-                       AdaptiveGridArchive archive){  
+  public Solution<V> test(Solution<V> solution, 
+                       Solution<V> mutatedSolution, 
+                       AdaptiveGridArchive<V> archive){  
     
     int originalLocation = archive.getGrid().location(solution);
     int mutatedLocation  = archive.getGrid().location(mutatedSolution); 
 
     if (originalLocation == -1) {
-      return new Solution(mutatedSolution);
+      return new Solution<V>(mutatedSolution);
     }
     
     if (mutatedLocation == -1) {
-      return new Solution(solution);
+      return new Solution<V>(solution);
     }
         
     if (archive.getGrid().getLocationDensity(mutatedLocation) < 
         archive.getGrid().getLocationDensity(originalLocation)) {
-      return new Solution(mutatedSolution);
+      return new Solution<V>(mutatedSolution);
     }
     
-    return new Solution(solution);          
+    return new Solution<V>(solution);          
   } // test
+
+  int biSections, archiveSize; 
     
+	public void setBiSections(int biSections) {
+		this.biSections = biSections;
+	}
+	
+	public void setArchiveSize(int archiveSize) {
+		this.archiveSize = archiveSize;
+	}
+	
   /**   
   * Runs of the Paes algorithm.
   * @return a <code>SolutionSet</code> that is a set of non dominated solutions
   * as a result of the algorithm execution  
    * @throws JMException 
   */    
-  public SolutionSet execute() throws JMException{     
-    int bisections, archiveSize, maxEvaluations, evaluations;
-    AdaptiveGridArchive archive;
-    Operator mutationOperator;
-    Comparator dominance;
+  public SolutionSet<V> execute() throws JMException{     
+    int maxEvaluations, evaluations;
+    AdaptiveGridArchive<V> archive;
+    Comparator<Solution<V>> dominance;
     
     //Read the params
-    bisections     = ((Integer)this.getInputParameter("biSections")).intValue();
-    archiveSize    = ((Integer)this.getInputParameter("archiveSize")).intValue();
-    maxEvaluations = ((Integer)this.getInputParameter("maxEvaluations")).intValue();
-
-    //Read the operators        
-    mutationOperator = this.operators_.get("mutation");        
+    maxEvaluations = getMaxEvaluations();
 
     //Initialize the variables                
     evaluations = 0;
-    archive     = new AdaptiveGridArchive(archiveSize,bisections,problem_.getNumberOfObjectives());        
-    dominance = new DominanceComparator();           
+    archive     = new AdaptiveGridArchive<V>(archiveSize,biSections,problem_.getNumberOfObjectives());        
+    dominance = new DominanceComparator<V>();           
             
     //-> Create the initial solution and evaluate it and his constraints
-    Solution solution = new Solution(problem_);
+    Solution<V> solution = new Solution<V>(problem_);
     problem_.evaluate(solution);        
     problem_.evaluateConstraints(solution);
     evaluations++;
     
         
     // Add it to the archive
-    archive.add(new Solution(solution));            
+    archive.add(new Solution<V>(solution));            
     
 
     //Iterations....
     do {
       // Create the mutate one
-      Solution mutateIndividual = new Solution(solution);                  
+      Solution<V> mutateIndividual = new Solution<V>(solution);                  
       mutationOperator.execute(mutateIndividual);
             
       problem_.evaluate(mutateIndividual);                     
@@ -111,7 +125,7 @@ public class PAES extends Algorithm {
       int flag = dominance.compare(solution,mutateIndividual);            
             
       if (flag == 1) { //If mutate solution dominate                  
-        solution = new Solution(mutateIndividual);                
+        solution = new Solution<V>(mutateIndividual);                
         archive.add(mutateIndividual);                
       } else if (flag == 0) { //If none dominate the other                               
         if (archive.add(mutateIndividual)) {                    

@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.Properties;
 import jmetal.base.Algorithm;
 import jmetal.base.Problem;
+import jmetal.base.ProblemValue;
 import jmetal.experiments.settings.AbYSS_Settings;
 import jmetal.experiments.settings.MOCell_Settings;
 import jmetal.experiments.settings.NSGAII_Settings;
@@ -29,7 +30,9 @@ public class ConstrainedProblemsStudy extends Experiment {
    * @param problem The problem to solve
    * @param problemIndex
    */
-  public void algorithmSettings(Problem problem, int problemIndex, Algorithm[] algorithm) {
+  public void algorithmSettings(Problem prob, int problemIndex, Algorithm[] algorithm) {
+  	ProblemValue problem = (ProblemValue) prob;
+  	
     try {
       int numberOfAlgorithms = algorithmNameList_.length;
 

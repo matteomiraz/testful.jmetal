@@ -5,15 +5,17 @@
 
 package jmetal.base.operator.selection;
 
+import java.util.Comparator;
+
 import jmetal.base.Configuration;
-import jmetal.base.Operator;
 import jmetal.base.Problem;
+import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
+import jmetal.base.Variable;
+import jmetal.base.operator.comparator.CrowdingComparator;
 import jmetal.util.Distance;
 import jmetal.util.JMException;
 import jmetal.util.Ranking;
-import java.util.Comparator;
-import jmetal.base.operator.comparator.*;
 
 /** 
  * This class implements a selection for selecting a number of solutions from
@@ -22,24 +24,23 @@ import jmetal.base.operator.comparator.*;
  * NOTE: if you use the default constructor, the problem has to be passed as
  * a parameter before invoking the execute() method -- see lines 67 - 74
  */
-public class RankingAndCrowdingSelection extends Operator {
+public class RankingAndCrowdingSelection<T extends Variable> extends Selection<T, SolutionSet<T>> {
 
-  /**
+  private static final long serialVersionUID = -5632920415904561097L;
+
+	/**
    * stores the problem to solve 
    */
-  private Problem problem_;
+  private Problem<T> problem_;
   
   /**
    * stores a <code>Comparator</code> for crowding comparator checking.
    */
-  private static final Comparator crowdingComparator_ = 
-                                  new CrowdingComparator();
+  private final Comparator<Solution<T>> crowdingComparator_ = 
+                                  new CrowdingComparator<T>();
 
   
-  /**
-   * stores a <code>Distance</code> object for distance utilities.
-   */
-  private static final Distance distance_ = new Distance();
+  int populationSize;
   
   /**
    * Constructor
@@ -52,39 +53,40 @@ public class RankingAndCrowdingSelection extends Operator {
    * Constructor
    * @param problem Problem to be solved
    */
-  public RankingAndCrowdingSelection(Problem problem) {
+  public RankingAndCrowdingSelection(Problem<T> problem) {
     problem_ = problem;
   } // RankingAndCrowdingSelection
 
+  
+	public void setPopulationSize(int populationSize) {
+		this.populationSize = populationSize;
+	}
+	
+	public void setProblem(Problem<T> problem) {
+		problem_ = problem;
+	}
+	
   /**
   * Performs the operation
   * @param object Object representing a SolutionSet.
   * @return an object representing a <code>SolutionSet<code> with the selected parents
    * @throws JMException 
   */
-  public Object execute (Object object) throws JMException {
-    SolutionSet population = (SolutionSet)object;
-    int populationSize     = (Integer)parameters_.get("populationSize");
-    SolutionSet result     = new SolutionSet(populationSize);
+  public SolutionSet<T> execute(SolutionSet<T> population) throws JMException {
+    SolutionSet<T> result     = new SolutionSet<T>(populationSize);
 
     if (problem_ == null) {
-      problem_ = (Problem)getParameter("problem");
-      if (problem_ == null) {
-        
-        Configuration.logger_.severe("RankingAndCrowdingSelection.execute: " +
-            "problem not specified") ;
-        Class cls = java.lang.String.class;
-        String name = cls.getName(); 
-        throw new JMException("Exception in " + name + ".execute()") ;  
-      } // if
+    	String msg = "RankingAndCrowdingSelection.execute: problem not specified";
+    	Configuration.logger_.severe(msg) ;
+    	throw new JMException(msg) ; 
     } // if
     
     //->Ranking the union
-    Ranking ranking = new Ranking(population);                        
+    Ranking<T> ranking = new Ranking<T>(population);                        
 
     int remain = populationSize;
     int index  = 0;
-    SolutionSet front = null;
+    SolutionSet<T> front = null;
     population.clear();
 
     //-> Obtain the next front
@@ -92,11 +94,10 @@ public class RankingAndCrowdingSelection extends Operator {
 
     while ((remain > 0) && (remain >= front.size())){                
       //Asign crowding distance to individuals
-      distance_.crowdingDistanceAssignment(front,problem_.getNumberOfObjectives());                
+      Distance.crowdingDistanceAssignment(front,problem_.getNumberOfObjectives());                
       //Add the individuals of this front
-      for (int k = 0; k < front.size(); k++ ) {
-        result.add(front.get(k));
-      } // for
+      for(Solution<T> s : front) 
+      	result.add(s);
 
       //Decrement remaint
       remain = remain - front.size();
@@ -110,7 +111,7 @@ public class RankingAndCrowdingSelection extends Operator {
 
     //-> remain is less than front(index).size, insert only the best one
     if (remain > 0) {  // front containt individuals to insert                        
-      distance_.crowdingDistanceAssignment(front,problem_.getNumberOfObjectives());
+      Distance.crowdingDistanceAssignment(front,problem_.getNumberOfObjectives());
       front.sort(crowdingComparator_);
       for (int k = 0; k < remain; k++) {
         result.add(front.get(k));

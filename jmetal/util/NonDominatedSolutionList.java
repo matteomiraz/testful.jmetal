@@ -7,25 +7,31 @@
 
 package jmetal.util;
 
+import java.util.Comparator;
+import java.util.Iterator;
+
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
-import jmetal.base.operator.comparator.*;
-import java.util.*;
+import jmetal.base.Variable;
+import jmetal.base.operator.comparator.DominanceComparator;
+import jmetal.base.operator.comparator.SolutionComparator;
 
 /** 
  * This class implements an unbound list of non-dominated solutions
  */
-public class NonDominatedSolutionList extends SolutionSet{
+public class NonDominatedSolutionList<T extends Variable> extends SolutionSet<T>{
         
-  /**
+  private static final long serialVersionUID = 1449431460880062530L;
+
+	/**
    * Stores a <code>Comparator</code> for dominance checking
    */
-  private Comparator dominance_ = new DominanceComparator(); 
+  private Comparator<Solution<T>> dominance_ = new DominanceComparator<T>(); 
   
   /**
    * Stores a <code>Comparator</code> for checking if two solutions are equal
    */
-  private static final Comparator equal_ = new SolutionComparator();     
+  private final Comparator<Solution<T>> equal_ = new SolutionComparator<T>();     
  
   /** 
   * Constructor.
@@ -42,7 +48,7 @@ public class NonDominatedSolutionList extends SolutionSet{
   * comparator object.
   * @param dominance The comparator for dominance checking.
   */
-  public NonDominatedSolutionList(Comparator dominance) {
+  public NonDominatedSolutionList(Comparator<Solution<T>> dominance) {
     super();
     dominance_ = dominance;
   } // NonDominatedList
@@ -54,12 +60,12 @@ public class NonDominatedSolutionList extends SolutionSet{
   * The decision variables can be null if the solution is read from a file; in
   * that case, the domination tests are omitted
   */
-  public boolean add(Solution solution){
-    Iterator<Solution> iterator = solutionsList_.iterator();
+  public boolean add(Solution<T> solution){
+    Iterator<Solution<T>> iterator = solutionsList_.iterator();
 
     if (solution.getDecisionVariables() != null) {
       while (iterator.hasNext()){
-        Solution listIndividual = iterator.next();
+        Solution<T> listIndividual = iterator.next();
         int flag = dominance_.compare(solution,listIndividual);
 
         if (flag == -1) {  // A solution in the list is dominated by the new one

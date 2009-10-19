@@ -7,20 +7,28 @@
  */
 package jmetal.problems;
 
-import jmetal.base.*;
-import jmetal.base.Configuration.*;
+import java.util.List;
+
+import jmetal.base.DecisionVariables;
+import jmetal.base.ProblemValue;
+import jmetal.base.Solution;
+import jmetal.base.variable.IReal;
 import jmetal.util.JMException;
 
 /**
  * Class representing problem Oyczka2
  */
-public class Osyczka2 extends Problem{
- /**
+public class Osyczka2<T extends IReal> extends ProblemValue<T>{
+ private static final long serialVersionUID = 8049122475845401386L;
+
+ private final Class<T> solutionType_;
+
+/**
   * Constructor.
   * Creates a default instance of the Osyczka2 problem.
   * @param solutionType The solution type must "Real" or "BinaryReal". 
   */
-  public Osyczka2(String solutionType) {
+  public Osyczka2(Class<T> solutionType) {
     numberOfVariables_  = 6;
     numberOfObjectives_ = 2;
     numberOfConstraints_= 6;
@@ -44,14 +52,7 @@ public class Osyczka2 extends Problem{
     upperLimit_[5] = 10.0;
     //
         
-    solutionType_ = Enum.valueOf(SolutionType_.class, solutionType) ; 
-    
-    // All the variables are of the same type, so the solutionType name is the
-    // same than the variableType name
-    variableType_ = new VariableType_[numberOfVariables_];
-    for (int var = 0; var < numberOfVariables_; var++){
-      variableType_[var] = Enum.valueOf(VariableType_.class, solutionType) ;    
-    } // for
+    solutionType_ = solutionType; 
   } // Osyczka2
     
   /** 
@@ -59,18 +60,18 @@ public class Osyczka2 extends Problem{
   * @param solution The solution to evaluate
    * @throws JMException 
   */  
-  public void evaluate(Solution solution) throws JMException {
-    DecisionVariables decisionVariables  = solution.getDecisionVariables();     
+  public void evaluate(Solution<T> solution) throws JMException {
+    DecisionVariables<T> decisionVariables  = solution.getDecisionVariables();     
   
     double [] f = new double[numberOfObjectives_];
     
     double x1,x2,x3,x4,x5,x6;
-    x1 = decisionVariables.variables_[0].getValue();
-    x2 = decisionVariables.variables_[1].getValue();
-    x3 = decisionVariables.variables_[2].getValue();
-    x4 = decisionVariables.variables_[3].getValue();
-    x5 = decisionVariables.variables_[4].getValue();
-    x6 = decisionVariables.variables_[5].getValue();                
+    x1 = decisionVariables.variables_.get(0).getValue();
+    x2 = decisionVariables.variables_.get(1).getValue();
+    x3 = decisionVariables.variables_.get(2).getValue();
+    x4 = decisionVariables.variables_.get(3).getValue();
+    x5 = decisionVariables.variables_.get(4).getValue();
+    x6 = decisionVariables.variables_.get(5).getValue();                
     f[0] = - (25.0*(x1-2.0)*(x1-2.0) + 
                   (x2-2.0)*(x2-2.0) + 
                   (x3-1.0)*(x3-1.0) + 
@@ -88,17 +89,17 @@ public class Osyczka2 extends Problem{
    * @param solution The solution
    * @throws JMException 
    */  
- public void evaluateConstraints(Solution solution) throws JMException {
+ public void evaluateConstraints(Solution<T> solution) throws JMException {
     double [] constraint = new double[this.getNumberOfConstraints()];
-    DecisionVariables decisionVariables = solution.getDecisionVariables();
+    DecisionVariables<T> decisionVariables = solution.getDecisionVariables();
         
     double x1,x2,x3,x4,x5,x6;
-    x1 = decisionVariables.variables_[0].getValue();
-    x2 = decisionVariables.variables_[1].getValue();
-    x3 = decisionVariables.variables_[2].getValue();
-    x4 = decisionVariables.variables_[3].getValue();
-    x5 = decisionVariables.variables_[4].getValue();
-    x6 = decisionVariables.variables_[5].getValue();
+    x1 = decisionVariables.variables_.get(0).getValue();
+    x2 = decisionVariables.variables_.get(1).getValue();
+    x3 = decisionVariables.variables_.get(2).getValue();
+    x4 = decisionVariables.variables_.get(3).getValue();
+    x5 = decisionVariables.variables_.get(4).getValue();
+    x6 = decisionVariables.variables_.get(5).getValue();
         
     constraint[0] = (x1 + x2)/2.0 - 1.0;
     constraint[1] = (6.0 - x1 - x2)/6.0;
@@ -118,5 +119,10 @@ public class Osyczka2 extends Problem{
     solution.setOverallConstraintViolation(total);    
     solution.setNumberOfViolatedConstraint(number);
   } // evaluateConstraints 
+
+ @Override
+ public List<T> generateNewDecisionVariable() {
+ 	return generate(solutionType_);
+ }
 } // Osyczka2
 

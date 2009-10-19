@@ -7,9 +7,10 @@
 package jmetal.base.operator.selection;
 
 import java.util.Comparator;
+
 import jmetal.base.Solution;
-import jmetal.base.Operator;
 import jmetal.base.SolutionSet;
+import jmetal.base.Variable;
 import jmetal.base.operator.comparator.DominanceComparator;
 import jmetal.util.PseudoRandom;
 
@@ -17,12 +18,14 @@ import jmetal.util.PseudoRandom;
  * This class implements an opertor for binary selections using the same code
  * in Deb's NSGA-II implementation
  */
-public class BinaryTournament2 extends Operator{
+public class BinaryTournament2<T extends Variable> extends Selection<T, Solution<T>> {
   
-  /**
+  private static final long serialVersionUID = 2774421116618537328L;
+
+	/**
    * dominance_ store the <code>Comparator</code> for check dominance_
    */
-  private Comparator dominance_;
+  private Comparator<Solution<T>> dominance_;
   
   /**
    * a_ stores a permutation of the solutions in the solutionSet used
@@ -41,7 +44,7 @@ public class BinaryTournament2 extends Operator{
    */
   public BinaryTournament2()
   {
-    dominance_ = new DominanceComparator();              
+    dominance_ = new DominanceComparator<T>();              
   } // BinaryTournament2
     
   /**
@@ -49,16 +52,15 @@ public class BinaryTournament2 extends Operator{
   * @param object Object representing a SolutionSet
   * @return the selected solution
   */
-  public Object execute(Object object)    
-  {
-    SolutionSet population = (SolutionSet)object;
+
+  public Solution<T> execute(SolutionSet<T> population) throws jmetal.util.JMException {
     if (index_ == 0) //Create the permutation
     {
       a_= (new jmetal.util.PermutationUtility()).intPermutation(population.size());
     }
             
         
-    Solution solution1,solution2;
+    Solution<T> solution1,solution2;
     solution1 = population.get(a_[index_]);
     solution2 = population.get(a_[index_+1]);
         

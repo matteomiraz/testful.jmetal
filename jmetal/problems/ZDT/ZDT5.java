@@ -8,17 +8,19 @@
 
 package jmetal.problems.ZDT;
 
-import jmetal.base.*;
-import jmetal.base.Configuration.SolutionType_;
-import jmetal.base.Configuration.VariableType_;
-import jmetal.base.variable.*;
+import jmetal.base.DecisionVariables;
+import jmetal.base.ProblemValue;
+import jmetal.base.Solution;
+import jmetal.base.variable.Binary;
 
 /**
  * Class representing problem ZDT5
  */
-public class ZDT5 extends Problem{
+public class ZDT5 extends ProblemValue.ProblemBinary {
      
- /**
+ private static final long serialVersionUID = -8358321326441479092L;
+
+/**
   * Creates a default instance of problem ZDT5 (11 decision variables).
   * This problem allows only "Binary" representations.
   */
@@ -42,23 +44,15 @@ public class ZDT5 extends Problem{
     for (int var = 1; var < numberOfVariables_; var++) {
       length_[var] = 5;
     }
-        
-    solutionType_ = SolutionType_.Binary ; 
-    
-    // All the variables of this problem are Binary
-    variableType_ = new VariableType_[numberOfVariables_];
-    for (int var = 0; var < numberOfVariables_; var++){
-      variableType_[var] = VariableType_.Binary ;    
-    } // for
   } //ZDT5
 
   /** 
   * Evaluates a solution 
   * @param solution The solution to evaluate
   */    
-  public void evaluate(Solution solution) {        
+  public void evaluate(Solution<Binary> solution) {        
     double [] f = new double[numberOfObjectives_] ; 
-    f[0]        = 1 + u((Binary)solution.getDecisionVariables().variables_[0]);
+    f[0]        = 1 + u((Binary)solution.getDecisionVariables().variables_.get(0));
     double g    = evalG(solution.getDecisionVariables())                 ;
     double h    = evalH(f[0],g)              ;
     f[1]        = h * g                           ;   
@@ -72,10 +66,10 @@ public class ZDT5 extends Problem{
   * @param decisionVariables The decision variables of the solution to 
   * evaluate.
   */
-  public double evalG(DecisionVariables decisionVariables) {
+  public double evalG(DecisionVariables<Binary> decisionVariables) {
     double res = 0.0;
     for (int var = 1; var < numberOfVariables_; var++) {
-      res += evalV(u((Binary)decisionVariables.variables_[var]));
+      res += evalV(u((Binary)decisionVariables.variables_.get(var)));
     }
     
     return res;

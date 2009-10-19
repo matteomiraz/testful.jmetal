@@ -6,24 +6,30 @@
  * Created on 17 de junio de 2006, 17:30
  */
 
-package jmetal.problems.LZ07;
+package jmetal.problems.LZ09;
 
+import java.util.List;
 import java.util.Vector;
 
-import jmetal.base.*;
-import jmetal.base.Configuration.*;
+import jmetal.base.DecisionVariables;
+import jmetal.base.ProblemValue;
+import jmetal.base.Solution;
+import jmetal.base.variable.IReal;
 import jmetal.util.JMException;
 
 /** 
  * Class representing problem DTLZ1 
  */
-public class LZ07_F8 extends Problem {   
-	LZ07 lz07_ ; 
+public class LZ09_F8<V extends IReal>  extends ProblemValue<V> {   
+	private static final long serialVersionUID = -4162204838908438969L;
+  private final Class<V> solutionType_;
+
+	LZ09 lz07_ ; 
  /** 
   * Creates a default DTLZ1 problem (7 variables and 3 objectives)
   * @param solutionType The solution type must "Real" or "BinaryReal". 
   */
-  public LZ07_F8(String solutionType){
+  public LZ09_F8(Class<V> solutionType){
     this(21, 4, 21, solutionType);
   } // LZ07_F8
   
@@ -33,16 +39,16 @@ public class LZ07_F8 extends Problem {
    * @param numberOfObjectives Number of objective functions
    * @param solutionType The solution type must "Real" or "BinaryReal". 
    */
-   public LZ07_F8(Integer ptype, 
+   public LZ09_F8(Integer ptype, 
    		            Integer dtype,
    		            Integer ltype,
-   		            String solutionType) {
+   		            Class<V> solutionType) {
      numberOfVariables_  = 10;
      numberOfObjectives_ = 2;
      numberOfConstraints_= 0;
      problemName_        = "LZ07_F8";
          
-   	 lz07_  = new LZ07(numberOfVariables_, 
+   	 lz07_  = new LZ09(numberOfVariables_, 
    			               numberOfObjectives_, 
    			               ptype, 
    			               dtype, 
@@ -55,14 +61,7 @@ public class LZ07_F8 extends Problem {
        upperLimit_[var] = 1.0;
      } //for
          
-     solutionType_ = Enum.valueOf(SolutionType_.class, solutionType) ; 
-     
-     // All the variables are of the same type, so the solutionType name is the
-     // same than the variableType name
-     variableType_ = new VariableType_[numberOfVariables_];
-     for (int var = 0; var < numberOfVariables_; var++){
-       variableType_[var] = Enum.valueOf(VariableType_.class, solutionType) ;    
-     } // for              
+     solutionType_ = solutionType; 
    } // LZ07_F8
    
    /** 
@@ -70,15 +69,16 @@ public class LZ07_F8 extends Problem {
     * @param solution The solution to evaluate
      * @throws JMException 
     */    
-    public void evaluate(Solution solution) throws JMException {
-      DecisionVariables gen  = solution.getDecisionVariables();
+    public void evaluate(Solution<V> solution) throws JMException {
+      DecisionVariables<V> gen  = solution.getDecisionVariables();
       
-      Vector<Double> x = new Vector(numberOfVariables_) ;
-      Vector<Double> y = new Vector(numberOfObjectives_);
-      int k = numberOfVariables_ - numberOfObjectives_ + 1;
+      Vector<Double> x = new Vector<Double>(numberOfVariables_) ;
+      Vector<Double> y = new Vector<Double>(numberOfObjectives_);
+      @SuppressWarnings("unused")
+			int k = numberOfVariables_ - numberOfObjectives_ + 1;
           
       for (int i = 0; i < numberOfVariables_; i++) {
-      	x.addElement(gen.variables_[i].getValue());
+      	x.addElement(gen.variables_.get(i).getValue());
       	y.addElement(0.0) ;
       } // for
         
@@ -87,5 +87,9 @@ public class LZ07_F8 extends Problem {
       for (int i = 0; i < numberOfObjectives_; i++)
         solution.setObjective(i, y.get(i)); 
     } // evaluate
-} // LZ07_F8
 
+    @Override
+    public List<V> generateNewDecisionVariable() {
+    	return generate(solutionType_);
+    }
+} // LZ07_F8

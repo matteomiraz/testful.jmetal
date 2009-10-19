@@ -7,9 +7,12 @@
 
 package jmetal.problems;
 
-import jmetal.base.*;
-import jmetal.base.Configuration.SolutionType_;
-import jmetal.base.Configuration.VariableType_;
+import java.util.List;
+
+import jmetal.base.DecisionVariables;
+import jmetal.base.ProblemValue;
+import jmetal.base.Solution;
+import jmetal.base.variable.IReal;
 import jmetal.util.JMException;
 
 /**
@@ -17,14 +20,18 @@ import jmetal.util.JMException;
  * MAXIMIZED. As jMetal always minimizes, the rule Max(f(x)) = -Min(f(-x)) must
  * be applied.
  */
-public class Poloni extends Problem{    
+public class Poloni<T extends IReal> extends ProblemValue<T> {    
     
- /**
+ private static final long serialVersionUID = -8968373064444128659L;
+
+ private final Class<T> solutionType_;
+
+/**
   * Constructor.
   * Creates a default instance of the Poloni problem
   * @param solutionType The solution type must "Real" or "BinaryReal".
   */
-  public Poloni(String solutionType) {
+  public Poloni(Class<T> solutionType) {
     numberOfVariables_  = 2;
     numberOfObjectives_ = 2;
     numberOfConstraints_= 0;
@@ -37,14 +44,7 @@ public class Poloni extends Problem{
       upperLimit_[var] =  Math.PI;
     } //for
 
-    solutionType_ = Enum.valueOf(SolutionType_.class, solutionType) ; 
-    
-    // All the variables are of the same type, so the solutionType name is the
-    // same than the variableType name
-    variableType_ = new VariableType_[numberOfVariables_];
-    for (int var = 0; var < numberOfVariables_; var++){
-      variableType_[var] = Enum.valueOf(VariableType_.class, solutionType) ;    
-    } // for
+    solutionType_ = solutionType; 
   } //Poloni
     
   /** 
@@ -52,19 +52,19 @@ public class Poloni extends Problem{
   * @param solution The solution to evaluate
    * @throws JMException 
   */
-  public void evaluate(Solution solution) throws JMException {
+  public void evaluate(Solution<T> solution) throws JMException {
     final double A1 = 0.5 * Math.sin(1.0) - 2 * Math.cos(1.0) + 
                       Math.sin(2.0) - 1.5 * Math.cos(2.0) ; //!< Constant A1
     final double A2 = 1.5 * Math.sin(1.0) - Math.cos(1.0) + 
                       2 * Math.sin(2.0) - 0.5 * Math.cos(2.0) ; //!< Constant A2
     
-    DecisionVariables decisionVariables  = solution.getDecisionVariables();
+    DecisionVariables<T> decisionVariables  = solution.getDecisionVariables();
     
     double [] x = new double[numberOfVariables_] ;
     double [] f = new double[numberOfObjectives_];
     
-    x[0] = decisionVariables.variables_[0].getValue();
-    x[1] = decisionVariables.variables_[1].getValue();        
+    x[0] = decisionVariables.variables_.get(0).getValue();
+    x[1] = decisionVariables.variables_.get(1).getValue();        
     
     double B1 = 0.5 * Math.sin(x[0]) - 2 * Math.cos(x[0]) + Math.sin(x[1]) - 
                 1.5 * Math.cos(x[1]) ;
@@ -81,5 +81,10 @@ public class Poloni extends Problem{
     solution.setObjective(0,-1 * f[0]);
     solution.setObjective(1,-1 * f[1]);
   } // evaluate
+
+  @Override
+  public List<T> generateNewDecisionVariable() {
+  	return generate(solutionType_);
+  }
 } // Poloni
 

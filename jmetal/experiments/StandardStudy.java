@@ -6,22 +6,25 @@
  */
 package jmetal.experiments;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import jmetal.base.Algorithm;
 import jmetal.base.Problem;
+import jmetal.base.ProblemValue;
 import jmetal.experiments.settings.GDE3_Settings;
 import jmetal.experiments.settings.MOCell_Settings;
 import jmetal.experiments.settings.NSGAII_Settings;
-import jmetal.experiments.settings.SPEA2_Settings;
 import jmetal.experiments.settings.SMPSO_Settings;
+import jmetal.experiments.settings.SPEA2_Settings;
 import jmetal.util.JMException;
 
 /**
  * @author Antonio J. Nebro
  */
+@SuppressWarnings("unchecked")
 public class StandardStudy extends Experiment {
 
   /**
@@ -29,7 +32,8 @@ public class StandardStudy extends Experiment {
    * @param problem The problem to solve
    * @param problemIndex
    */
-  public void algorithmSettings(Problem problem, int problemIndex, Algorithm[] algorithm) {
+  public void algorithmSettings(Problem problem1, int problemIndex, Algorithm[] algorithm) {
+  	ProblemValue problem = (ProblemValue) problem1;
     try {
       int numberOfAlgorithms = algorithmNameList_.length;
 
@@ -87,8 +91,8 @@ public class StandardStudy extends Experiment {
     exp.independentRuns_ = 100;
 
     // Run the experiments
-    int numberOfThreads ;
-    exp.runExperiment(numberOfThreads = 1) ;
+    int numberOfThreads = 1;
+    exp.runExperiment(numberOfThreads) ;
 
     // Generate latex tables
     exp.generateLatexTables() ;
@@ -98,7 +102,7 @@ public class StandardStudy extends Experiment {
     int columns  ;
     String prefix ;
     String [] problems ;
-    boolean notch ;
+    boolean notch = true ;
 
     // Configuring scripts for ZDT
     rows = 3 ;
@@ -106,7 +110,7 @@ public class StandardStudy extends Experiment {
     prefix = new String("ZDT");
     problems = new String[]{"ZDT1", "ZDT2","ZDT3", "ZDT4","ZDT6"} ;
 
-    exp.generateRBoxplotScripts(rows, columns, problems, prefix, notch = true) ;
+    exp.generateRBoxplotScripts(rows, columns, problems, prefix, notch) ;
     exp.generateRWilcoxonScripts(problems, prefix) ;
 
     // Configure scripts for DTLZ

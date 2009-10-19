@@ -5,69 +5,87 @@
  */
 package jmetal.metaheuristics.mocell;
 
-import jmetal.base.*;
 import java.util.Comparator;
+
+import jmetal.base.Algorithm;
+import jmetal.base.Problem;
+import jmetal.base.Solution;
+import jmetal.base.SolutionSet;
+import jmetal.base.Variable;
 import jmetal.base.archive.CrowdingArchive;
-import jmetal.base.operator.comparator.*;
-import jmetal.util.*;
+import jmetal.base.operator.comparator.CrowdingComparator;
+import jmetal.base.operator.comparator.DominanceComparator;
+import jmetal.base.operator.crossover.Crossover;
+import jmetal.base.operator.localSearch.LocalSearch;
+import jmetal.base.operator.mutation.Mutation;
+import jmetal.base.operator.selection.Selection;
+import jmetal.util.Distance;
+import jmetal.util.JMException;
+import jmetal.util.Neighborhood;
+import jmetal.util.PseudoRandom;
+import jmetal.util.Ranking;
 
 /**
  * This class representing the asychronous version of MOCell algorithm
  */
-public class aMOCell1 extends Algorithm{
+public class aMOCell1<V extends Variable>
+extends Algorithm<V, Crossover<V>, Mutation<V>, Selection<V, Solution<V>>, LocalSearch<V>> {
 
-  /**
+  private static final long serialVersionUID = -1168663720157150836L;
+	/**
    * Stores the problem to solve
    */
-  private Problem problem_;     
+  private Problem<V> problem_;     
 
   /** 
    * Constructor
    * @param problem Problem to solve
    */
-  public aMOCell1(Problem problem){
+  public aMOCell1(Problem<V> problem){
     problem_ = problem;
   } //aMOCell1       
 
+  private int archiveSize, feedBack;
+  
+	public void setArchiveSize(int archiveSize) {
+		this.archiveSize = archiveSize;
+	}
+	
+	public void setFeedBack(int feedBack) {
+		this.feedBack = feedBack;
+	}
+  
   /**   
    * Runs of the aMOCell1 algorithm.
    * @return a <code>SolutionSet</code> that is a set of non dominated solutions
    * as a result of the algorithm execution  
    * @throws JMException 
    */   
-  public SolutionSet execute() throws JMException {
-    int populationSize, archiveSize, maxEvaluations, evaluations, feedBack;
-    Operator mutationOperator, crossoverOperator, selectionOperator;
-    SolutionSet currentSolutionSet;
-    CrowdingArchive archive;
-    SolutionSet [] neighbors;    
-    Neighborhood neighborhood;
-    Comparator dominance = new DominanceComparator(),
-    crowding  = new CrowdingComparator();                   
-    Distance distance = new Distance();
+  @SuppressWarnings("unchecked")
+	public SolutionSet<V> execute() throws JMException {
+    int populationSize, maxEvaluations, evaluations;
+    SolutionSet<V> currentSolutionSet;
+    CrowdingArchive<V> archive;
+    SolutionSet<V> [] neighbors;    
+    Neighborhood<V> neighborhood;
+    Comparator<Solution<V>> dominance = new DominanceComparator<V>(),
+    crowding  = new CrowdingComparator<V>();                   
 
     //Read the params
-    populationSize    = ((Integer)getInputParameter("populationSize")).intValue();
-    archiveSize       = ((Integer)getInputParameter("archiveSize")).intValue();
-    maxEvaluations    = ((Integer)getInputParameter("maxEvaluations")).intValue();                
-    feedBack          = ((Integer)getInputParameter("feedBack")).intValue();
-
-    //Read the operators
-    mutationOperator  = operators_.get("mutation");
-    crossoverOperator = operators_.get("crossover");
-    selectionOperator = operators_.get("selection");        
+    populationSize    = getPopulationSize();
+    maxEvaluations    = getMaxEvaluations();                
 
     //Init the variables
     //init the population and the archive
-    currentSolutionSet  = new SolutionSet(populationSize);        
-    archive            = new CrowdingArchive(archiveSize,problem_.getNumberOfObjectives());                
+    currentSolutionSet  = new SolutionSet<V>(populationSize);        
+    archive            = new CrowdingArchive<V>(archiveSize,problem_.getNumberOfObjectives());                
     evaluations        = 0;                        
-    neighborhood       = new Neighborhood(populationSize);
+    neighborhood       = new Neighborhood<V>(populationSize);
     neighbors          = new SolutionSet[populationSize];
 
     //Create the initial population
     for (int i = 0; i < populationSize; i++){
-      Solution solution = new Solution(problem_);
+      Solution<V> solution = new Solution<V>(problem_);
       problem_.evaluate(solution);           
       problem_.evaluateConstraints(solution);
       currentSolutionSet.add(solution);
@@ -78,21 +96,20 @@ public class aMOCell1 extends Algorithm{
 
     while (evaluations < maxEvaluations){                                 
       for (int ind = 0; ind < currentSolutionSet.size(); ind++){
-        Solution individual = new Solution(currentSolutionSet.get(ind));
+        Solution<V> individual = new Solution<V>(currentSolutionSet.get(ind));
 
-        Solution [] parents = new Solution[2];
-        Solution [] offSpring;
+        Solution<V> [] offSpring;
 
         //neighbors[ind] = neighborhood.getFourNeighbors(currentSolutionSet,ind);
         neighbors[ind] = neighborhood.getEightNeighbors(currentSolutionSet,ind);                                                           
         neighbors[ind].add(individual);
 
         //parents
-        parents[0] = (Solution)selectionOperator.execute(neighbors[ind]);
-        parents[1] = (Solution)selectionOperator.execute(neighbors[ind]);
+        Solution<V> parent1 = selectionOperator.execute(neighbors[ind]);
+        Solution<V> parent2 = selectionOperator.execute(neighbors[ind]);
 
         //Create a new solution, using genetic operators mutation and crossover
-        offSpring = (Solution [])crossoverOperator.execute(parents);               
+        offSpring = crossoverOperator.execute(parent1, parent2);               
         mutationOperator.execute(offSpring[0]);
 
         //Evaluate solution and constraints
@@ -105,14 +122,14 @@ public class aMOCell1 extends Algorithm{
         if (flag == 1) { // offSpring[0] dominates
           offSpring[0].setLocation(individual.getLocation());                                      
           currentSolutionSet.replace(offSpring[0].getLocation(),offSpring[0]);
-          archive.add(new Solution(offSpring[0]));                   
+          archive.add(new Solution<V>(offSpring[0]));                   
         } else if (flag == 0) { //Both two are non-dominates               
           neighbors[ind].add(offSpring[0]);
           //(new Spea2Fitness(neighbors[ind])).fitnessAssign();                   
           //neighbors[ind].sort(new FitnessAndCrowdingDistanceComparator());
-          Ranking rank = new Ranking(neighbors[ind]);
+          Ranking<V> rank = new Ranking<V>(neighbors[ind]);
           for (int j = 0; j < rank.getNumberOfSubfronts(); j++) {
-            (distance).crowdingDistanceAssignment(rank.getSubfront(j),
+            Distance.crowdingDistanceAssignment(rank.getSubfront(j),
                 problem_.getNumberOfObjectives());
           }
 
@@ -124,22 +141,22 @@ public class aMOCell1 extends Algorithm{
           if (!deleteMutant){
             offSpring[0].setLocation(individual.getLocation());
             currentSolutionSet.replace(offSpring[0].getLocation(),offSpring[0]);
-            archive.add(new Solution(offSpring[0]));
+            archive.add(new Solution<V>(offSpring[0]));
           } else {
-            archive.add(new Solution(offSpring[0]));    
+            archive.add(new Solution<V>(offSpring[0]));    
           }
         }                              
       }                     
 
       //Stores a portion of the archive into the population
-      (distance).crowdingDistanceAssignment(archive,problem_.getNumberOfObjectives());                      
+      Distance.crowdingDistanceAssignment(archive,problem_.getNumberOfObjectives());                      
       for (int j = 0; j < feedBack; j++){
         if (archive.size() > j){
           int r = PseudoRandom.randInt(0,currentSolutionSet.size()-1);
           if (r < currentSolutionSet.size()){
-            Solution individual = archive.get(j);
+            Solution<V> individual = archive.get(j);
             individual.setLocation(r);
-            currentSolutionSet.replace(r,new Solution(individual));
+            currentSolutionSet.replace(r,new Solution<V>(individual));
           }
         }
       }                      

@@ -6,20 +6,26 @@
  */
 package jmetal.base.archive;
 
-import jmetal.base.*;
+import java.util.Comparator;
+import java.util.Iterator;
+
+import jmetal.base.Solution;
+import jmetal.base.SolutionSet;
+import jmetal.base.Variable;
 import jmetal.base.operator.comparator.DominanceComparator;
 import jmetal.util.AdaptiveGrid;
-import java.util.*;
 
 /**
  * This class implements an archive based on an adaptative grid used in PAES
  */
-public class AdaptiveGridArchive extends SolutionSet {  
+public class AdaptiveGridArchive<T extends Variable> extends SolutionSet<T> {  
   
-  /** 
+  private static final long serialVersionUID = -5993209295179799376L;
+
+	/** 
    * Stores the adaptive grid
    */
-  private AdaptiveGrid grid_;
+  private AdaptiveGrid<T>  grid_;
   
   /** 
    * Stores the maximum size of the archive
@@ -29,7 +35,7 @@ public class AdaptiveGridArchive extends SolutionSet {
   /**
    * Stores a <code>Comparator</code> for dominance checking
    */
-  private Comparator dominance_;
+  private Comparator<Solution<T>> dominance_;
     
   /**
    * Constructor.
@@ -42,8 +48,8 @@ public class AdaptiveGridArchive extends SolutionSet {
   public AdaptiveGridArchive(int maxSize,int bisections, int objectives) {
     super(maxSize);
     maxSize_   = maxSize;
-    dominance_ = new DominanceComparator();
-    grid_      = new AdaptiveGrid(bisections,objectives);
+    dominance_ = new DominanceComparator<T>();
+    grid_      = new AdaptiveGrid<T> (bisections,objectives);
   } // AdaptiveGridArchive
    
   /**
@@ -57,12 +63,12 @@ public class AdaptiveGridArchive extends SolutionSet {
    * @return true if the <code>Solution</code> has been inserted, false
    * otherwise.
    */
-  public boolean add(Solution solution) {
+  public boolean add(Solution<T> solution) {
     //Iterator of individuals over the list
-    Iterator<Solution> iterator = solutionsList_.iterator();
+    Iterator<Solution<T>> iterator = solutionsList_.iterator();
         
     while (iterator.hasNext()){
-      Solution element = iterator.next();
+      Solution<T> element = iterator.next();
       int flag = dominance_.compare(solution,element);
       if (flag == -1) { // The Individual to insert dominates other 
     	                // individuals in  the archive
@@ -108,7 +114,7 @@ public class AdaptiveGridArchive extends SolutionSet {
       boolean removed = false;
       while (iterator.hasNext()) {
         if (!removed) {
-          Solution element = iterator.next();
+          Solution<T> element = iterator.next();
           int location2 = grid_.location(element);
           if (location2 == grid_.getMostPopulated()) {
             iterator.remove();
@@ -129,7 +135,7 @@ public class AdaptiveGridArchive extends SolutionSet {
    * Returns the AdaptativeGrid used
    * @return the AdaptativeGrid
    */
-  public AdaptiveGrid getGrid() {
+  public AdaptiveGrid<T> getGrid() {
     return grid_;
   } // AdaptativeGrid  
 } // AdaptativeGridArchive

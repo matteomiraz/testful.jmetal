@@ -6,22 +6,28 @@
  */
 package jmetal.problems;
 
-import jmetal.base.*;
-import jmetal.base.Configuration.*;
+import java.util.List;
+
+import jmetal.base.DecisionVariables;
+import jmetal.base.ProblemValue;
+import jmetal.base.Solution;
+import jmetal.base.variable.IReal;
 import jmetal.util.JMException;
 
 /**
  * Class representing problem Kursawe
  */
-public class OKA2 extends Problem {  
-   
-  
-  /** 
+public class OKA2<T extends IReal> extends ProblemValue<T> {  
+  private static final long serialVersionUID = 7492988214768375512L;
+
+  private final Class<T> solutionType_;
+
+	/** 
    * Constructor.
    * Creates a new instance of the OKA2 problem.
    * @param solutionType The solution type must "Real" or "BinaryReal".
    */
-  public OKA2(String solutionType) {
+  public OKA2(Class<T> solutionType) {
     numberOfVariables_   = 3  ;
     numberOfObjectives_  = 2  ;
     numberOfConstraints_ = 0  ;
@@ -37,14 +43,7 @@ public class OKA2 extends Problem {
       upperLimit_[i] = 5.0  ;
     } // for
         
-    solutionType_ = Enum.valueOf(SolutionType_.class, solutionType) ; 
-    
-    // All the variables are of the same type, so the solutionType name is the
-    // same than the variableType name
-    variableType_ = new VariableType_[numberOfVariables_];
-    for (int var = 0; var < numberOfVariables_; var++){
-      variableType_[var] = Enum.valueOf(VariableType_.class, solutionType) ;    
-    } // for
+    solutionType_ = solutionType; 
   } // OKA2
     
   /** 
@@ -52,14 +51,14 @@ public class OKA2 extends Problem {
   * @param solution The solution to evaluate
    * @throws JMException 
   */
-  public void evaluate(Solution solution) throws JMException {
-    DecisionVariables decisionVariables  = solution.getDecisionVariables();
+  public void evaluate(Solution<T> solution) throws JMException {
+    DecisionVariables<T> decisionVariables  = solution.getDecisionVariables();
         
     double [] fx   = new double[numberOfObjectives_] ; // 2 functions
     double [] x    = new double[numberOfVariables_]  ; // 3 variables
    
     for (int i = 0; i < numberOfVariables_; i++)
-      x[i] = decisionVariables.variables_[i].getValue() ;
+      x[i] = decisionVariables.variables_.get(i).getValue() ;
     
     fx[0] = x[0] ; 
     
@@ -70,4 +69,9 @@ public class OKA2 extends Problem {
     solution.setObjective(0, fx[0]);
     solution.setObjective(1, fx[1]);
   } // evaluate
+
+  @Override
+  public List<T> generateNewDecisionVariable() {
+  	return generate(solutionType_);
+  }
 } // OKA2

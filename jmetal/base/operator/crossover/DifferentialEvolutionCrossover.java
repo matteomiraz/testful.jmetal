@@ -6,15 +6,15 @@
  */
 package jmetal.base.operator.crossover;
 
-import jmetal.base.Configuration;
-import jmetal.base.Operator;
 import jmetal.base.Solution;
-import jmetal.base.Configuration.SolutionType_;
+import jmetal.base.variable.Real;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
 
-public class DifferentialEvolutionCrossover extends Operator {
-  /**
+public class DifferentialEvolutionCrossover extends DifferentialCrossover<Real> {
+  private static final long serialVersionUID = -3210629965576501068L;
+
+	/**
    * DEFAULT_CR defines a default CR (crossover operation control) value
    */
   public static final double DEFAULT_CR = 0.1; 
@@ -36,70 +36,51 @@ public class DifferentialEvolutionCrossover extends Operator {
   } // Constructor
   
   
+	public void setF(double f) {
+		F_ = f;
+	}
+	
+	
+	public void setCR(double cR) {
+		CR_ = cR;
+	}
+  
   /**
    * Executes the operation
    * @param object An object containing an array of three parents
    * @return An object containing the offSprings
    */
-   public Object execute(Object object) throws JMException {
-     Object[] parameters = (Object[])object ;
-     Solution current   = (Solution) parameters[0];
-     Solution [] parent = (Solution [])parameters[1];
-     
-     Solution child ;
-     
-     if ((parent[0].getType() != SolutionType_.Real) ||
-         (parent[1].getType() != SolutionType_.Real)||
-         (parent[2].getType() != SolutionType_.Real) ) {
-
-       Configuration.logger_.severe("DifferentialEvolutionCrossover.execute: " +
-       		" the solutions " +
-           "are not of the right type. The type should be 'Real', but " +
-           parent[0].getType() + " and " + 
-           parent[1].getType() + " and " + 
-           parent[2].getType() + " are obtained");
-
-       Class cls = java.lang.String.class;
-       String name = cls.getName(); 
-       throw new JMException("Exception in " + name + ".execute()") ;
-     } // if 
-     
-     Double CR = (Double)getParameter("CR");
-     if (CR != null) {
-       CR_ = CR ;
-     } // if
-     Double F = (Double)getParameter("F");
-     if (F != null) {
-       F_ = F ;
-     } // if
+  @Override
+  public Solution<Real> execute(Solution<Real> current, Solution<Real> [] parent) throws JMException {
+     Solution<Real> child ;
      
      int jrand ;
 
-     int numberOfVariables = parent[0].getDecisionVariables().variables_.length ;
+     int numberOfVariables = parent[0].getDecisionVariables().variables_.size() ;
      jrand = (int)(PseudoRandom.randInt(0, numberOfVariables - 1)) ;
      
-     child = new Solution(current) ;
+     child = new Solution<Real>(current) ;
      for (int j=0; j < numberOfVariables; j++) {
         if (PseudoRandom.randDouble(0, 1) < CR_ || j == jrand) {
           double value ;
-          value = parent[2].getDecisionVariables().variables_[j].getValue()  +
-                  F_ * (parent[0].getDecisionVariables().variables_[j].getValue() -
-                       parent[1].getDecisionVariables().variables_[j].getValue()) ;
+          value = parent[2].getDecisionVariables().variables_.get(j).getValue()  +
+                  F_ * (parent[0].getDecisionVariables().variables_.get(j).getValue() -
+                       parent[1].getDecisionVariables().variables_.get(j).getValue()) ;
           
-          if (value < child.getDecisionVariables().variables_[j].getLowerBound())
-            value =  child.getDecisionVariables().variables_[j].getLowerBound() ;
-          if (value > child.getDecisionVariables().variables_[j].getUpperBound())
-            value = child.getDecisionVariables().variables_[j].getUpperBound() ;
+          if (value < child.getDecisionVariables().variables_.get(j).getLowerBound())
+            value =  child.getDecisionVariables().variables_.get(j).getLowerBound() ;
+          if (value > child.getDecisionVariables().variables_.get(j).getUpperBound())
+            value = child.getDecisionVariables().variables_.get(j).getUpperBound() ;
             
-          child.getDecisionVariables().variables_[j].setValue(value) ;
+          child.getDecisionVariables().variables_.get(j).setValue(value) ;
         }
         else {
           double value ;
-          value = current.getDecisionVariables().variables_[j].getValue();
-          child.getDecisionVariables().variables_[j].setValue(value) ;
+          value = current.getDecisionVariables().variables_.get(j).getValue();
+          child.getDecisionVariables().variables_.get(j).setValue(value) ;
         } // else
      }
      
-     return child ;
+     return child;
    }
 }

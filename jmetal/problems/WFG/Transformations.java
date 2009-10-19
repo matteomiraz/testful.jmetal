@@ -26,9 +26,8 @@ public class Transformations {
   public float b_poly(float y, float alpha) throws JMException{
     if (!(alpha>0)) {
       
-      Configuration.logger_.severe("WFG.Transformations.b_poly: Param alpha " +
-          "must be > 0") ;
-      Class cls = java.lang.String.class;
+      Configuration.logger_.severe("WFG.Transformations.b_poly: Param alpha must be > 0") ;
+      Class<?> cls = this.getClass();
       String name = cls.getName(); 
       throw new JMException("Exception in " + name + ".b_poly()") ; 
     }

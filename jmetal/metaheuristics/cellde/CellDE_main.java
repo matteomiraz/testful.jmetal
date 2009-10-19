@@ -12,21 +12,22 @@
  */
 package jmetal.metaheuristics.cellde;
 
-import jmetal.base.*;
-import jmetal.base.operator.crossover.*   ;
-import jmetal.base.operator.mutation.*    ; 
-import jmetal.base.operator.selection.*   ;
-import jmetal.problems.*                  ;
-import jmetal.problems.DTLZ.*;
-import jmetal.problems.ZDT.*;
-import jmetal.problems.WFG.*;
-
-import jmetal.util.JMException;
-
 import java.io.IOException;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
+
+import jmetal.base.Configuration;
+import jmetal.base.Problem;
+import jmetal.base.SolutionSet;
+import jmetal.base.operator.crossover.CrossoverFactory;
+import jmetal.base.operator.crossover.DifferentialEvolutionCrossover;
+import jmetal.base.operator.selection.BinaryTournament;
+import jmetal.base.operator.selection.SelectionFactory;
+import jmetal.base.variable.Real;
+import jmetal.problems.Kursawe;
+import jmetal.problems.ProblemFactory;
 import jmetal.qualityIndicator.QualityIndicator;
+import jmetal.util.JMException;
 
 public class CellDE_main {
   public static Logger      logger_ ;      // Logger object
@@ -39,14 +40,15 @@ public class CellDE_main {
    * @throws IOException 
    * @throws SecurityException 
    */
-  public static void main(String [] args) throws 
+  @SuppressWarnings("unchecked")
+	public static void main(String [] args) throws 
                                  JMException, SecurityException, IOException {
-    Problem   problem   ;         // The problem to solve
-    Algorithm algorithm ;         // The algorithm to use
-    Operator  selection ;
-    Operator  crossover ;
+    Problem<Real>  problem   ;         // The problem to solve
+    BinaryTournament<Real>  selection ;
+    DifferentialEvolutionCrossover  crossover ;
+    CellDE<Real, BinaryTournament<Real>> algorithm ;         // The algorithm to use
     
-    QualityIndicator indicators ; // Object to get quality indicators
+    QualityIndicator<Real> indicators ; // Object to get quality indicators
 
     // Logger object and file to store log messages
     logger_      = Configuration.logger_ ;
@@ -56,15 +58,15 @@ public class CellDE_main {
     indicators = null ;
     if (args.length == 1) {
       Object [] params = {"Real"};
-      problem = (new ProblemFactory()).getProblem(args[0],params);
+      problem = (Problem<Real>) ProblemFactory.getProblem(args[0],params);
     } // if
     else if (args.length == 2) {
       Object [] params = {"Real"};
-      problem = (new ProblemFactory()).getProblem(args[0],params);
-      indicators = new QualityIndicator(problem, args[1]) ;
+      problem = (Problem<Real>) ProblemFactory.getProblem(args[0],params);
+      indicators = new QualityIndicator<Real>(problem, args[1]) ;
     } // if
     else { // Default problem
-      problem = new Kursawe(3, "Real");
+      problem = new Kursawe(3, Real.class);
       //problem = new Kursawe(3,"BinaryReal");
       //problem = new Water("Real");
       //problem = new ZDT4("Real");
@@ -73,28 +75,28 @@ public class CellDE_main {
       //problem = new OKA2("Real") ;
     } // else
     
-    algorithm = new CellDE(problem);
+    algorithm = new CellDE<Real, BinaryTournament<Real>>(problem);
     
     // Algorithm parameters
-    algorithm.setInputParameter("populationSize",100);
-    algorithm.setInputParameter("archiveSize",100);
-    algorithm.setInputParameter("maxEvaluations",25000);
-    algorithm.setInputParameter("feedBack", 20);
+    algorithm.setPopulationSize(100);
+    algorithm.setArchiveSize(100);
+    algorithm.setMaxEvaluations(25000);
+    algorithm.setFeedBack(20);
     
     // Crossover operator 
-    crossover = CrossoverFactory.getCrossoverOperator("DifferentialEvolutionCrossover");                   
-    crossover.setParameter("CR", 0.5);                   
-    crossover.setParameter("F", 0.5);
+    crossover = (DifferentialEvolutionCrossover) CrossoverFactory.getCrossoverOperator("DifferentialEvolutionCrossover");                   
+    crossover.setCR(0.5);                   
+    crossover.setF(0.5);
     
     // Add the operators to the algorithm
-    selection = SelectionFactory.getSelectionOperator("BinaryTournament") ; 
+    selection = (BinaryTournament<Real>) SelectionFactory.getSelectionOperator("BinaryTournament") ; 
 
-    algorithm.addOperator("crossover",crossover);
-    algorithm.addOperator("selection",selection);
+    algorithm.setCrossover(crossover);
+    algorithm.setSelection(selection);
     
     // Execute the Algorithm 
     long initTime = System.currentTimeMillis();
-    SolutionSet population = algorithm.execute();
+    SolutionSet<Real> population = algorithm.execute();
     long estimatedTime = System.currentTimeMillis() - initTime;
     System.out.println("Total execution time: "+estimatedTime);
 

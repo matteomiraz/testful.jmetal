@@ -8,24 +8,23 @@
  */
 package jmetal.experiments.settings;
 
-import jmetal.experiments.*;
-import jmetal.metaheuristics.gde3.*;
 import java.util.Properties;
+
 import jmetal.base.Algorithm;
-import jmetal.base.Operator;
 import jmetal.base.Problem;
 import jmetal.base.operator.crossover.CrossoverFactory;
-import jmetal.base.operator.mutation.MutationFactory;
+import jmetal.base.operator.crossover.DifferentialEvolutionCrossover;
+import jmetal.base.operator.selection.Selection;
 import jmetal.base.operator.selection.SelectionFactory;
 import jmetal.experiments.Settings;
-import jmetal.problems.ProblemFactory;
-import jmetal.qualityIndicator.QualityIndicator;
+import jmetal.metaheuristics.gde3.GDE3;
 import jmetal.util.JMException;
 
 /**
  *
  * @author Antonio
  */
+@SuppressWarnings("unchecked")
 public class GDE3_Settings extends Settings {
   // Default settings
   double CR_ = 0.1;
@@ -47,36 +46,34 @@ public class GDE3_Settings extends Settings {
    * @throws jmetal.util.JMException
    */
   public Algorithm configure() throws JMException {
-    Algorithm algorithm;
-    Operator selection;
-    Operator crossover;
-    Operator mutation;
-
-    QualityIndicator indicators;
+    GDE3 algorithm;
+    Selection selection;
+    DifferentialEvolutionCrossover crossover;
+    //Operator mutation;
 
     // Creating the problem
     algorithm = new GDE3(problem_);
 
     // Algorithm parameters
-    algorithm.setInputParameter("populationSize", populationSize_);
-    algorithm.setInputParameter("maxIterations", maxIterations_);
+    algorithm.setPopulationSize(populationSize_);
+    algorithm.setMaxEvaluations(maxIterations_);
 
     // Crossover operator 
-    crossover = CrossoverFactory.getCrossoverOperator("DifferentialEvolutionCrossover");
-    crossover.setParameter("CR", CR_);
-    crossover.setParameter("F", F_);
+    crossover = (DifferentialEvolutionCrossover) CrossoverFactory.getCrossoverOperator("DifferentialEvolutionCrossover");
+    crossover.setCR(CR_);
+    crossover.setF(F_);
 
     // Add the operators to the algorithm
     selection = SelectionFactory.getSelectionOperator("DifferentialEvolutionSelection");
 
-    algorithm.addOperator("crossover", crossover);
-    algorithm.addOperator("selection", selection);
+    algorithm.setCrossover(crossover);
+    algorithm.setSelection(selection);
 
-    // Creating the indicator object
-    if (!paretoFrontFile_.equals("")) {
-      indicators = new QualityIndicator(problem_, paretoFrontFile_);
-      algorithm.setInputParameter("indicators", indicators);
-    } // if
+//    // Creating the indicator object
+//    if (!paretoFrontFile_.equals("")) {
+//      indicators = new QualityIndicator(problem_, paretoFrontFile_);
+//      algorithm.setIndicators(indicators);
+//    } // if
 
     return algorithm;
   }

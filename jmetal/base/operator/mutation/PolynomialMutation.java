@@ -6,13 +6,10 @@
  */
 package jmetal.base.operator.mutation;
 
-import jmetal.base.Configuration;
 import jmetal.base.Solution;
-import jmetal.base.DecisionVariables;
+import jmetal.base.variable.Real;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
-import jmetal.base.Operator;
-import jmetal.base.Configuration.SolutionType_;
 
 /**
  * This class implements a polynomial mutation operator. 
@@ -22,9 +19,11 @@ import jmetal.base.Configuration.SolutionType_;
  * DEFAULT_INDEX_MUTATION. You can change it using the parameter 
  * "distributionIndex" before invoking the execute() method -- see lines 116-119
  */
-public class PolynomialMutation extends Operator {
+public class PolynomialMutation<T extends Real> extends Mutation<T> {
     
-  /**
+  private static final long serialVersionUID = -4694450476401572161L;
+
+	/**
   * DEFAULT_INDEX_MUTATION defines a default index for mutation
   */
   public static final double DEFAULT_INDEX_MUTATION = 20.0;
@@ -57,16 +56,16 @@ public class PolynomialMutation extends Operator {
   * @param solution The solution to mutate
    * @throws JMException 
   */
-  public void doMutation(double probability, Solution solution) throws JMException {        
+  public void doMutation(double probability, Solution<T> solution) throws JMException {        
     double rnd, delta1, delta2, mut_pow, deltaq;
     double y, yl, yu, val, xy;
     for (int var=0; var < solution.getDecisionVariables().size(); var++)
     {
       if (PseudoRandom.randDouble() <= probability)
       {
-        y      = solution.getDecisionVariables().variables_[var].getValue();
-        yl     = solution.getDecisionVariables().variables_[var].getLowerBound();                
-        yu     = solution.getDecisionVariables().variables_[var].getUpperBound();
+        y      = solution.getDecisionVariables().variables_.get(var).getValue();
+        yl     = solution.getDecisionVariables().variables_.get(var).getLowerBound();                
+        yu     = solution.getDecisionVariables().variables_.get(var).getUpperBound();
         delta1 = (y-yl)/(yu-yl);
         delta2 = (yu-y)/(yu-yl);
         rnd = PseudoRandom.randDouble();
@@ -88,10 +87,15 @@ public class PolynomialMutation extends Operator {
           y = yl;
         if (y>yu)
           y = yu;
-        solution.getDecisionVariables().variables_[var].setValue(y);                           
+        solution.getDecisionVariables().variables_.get(var).setValue(y);                           
       }
     }                
   } // doMutation
+  
+  
+	public void setDistributionIndex(double etaM) {
+		eta_m_ = etaM;
+	}
   
   /**
   * Executes the operation
@@ -99,36 +103,8 @@ public class PolynomialMutation extends Operator {
   * @return An object containing the mutated solution
    * @throws JMException 
   */  
-  public Object execute(Object object) throws JMException {
-    Solution solution = (Solution)object;
-
-    if (solution.getType() != SolutionType_.Real) {
-      Configuration.logger_.severe("PolynomialMutation.execute: the solution " +
-          "is not of the right type. The type should be 'Real', but " +
-          solution.getType() + " is obtained");
-
-      Class cls = java.lang.String.class;
-      String name = cls.getName(); 
-      throw new JMException("Exception in " + name + ".execute()") ;
-    } // if 
-    
-    Double probability = (Double)getParameter("probability");       
-    if (probability == null)
-    {
-      Configuration.logger_.severe("PolynomialMutation.execute: probability " +
-      "not specified");
-      Class cls = java.lang.String.class;
-      String name = cls.getName(); 
-      throw new JMException("Exception in " + name + ".execute()") ;  
-    }
-        
-    Double distributionIndex = (Double)getParameter("distributionIndex");
-    if (distributionIndex != null) {
-      eta_m_ = distributionIndex ;
-    } // if
-    
-    doMutation(probability.doubleValue(),solution);
-    return solution;      
+  public void execute(Solution<T> solution) throws JMException {
+    doMutation(probability, solution);
   } // execute
  
 } // PolynomialMutation

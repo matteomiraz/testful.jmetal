@@ -16,7 +16,6 @@ import jmetal.base.variable.Binary;
  * Class representing a solution for a problem.
  */
 public class Solution<T extends Variable> implements Serializable {        
-  
   private static final long serialVersionUID = 8458216795302135603L;
 
   /**

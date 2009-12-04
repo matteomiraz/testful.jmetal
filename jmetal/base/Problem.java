@@ -76,11 +76,15 @@ public abstract class Problem<T extends Variable> implements Serializable {
    * @param solution The set of <code>Solution</code>s to evaluate.
    * @return the number of evaluations done
    */    
-  public int evaluate(final SolutionSet<T> set) throws JMException {
-  	for(Solution<T> solution : set)
-  		evaluate(solution);
+  public int evaluate(final Iterable<Solution<T>> set) throws JMException {
+  	int n = 0;
   	
-  	return set.size();
+  	for(Solution<T> solution : set) {
+  		evaluate(solution);
+  		n++;
+  	}
+  	
+  	return n;
   }
 
   /**

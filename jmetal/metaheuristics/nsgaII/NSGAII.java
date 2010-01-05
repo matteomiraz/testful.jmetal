@@ -71,9 +71,10 @@ public class NSGAII<V extends Variable>
     population = new SolutionSet<V>(populationSize);
     evaluations = 0;
     requiredEvaluations = 0;
+    final long start = System.currentTimeMillis(); 
 
     int currentGeneration = 0;
-    problem_.setCurrentGeneration(currentGeneration);
+    problem_.setCurrentGeneration(currentGeneration, System.currentTimeMillis() - start);
 
     // Create the initial solutionSet
     for (int i = 0; i < populationSize; i++)
@@ -86,7 +87,7 @@ public class NSGAII<V extends Variable>
     
     // Generations ...
     while (evaluations < maxEvaluations) {
-    	problem_.setCurrentGeneration(++currentGeneration);
+    	problem_.setCurrentGeneration(++currentGeneration, System.currentTimeMillis() - start);
     	
       // Create the offSpring solutionSet      
       offspringPopulation = new SolutionSet<V>(populationSize);

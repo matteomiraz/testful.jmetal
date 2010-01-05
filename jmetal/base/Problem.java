@@ -111,7 +111,7 @@ public abstract class Problem<T extends Variable> implements Serializable {
 
 	public abstract List<T> generateNewDecisionVariable() ;
 	
-	public void setCurrentGeneration(int currentGeneration) {
+	public void setCurrentGeneration(int currentGeneration, long time) {
 		this.currentGeneration = currentGeneration;
 	}
 	

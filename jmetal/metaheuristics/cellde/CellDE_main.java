@@ -4,11 +4,11 @@
  * @author Juan J. Durillo
  * @author Antonio J. Nebro
  * @version 1.0
- * 
+ *
  * This algorithm is described in:
- *   J.J. Durillo, A.J. Nebro, F. Luna, E. Alba "Solving Three-Objective 
- *   Optimization Problems Using a new Hybrid Cellular Genetic Algorithm". 
- *   To be presented in: PPSN'08. Dortmund. September 2008. 
+ *   J.J. Durillo, A.J. Nebro, F. Luna, E. Alba "Solving Three-Objective
+ *   Optimization Problems Using a new Hybrid Cellular Genetic Algorithm".
+ *   To be presented in: PPSN'08. Dortmund. September 2008.
  */
 package jmetal.metaheuristics.cellde;
 
@@ -17,6 +17,7 @@ import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 
 import jmetal.base.Configuration;
+import jmetal.base.EvaluationTerminationCriterion;
 import jmetal.base.Problem;
 import jmetal.base.SolutionSet;
 import jmetal.base.operator.crossover.CrossoverFactory;
@@ -34,20 +35,20 @@ public class CellDE_main {
   public static FileHandler fileHandler_ ; // FileHandler object
 
   /**
-   * @param args Command line arguments. The first (optional) argument specifies 
+   * @param args Command line arguments. The first (optional) argument specifies
    *      the problem to solve.
-   * @throws JMException 
-   * @throws IOException 
-   * @throws SecurityException 
+   * @throws JMException
+   * @throws IOException
+   * @throws SecurityException
    */
   @SuppressWarnings("unchecked")
-	public static void main(String [] args) throws 
+	public static void main(String [] args) throws
                                  JMException, SecurityException, IOException {
     Problem<Real>  problem   ;         // The problem to solve
     BinaryTournament<Real>  selection ;
     DifferentialEvolutionCrossover  crossover ;
     CellDE<Real, BinaryTournament<Real>> algorithm ;         // The algorithm to use
-    
+
     QualityIndicator<Real> indicators ; // Object to get quality indicators
 
     // Logger object and file to store log messages
@@ -74,33 +75,33 @@ public class CellDE_main {
       //problem = new DTLZ1("Real");
       //problem = new OKA2("Real") ;
     } // else
-    
+
     algorithm = new CellDE<Real, BinaryTournament<Real>>(problem);
-    
+
     // Algorithm parameters
     algorithm.setPopulationSize(100);
     algorithm.setArchiveSize(100);
-    algorithm.setMaxEvaluations(25000);
+    algorithm.setTerminationCriterion(new EvaluationTerminationCriterion(25000));
     algorithm.setFeedBack(20);
-    
-    // Crossover operator 
-    crossover = (DifferentialEvolutionCrossover) CrossoverFactory.getCrossoverOperator("DifferentialEvolutionCrossover");                   
-    crossover.setCR(0.5);                   
+
+    // Crossover operator
+    crossover = (DifferentialEvolutionCrossover) CrossoverFactory.getCrossoverOperator("DifferentialEvolutionCrossover");
+    crossover.setCR(0.5);
     crossover.setF(0.5);
-    
+
     // Add the operators to the algorithm
-    selection = (BinaryTournament<Real>) SelectionFactory.getSelectionOperator("BinaryTournament") ; 
+    selection = (BinaryTournament<Real>) SelectionFactory.getSelectionOperator("BinaryTournament") ;
 
     algorithm.setCrossover(crossover);
     algorithm.setSelection(selection);
-    
-    // Execute the Algorithm 
+
+    // Execute the Algorithm
     long initTime = System.currentTimeMillis();
     SolutionSet<Real> population = algorithm.execute();
     long estimatedTime = System.currentTimeMillis() - initTime;
     System.out.println("Total execution time: "+estimatedTime);
 
-    // Log messages 
+    // Log messages
     logger_.info("Objectives values have been writen to file FUN");
     population.printObjectivesToFile("FUN");
     logger_.info("Variables values have been writen to file VAR");

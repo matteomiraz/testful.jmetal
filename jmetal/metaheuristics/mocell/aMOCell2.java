@@ -8,6 +8,7 @@ package jmetal.metaheuristics.mocell;
 import java.util.Comparator;
 
 import jmetal.base.Algorithm;
+import jmetal.base.EvaluationTerminationCriterion;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
@@ -25,7 +26,7 @@ import jmetal.util.Neighborhood;
 import jmetal.util.Ranking;
 
 /**
- * This class representing an asychronous version of MOCell algorithm in 
+ * This class representing an asychronous version of MOCell algorithm in
  * wich feedback take places through parent selection from the archive
  */
 public class aMOCell2<V extends Variable>
@@ -37,7 +38,7 @@ extends Algorithm<V, Crossover<V>, Mutation<V>, Selection<V, Solution<V>>, Local
    */
   private Problem<V> problem_;
 
-  /** 
+  /**
    * Constructor
    * @param problem Problem to solve
    */
@@ -46,36 +47,34 @@ extends Algorithm<V, Crossover<V>, Mutation<V>, Selection<V, Solution<V>>, Local
   } // aMOCell2
 
   private int archiveSize;
-  
+
 	public void setArchiveSize(int archiveSize) {
 		this.archiveSize = archiveSize;
 	}
-	
-  /**   
+
+  /**
    * Runs of the aMOCell2 algorithm.
    * @return a <code>SolutionSet</code> that is a set of non dominated solutions
-   * as a result of the algorithm execution  
-   * @throws JMException 
-   */    
+   * as a result of the algorithm execution
+   * @throws JMException
+   */
   @SuppressWarnings("unchecked")
 	public SolutionSet<V> execute() throws JMException {
     //Init the param
-    int populationSize, maxEvaluations, evaluations;
+    int populationSize;
     SolutionSet<V> currentSolutionSet;
     CrowdingArchive<V> archive;
-    SolutionSet<V> [] neighbors;    
+    SolutionSet<V> [] neighbors;
     Neighborhood<V> neighborhood;
     Comparator<Solution<V>> dominance = new DominanceComparator<V>(),
-    crowding  = new CrowdingComparator<V>();  
+    crowding  = new CrowdingComparator<V>();
 
     //Read the params
     populationSize    = getPopulationSize();
-    maxEvaluations    = getMaxEvaluations();                                
 
     //Initialize the variables
-    currentSolutionSet  = new SolutionSet<V>(populationSize);        
-    archive            = new CrowdingArchive<V>(archiveSize,problem_.getNumberOfObjectives());                
-    evaluations        = 0;                        
+    currentSolutionSet  = new SolutionSet<V>(populationSize);
+    archive            = new CrowdingArchive<V>(archiveSize,problem_.getNumberOfObjectives());
     neighborhood       = new Neighborhood<V>(populationSize);
     neighbors          = new SolutionSet[populationSize];
 
@@ -83,22 +82,23 @@ extends Algorithm<V, Crossover<V>, Mutation<V>, Selection<V, Solution<V>>, Local
     //Create the initial population
     for (int i = 0; i < populationSize; i++){
       Solution<V> solution = new Solution<V>(problem_);
-      problem_.evaluate(solution);           
+      problem_.evaluate(solution);
       problem_.evaluateConstraints(solution);
       currentSolutionSet.add(solution);
       solution.setLocation(i);
-      evaluations++;
+      if(getTerminationCriterion() instanceof EvaluationTerminationCriterion)
+        	((EvaluationTerminationCriterion)getTerminationCriterion()).addEvaluations(1);
     }
 
 
-    while (evaluations < maxEvaluations){                                 
+    while (!getTerminationCriterion().isTerminated()){
       for (int ind = 0; ind < currentSolutionSet.size(); ind++){
         Solution<V> individual = new Solution<V>(currentSolutionSet.get(ind));
 
         Solution<V> [] offSpring;
 
         //neighbors[ind] = neighborhood.getFourNeighbors(currentSolutionSet,ind);
-        neighbors[ind] = neighborhood.getEightNeighbors(currentSolutionSet,ind);                                                           
+        neighbors[ind] = neighborhood.getEightNeighbors(currentSolutionSet,ind);
         neighbors[ind].add(individual);
 
         //parents
@@ -111,23 +111,24 @@ extends Algorithm<V, Crossover<V>, Mutation<V>, Selection<V, Solution<V>>, Local
         }
 
         //Create a new solution, using genetic operators mutation and crossover
-        offSpring = crossoverOperator.execute(parent1, parent2);               
+        offSpring = crossoverOperator.execute(parent1, parent2);
         mutationOperator.execute(offSpring[0]);
 
         //->Evaluate solution and constraints
         problem_.evaluate(offSpring[0]);
         problem_.evaluateConstraints(offSpring[0]);
-        evaluations++;
+        if(getTerminationCriterion() instanceof EvaluationTerminationCriterion)
+          	((EvaluationTerminationCriterion)getTerminationCriterion()).addEvaluations(1);
 
         int flag = dominance.compare(individual,offSpring[0]);
 
         if (flag == 1){ // OffSpring[0] dominates
-          offSpring[0].setLocation(individual.getLocation());                                      
+          offSpring[0].setLocation(individual.getLocation());
           currentSolutionSet.replace(offSpring[0].getLocation(),offSpring[0]);
-          archive.add(new Solution<V>(offSpring[0]));                   
-        } else if (flag == 0) { //Both two are non-dominated               
+          archive.add(new Solution<V>(offSpring[0]));
+        } else if (flag == 0) { //Both two are non-dominated
           neighbors[ind].add(offSpring[0]);
-          //(new Spea2Fitness(neighbors[ind])).fitnessAssign();                   
+          //(new Spea2Fitness(neighbors[ind])).fitnessAssign();
           //neighbors[ind].sort(new FitnessAndCrowdingDistanceComparator()); //Create a new comparator;
           Ranking<V> rank = new Ranking<V>(neighbors[ind]);
           for (int j = 0; j < rank.getNumberOfSubfronts(); j++){
@@ -147,12 +148,12 @@ extends Algorithm<V, Crossover<V>, Mutation<V>, Selection<V, Solution<V>>, Local
             currentSolutionSet.replace(offSpring[0].getLocation(),offSpring[0]);
             archive.add(new Solution<V>(offSpring[0]));
           } else {
-            archive.add(new Solution<V>(offSpring[0]));    
+            archive.add(new Solution<V>(offSpring[0]));
           }
-        }                              
-      }                                                       
+        }
+      }
     }
     return archive;
-  } // execute     
+  } // execute
 } // aMOCell2
 

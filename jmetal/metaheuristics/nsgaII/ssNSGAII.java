@@ -1,11 +1,12 @@
 /**
  * ssNSGAII.java
  * @author Antonio J. Nebro
- * @version 1.0  
+ * @version 1.0
  */
 package jmetal.metaheuristics.nsgaII;
 
 import jmetal.base.Algorithm;
+import jmetal.base.EvaluationTerminationCriterion;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
@@ -40,21 +41,19 @@ public class ssNSGAII<V extends Variable>
   } // NSGAII
 
   private QualityIndicator<V> indicators; // QualityIndicator object
-  
+
 	public void setIndicators(QualityIndicator<V> indicators) {
 		this.indicators = indicators;
 	}
 
-  /**   
+  /**
    * Runs the ssNSGA-II algorithm.
    * @return a <code>SolutionSet</code> that is a set of non dominated solutions
    * as a result of the algorithm execution
-   * @throws JMException 
+   * @throws JMException
    */
 	public SolutionSet<V> execute() throws JMException {
     int populationSize;
-    int maxEvaluations;
-    int evaluations;
 
     int requiredEvaluations; // Use in the example of use of the
     // indicators object (see below)
@@ -65,11 +64,9 @@ public class ssNSGAII<V extends Variable>
 
     //Read the parameters
     populationSize = getPopulationSize();
-    maxEvaluations = getMaxEvaluations();
 
     //Initialize the variables
     population = new SolutionSet<V>(populationSize);
-    evaluations = 0;
 
     requiredEvaluations = 0;
 
@@ -79,20 +76,21 @@ public class ssNSGAII<V extends Variable>
       newSolution = new Solution<V>(problem_);
       problem_.evaluate(newSolution);
       problem_.evaluateConstraints(newSolution);
-      evaluations++;
+      if(getTerminationCriterion() instanceof EvaluationTerminationCriterion)
+        	((EvaluationTerminationCriterion)getTerminationCriterion()).addEvaluations(1);
       population.add(newSolution);
-    } //for       
+    } //for
 
     // Generations ...
-    while (evaluations < maxEvaluations) {
+    while (!getTerminationCriterion().isTerminated()) {
 
-      // Create the offSpring solutionSet      
+      // Create the offSpring solutionSet
       offspringPopulation = new SolutionSet<V>(populationSize);
 
       //obtain parents
       Solution<V> parent1 = (Solution<V>) selectionOperator.execute(population);
       Solution<V> parent2 = (Solution<V>) selectionOperator.execute(population);
-      
+
       // crossover
       Solution<V>[] offSpring = (Solution<V>[]) crossoverOperator.execute(parent1, parent2);
 
@@ -106,7 +104,8 @@ public class ssNSGAII<V extends Variable>
       // insert child into the offspring population
       offspringPopulation.add(offSpring[0]);
 
-      evaluations ++;
+      if(getTerminationCriterion() instanceof EvaluationTerminationCriterion)
+        	((EvaluationTerminationCriterion)getTerminationCriterion()).addEvaluations(1);
 
       // Create the solutionSet union of solutionSet and offSpring
       union = ((SolutionSet<V>) population).union(offspringPopulation);
@@ -137,11 +136,11 @@ public class ssNSGAII<V extends Variable>
         index++;
         if (remain > 0) {
           front = ranking.getSubfront(index);
-        } // if        
+        } // if
       } // while
 
       // Remain is less than front(index).size, insert only the best one
-      if (remain > 0) {  // front contains individuals to insert                        
+      if (remain > 0) {  // front contains individuals to insert
         Distance.crowdingDistanceAssignment(front, problem_.getNumberOfObjectives());
         front.sort(new jmetal.base.operator.comparator.CrowdingComparator<V>());
         for (int k = 0; k < remain; k++) {
@@ -149,23 +148,21 @@ public class ssNSGAII<V extends Variable>
         } // for
 
         remain = 0;
-      } // if                               
+      } // if
 
       // This piece of code shows how to use the indicator object into the code
       // of NSGA-II. In particular, it finds the number of evaluations required
       // by the algorithm to obtain a Pareto front with a hypervolume higher
       // than the hypervolume of the true Pareto front.
       if ((indicators != null) &&
-        (requiredEvaluations == 0)) {
+        (requiredEvaluations == 0) &&
+        getTerminationCriterion() instanceof EvaluationTerminationCriterion) {
         double HV = indicators.getHypervolume(population);
         if (HV >= (0.98 * indicators.getTrueParetoFrontHypervolume())) {
-          requiredEvaluations = evaluations;
+          System.out.println("Required Evaluations: " + getTerminationCriterion());
         } // if
       } // if
     } // while
-
-    // Return as output parameter the required evaluations
-    setEvaluations(requiredEvaluations);
 
     // Return the first non-dominated front
     Ranking<V> ranking = new Ranking<V>(population);

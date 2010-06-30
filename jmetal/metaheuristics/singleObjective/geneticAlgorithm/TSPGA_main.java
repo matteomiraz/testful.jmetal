@@ -10,6 +10,7 @@ package jmetal.metaheuristics.singleObjective.geneticAlgorithm;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import jmetal.base.EvaluationTerminationCriterion;
 import jmetal.base.Problem;
 import jmetal.base.SolutionSet;
 import jmetal.base.operator.crossover.Crossover;
@@ -23,7 +24,7 @@ import jmetal.problems.singleObjective.TSP;
 import jmetal.util.JMException;
 
 /**
- * This class runs a single-objective genetic algorithm (GA). The GA can be 
+ * This class runs a single-objective genetic algorithm (GA). The GA can be
  * a steady-state GA (class SSGA) or a generational GA (class GGA). The TSP
  * is used to test the algorithms. The data files accepted as in input are from
  * TSPLIB.
@@ -31,35 +32,35 @@ import jmetal.util.JMException;
 public class TSPGA_main {
 
   @SuppressWarnings("unchecked")
-	public static void main(String [] args)  throws FileNotFoundException, 
+	public static void main(String [] args)  throws FileNotFoundException,
                                                   IOException, JMException{
     Problem<Permutation>  problem   ;         // The problem to solve
     GGA<Permutation> algorithm ;         // The algorithm to use
     Crossover<Permutation>  crossover ;         // Crossover operator
     Mutation<Permutation>  mutation  ;         // Mutation operator
     BinaryTournament<Permutation>  selection ;         // Selection operator
-            
+
     String problemName = "eil101.tsp" ;
-    
+
     problem = new TSP(problemName);
-    
+
     //algorithm = new SSGA(problem);
     algorithm = new GGA<Permutation>(problem) ;
-    
+
     // Algorithm params
     algorithm.setPopulationSize(512);
-    algorithm.setMaxEvaluations(200000);
-    
+    algorithm.setTerminationCriterion(new EvaluationTerminationCriterion(200000));
+
     // Mutation and Crossover for Real codification */
     crossover = (Crossover<Permutation>) CrossoverFactory.getCrossoverOperator("TwoPointsCrossover");
     //crossover = CrossoverFactory.getCrossoverOperator("PMXCrossover");
-    crossover.setProbability(0.95);                   
-    mutation = (Mutation<Permutation>) MutationFactory.getMutationOperator("SwapMutation");                    
-    mutation.setProbability(0.2); 
-  
+    crossover.setProbability(0.95);
+    mutation = (Mutation<Permutation>) MutationFactory.getMutationOperator("SwapMutation");
+    mutation.setProbability(0.2);
+
     /* Selection Operator */
-    selection = (BinaryTournament<Permutation>) SelectionFactory.getSelectionOperator("BinaryTournament") ;                            
-    
+    selection = (BinaryTournament<Permutation>) SelectionFactory.getSelectionOperator("BinaryTournament") ;
+
     /* Add the operators to the algorithm*/
     algorithm.setCrossover(crossover);
     algorithm.setMutation(mutation);
@@ -75,6 +76,6 @@ public class TSPGA_main {
     System.out.println("Objectives values have been writen to file FUN");
     population.printObjectivesToFile("FUN");
     System.out.println("Variables values have been writen to file VAR");
-    population.printVariablesToFile("VAR");          
+    population.printVariablesToFile("VAR");
   }//main
 } // TSPGA_main

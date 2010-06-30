@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import jmetal.base.Algorithm;
+import jmetal.base.EvaluationTerminationCriterion;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
@@ -28,7 +29,7 @@ import jmetal.util.Ranking;
 /**
  * This class representing the SPEA2 algorithm
  */
-public class IBEA<V extends Variable> 
+public class IBEA<V extends Variable>
 	extends Algorithm<V, Crossover<V>, Mutation<V>, Selection<V, Solution<V>>, LocalSearch<V>> {
 
   private static final long serialVersionUID = 3196948190912308055L;
@@ -39,11 +40,11 @@ public class IBEA<V extends Variable>
   public static final int TOURNAMENTS_ROUNDS = 1;
 
   private int archiveSize;
-  
+
 	public void setArchiveSize(int archiveSize) {
 		this.archiveSize = archiveSize;
 	}
-  
+
   /**
    * Stores the problem to solve
    */
@@ -167,7 +168,7 @@ public class IBEA<V extends Variable>
   public void fitness(SolutionSet<V> solutionSet,int pos) {
       double fitness = 0.0;
       double kappa   = 0.05;
-    
+
       for (int i = 0; i < solutionSet.size(); i++) {
         if (i!=pos) {
            fitness += Math.exp((-1 * indicatorValues_.get(i).get(pos)/maxIndicatorValue_) / kappa);
@@ -208,16 +209,16 @@ public class IBEA<V extends Variable>
 
 
 
-  /** 
+  /**
    * Update the fitness before removing an individual
    */
   public void removeWorst(SolutionSet<V> solutionSet) {
-   
+
     // Find the worst;
     double worst      = solutionSet.get(0).getFitness();
     int    worstIndex = 0;
     double kappa = 0.05;
-     
+
     for (int i = 1; i < solutionSet.size(); i++) {
       if (solutionSet.get(i).getFitness() > worst) {
         worst = solutionSet.get(i).getFitness();
@@ -258,17 +259,15 @@ public class IBEA<V extends Variable>
   * @throws JMException
   */
   public SolutionSet<V> execute() throws JMException{
-    int populationSize, maxEvaluations, evaluations;
+    int populationSize;
     SolutionSet<V> solutionSet, archive, offSpringSolutionSet;
 
     //Read the params
     populationSize = getPopulationSize();
-    maxEvaluations = getMaxEvaluations();
 
     //Initialize the variables
     solutionSet  = new SolutionSet<V>(populationSize);
     archive     = new SolutionSet<V>(archiveSize);
-    evaluations = 0;
 
     //-> Create the initial solutionSet
     Solution<V> newSolution;
@@ -276,15 +275,16 @@ public class IBEA<V extends Variable>
       newSolution = new Solution<V>(problem_);
       problem_.evaluate(newSolution);
       problem_.evaluateConstraints(newSolution);
-      evaluations++;
+      if(getTerminationCriterion() instanceof EvaluationTerminationCriterion)
+        	((EvaluationTerminationCriterion)getTerminationCriterion()).addEvaluations(1);
       solutionSet.add(newSolution);
     }
 
-    while (evaluations < maxEvaluations){
+    while (!getTerminationCriterion().isTerminated()){
       SolutionSet<V> union = solutionSet.union(archive);
       calculateFitness(union);
       archive = union;
-      
+
       while (archive.size() > populationSize) {
         removeWorst(archive);
       }
@@ -309,7 +309,8 @@ public class IBEA<V extends Variable>
         problem_.evaluate(offSpring[0]);
         problem_.evaluateConstraints(offSpring[0]);
         offSpringSolutionSet.add(offSpring[0]);
-        evaluations++;
+        if(getTerminationCriterion() instanceof EvaluationTerminationCriterion)
+          	((EvaluationTerminationCriterion)getTerminationCriterion()).addEvaluations(1);
       } // while
       // End Create a offSpring solutionSet
       solutionSet = offSpringSolutionSet;

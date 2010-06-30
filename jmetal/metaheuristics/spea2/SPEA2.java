@@ -7,6 +7,7 @@
 package jmetal.metaheuristics.spea2;
 
 import jmetal.base.Algorithm;
+import jmetal.base.EvaluationTerminationCriterion;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
@@ -19,12 +20,12 @@ import jmetal.util.JMException;
 import jmetal.util.Ranking;
 import jmetal.util.Spea2Fitness;
 
-/** 
+/**
  * This class representing the SPEA2 algorithm
  */
 public class SPEA2<V extends Variable>
 	extends Algorithm<V, Crossover<V>, Mutation<V>, Selection<V, Solution<V>>, LocalSearch<V>> {
-          
+
   private static final long serialVersionUID = 749176697788085191L;
 
 	/**
@@ -35,85 +36,85 @@ public class SPEA2<V extends Variable>
   /**
    * Stores the problem to solve
    */
-  private Problem<V> problem_;    
+  private Problem<V> problem_;
 
   /**
   * Constructor.
   * Create a new SPEA2 instance
   * @param problem Problem to solve
   */
-  public SPEA2(Problem<V> problem) {                
-    this.problem_ = problem;        
+  public SPEA2(Problem<V> problem) {
+    this.problem_ = problem;
   } // Spea2
-   
+
   private int archiveSize;
-  
+
 	public void setArchiveSize(int archiveSize) {
 		this.archiveSize = archiveSize;
 	}
-  
-  /**   
+
+  /**
   * Runs of the Spea2 algorithm.
   * @return a <code>SolutionSet</code> that is a set of non dominated solutions
-  * as a result of the algorithm execution  
-   * @throws JMException 
-  */  
-  public SolutionSet<V> execute() throws JMException{   
-    int populationSize, maxEvaluations, evaluations;
-    SolutionSet<V> solutionSet, archive, offSpringSolutionSet;    
-    
+  * as a result of the algorithm execution
+   * @throws JMException
+  */
+  public SolutionSet<V> execute() throws JMException{
+    int populationSize;
+    SolutionSet<V> solutionSet, archive, offSpringSolutionSet;
+
     //Read the params
     populationSize = getPopulationSize();
-    maxEvaluations = getMaxEvaluations();
-        
+
     //Initialize the variables
     solutionSet  = new SolutionSet<V>(populationSize);
     archive     = new SolutionSet<V>(archiveSize);
-    evaluations = 0;
-        
+
     //-> Create the initial solutionSet
     Solution<V> newSolution;
     for (int i = 0; i < populationSize; i++) {
       newSolution = new Solution<V>(problem_);
-      problem_.evaluate(newSolution);            
+      problem_.evaluate(newSolution);
       problem_.evaluateConstraints(newSolution);
-      evaluations++;
+      if(getTerminationCriterion() instanceof EvaluationTerminationCriterion)
+      	((EvaluationTerminationCriterion)getTerminationCriterion()).addEvaluations(1);
       solutionSet.add(newSolution);
-    }                        
-        
-    while (evaluations < maxEvaluations){               
+    }
+
+    while (!getTerminationCriterion().isTerminated()){
       SolutionSet<V> union = ((SolutionSet<V>)solutionSet).union(archive);
       Spea2Fitness<V> spea = new Spea2Fitness<V>(union);
       spea.fitnessAssign();
-      archive = spea.environmentalSelection(archiveSize);                       
+      archive = spea.environmentalSelection(archiveSize);
       // Create a new offspringPopulation
-      offSpringSolutionSet= new SolutionSet<V>(populationSize);    
-      while (offSpringSolutionSet.size() < populationSize){           
+      offSpringSolutionSet= new SolutionSet<V>(populationSize);
+      while (offSpringSolutionSet.size() < populationSize){
         Solution<V>  parent1, parent2;
         int j = 0;
         do{
-          j++;                
+          j++;
           parent1 = (Solution<V>)selectionOperator.execute(archive);
-        } while (j < SPEA2.TOURNAMENTS_ROUNDS); // do-while                    
+        } while (j < SPEA2.TOURNAMENTS_ROUNDS); // do-while
         int k = 0;
         do{
-          k++;                
+          k++;
           parent2 = (Solution<V>)selectionOperator.execute(archive);
         } while (k < SPEA2.TOURNAMENTS_ROUNDS); // do-while
-            
-        //make the crossover 
-        Solution<V> [] offSpring = crossoverOperator.execute(parent1, parent2);            
-        mutationOperator.execute(offSpring[0]);            
+
+        //make the crossover
+        Solution<V> [] offSpring = crossoverOperator.execute(parent1, parent2);
+        mutationOperator.execute(offSpring[0]);
         problem_.evaluate(offSpring[0]);
-        problem_.evaluateConstraints(offSpring[0]);            
+        problem_.evaluateConstraints(offSpring[0]);
         offSpringSolutionSet.add(offSpring[0]);
-        evaluations++;
+        if(getTerminationCriterion() instanceof EvaluationTerminationCriterion)
+        	((EvaluationTerminationCriterion)getTerminationCriterion()).addEvaluations(1);
       } // while
       // End Create a offSpring solutionSet
-      solutionSet = offSpringSolutionSet;                   
+      solutionSet = offSpringSolutionSet;
     } // while
-        
+
     Ranking<V> ranking = new Ranking<V>(archive);
     return ranking.getSubfront(0);
-  } // execute    
+  } // execute
 } // Spea2

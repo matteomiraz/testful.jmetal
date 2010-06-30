@@ -8,6 +8,7 @@ package jmetal.metaheuristics.moead;
 import java.util.Vector;
 
 import jmetal.base.Algorithm;
+import jmetal.base.EvaluationTerminationCriterion;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
@@ -42,7 +43,7 @@ public class MOEAD <V extends Variable>
   /**
    * Lambda vectors
    */
-  //Vector<Vector<Double>> lambda_ ; 
+  //Vector<Vector<Double>> lambda_ ;
   double[][] lambda_;
   /**
    * T: neighbour size
@@ -63,9 +64,8 @@ public class MOEAD <V extends Variable>
   int H_;
   Solution<V>[] indArray_;
   String functionType_;
-  int evaluations_;
 
-  /** 
+  /**
    * Constructor
    * @param problem Problem to solve
    */
@@ -78,10 +78,7 @@ public class MOEAD <V extends Variable>
 
   @SuppressWarnings("unchecked")
 	public SolutionSet<V> execute() throws JMException {
-    int maxEvaluations;
 
-    evaluations_ = 0;
-    maxEvaluations = getMaxEvaluations();
     populationSize_ = getPopulationSize();
 
     population_ = new SolutionSet<V>(populationSize_);
@@ -97,7 +94,7 @@ public class MOEAD <V extends Variable>
     z_ = new double[problem_.getNumberOfObjectives()];
     //lambda_ = new Vector(problem_.getNumberOfObjectives()) ;
     lambda_ = new double[populationSize_][problem_.getNumberOfObjectives()];
-    
+
     // STEP 1. Initialization
     // STEP 1.1. Compute euclidean distances between weight vectors and find T
     initUniformWeight();
@@ -121,7 +118,7 @@ public class MOEAD <V extends Variable>
         double rnd = PseudoRandom.randDouble();
 
         // STEP 2.1. Mating selection based on probability
-        if (rnd < delta_) // if (rnd < realb)    
+        if (rnd < delta_) // if (rnd < realb)
         {
           type = 1;   // neighborhood
         } else {
@@ -138,7 +135,7 @@ public class MOEAD <V extends Variable>
         parents[1] = population_.get(p.get(1));
         parents[2] = population_.get(n);
 
-        // Apply DE crossover 
+        // Apply DE crossover
         child = crossoverOperator.execute(population_.get(n), parents);
         //diff_evo_xover2(population[n].indiv,population[p[0]].indiv,population[p[1]].indiv,child);
 
@@ -148,7 +145,8 @@ public class MOEAD <V extends Variable>
         // Evaluation
         problem_.evaluate(child);
 
-        evaluations_++;
+        if(getTerminationCriterion() instanceof EvaluationTerminationCriterion)
+        	((EvaluationTerminationCriterion)getTerminationCriterion()).addEvaluations(1);
 
         // STEP 2.3. Repair. Not necessary
 
@@ -157,15 +155,15 @@ public class MOEAD <V extends Variable>
 
         // STEP 2.5. Update of solutions
         updateProblem(child, n, type);
-      } // for 
+      } // for
     //System.exit(0) ;
-    } while (evaluations_ < maxEvaluations);
+    } while (!getTerminationCriterion().isTerminated());
 
     return population_;
   }
 
   /**
-   * 
+   *
    */
   public void initUniformWeight() {
     if (problem_.getNumberOfObjectives() == 2) {
@@ -193,7 +191,7 @@ public class MOEAD <V extends Variable>
   } // initUniformWeight
 
   /**
-   * 
+   *
    */
   public void initNeighborhood() {
     double[] x = new double[populationSize_];
@@ -216,7 +214,7 @@ public class MOEAD <V extends Variable>
   } // initNeighborhood
 
   /**
-   * 
+   *
    */
   public void initPopulation() throws JMException {
     for (int i = 0; i < populationSize_; i++) {
@@ -224,20 +222,22 @@ public class MOEAD <V extends Variable>
 
       problem_.evaluate(newSolution);
       problem_.evaluateConstraints(newSolution);
-      evaluations_++;
+      if(getTerminationCriterion() instanceof EvaluationTerminationCriterion)
+      	((EvaluationTerminationCriterion)getTerminationCriterion()).addEvaluations(1);
       population_.add(newSolution);
     } // for
   } // initPopulation
 
   /**
-   * 
+   *
    */
   void initIdealPoint() throws JMException {
     for (int i = 0; i < problem_.getNumberOfObjectives(); i++) {
       z_[i] = 1.0e+30;
       indArray_[i] = new Solution<V>(problem_);
       problem_.evaluate(indArray_[i]);
-      evaluations_++;
+      if(getTerminationCriterion() instanceof EvaluationTerminationCriterion)
+      	((EvaluationTerminationCriterion)getTerminationCriterion()).addEvaluations(1);
     } // for
 
     for (int i = 0; i < populationSize_; i++) {
@@ -246,7 +246,7 @@ public class MOEAD <V extends Variable>
   } // initIdealPoint
 
   /**
-   * 
+   *
    */
   public void matingSelection(Vector<Integer> list, int cid, int size, int type) {
     // list : the set of the indexes of selected mating parents
@@ -283,7 +283,7 @@ public class MOEAD <V extends Variable>
   } // matingSelection
 
   /**
-   * 
+   *
    * @param individual
    */
   void updateReference(Solution<V> individual) {

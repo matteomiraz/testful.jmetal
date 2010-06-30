@@ -11,6 +11,7 @@ package jmetal.experiments.settings;
 import java.util.Properties;
 
 import jmetal.base.Algorithm;
+import jmetal.base.EvaluationTerminationCriterion;
 import jmetal.base.Problem;
 import jmetal.base.operator.crossover.CrossoverFactory;
 import jmetal.base.operator.crossover.DifferentialEvolutionCrossover;
@@ -31,10 +32,10 @@ public class MOEAD_Settings extends Settings {
   double F_ = 0.5;
   int populationSize_ = 300;
   int maxEvaluations_ = 300000;
- 
+
   double mutationProbability_  = 1.0/problem_.getNumberOfVariables() ;
   double  distributionIndexForMutation_ = 20    ;
-  
+
   String paretoFrontFile_ = "";
 
   /**
@@ -59,21 +60,21 @@ public class MOEAD_Settings extends Settings {
 
     // Algorithm parameters
     algorithm.setPopulationSize(populationSize_);
-    algorithm.setMaxEvaluations(maxEvaluations_);
+    algorithm.setTerminationCriterion(new EvaluationTerminationCriterion(maxEvaluations_));
 
-    // Crossover operator 
+    // Crossover operator
     crossover = (DifferentialEvolutionCrossover) CrossoverFactory.getCrossoverOperator("DifferentialEvolutionCrossover");
     crossover.setCR(CR_);
-    crossover.setF(F_);   
-    
+    crossover.setF(F_);
+
     // Mutation operator
-    mutation = (PolynomialMutation) MutationFactory.getMutationOperator("PolynomialMutation");                    
+    mutation = (PolynomialMutation) MutationFactory.getMutationOperator("PolynomialMutation");
     mutation.setProbability(mutationProbability_);
-    mutation.setDistributionIndex(distributionIndexForMutation_);    
-    
+    mutation.setDistributionIndex(distributionIndexForMutation_);
+
     algorithm.setCrossover(crossover);
     algorithm.setMutation(mutation);
-    
+
 //    // Creating the indicator object
 //    if (!paretoFrontFile_.equals("")) {
 //      indicators = new QualityIndicator(problem_, paretoFrontFile_);
@@ -95,12 +96,12 @@ public class MOEAD_Settings extends Settings {
       F_ = Double.parseDouble(settings.getProperty("F", "" + F_));
       populationSize_ = Integer.parseInt(settings.getProperty("POPULATION_SIZE", "" + populationSize_));
       maxEvaluations_ = Integer.parseInt(settings.getProperty("MAX_EVAlUATIONS", "" + maxEvaluations_));
-      mutationProbability_ = Double.parseDouble(settings.getProperty("MUTATION_PROBABILITY", 
+      mutationProbability_ = Double.parseDouble(settings.getProperty("MUTATION_PROBABILITY",
                                                     ""+mutationProbability_)) ;
-      distributionIndexForMutation_ = 
-            Double.parseDouble(settings.getProperty("DISTRIBUTION_INDEX_FOR_MUTATION", 
+      distributionIndexForMutation_ =
+            Double.parseDouble(settings.getProperty("DISTRIBUTION_INDEX_FOR_MUTATION",
                                                     ""+distributionIndexForMutation_)) ;
-      
+
       paretoFrontFile_ = settings.getProperty("PARETO_FRONT_FILE", "");
     }
 

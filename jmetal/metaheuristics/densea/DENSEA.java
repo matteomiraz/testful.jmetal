@@ -9,6 +9,7 @@ package jmetal.metaheuristics.densea;
 import java.util.Comparator;
 
 import jmetal.base.Algorithm;
+import jmetal.base.EvaluationTerminationCriterion;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
@@ -43,7 +44,7 @@ public class DENSEA<V extends Variable>
         if (flag == 0) {
           Solution<V> aux = population.get(j);
           population.replace(j,population.get((population.size()/2)+j));
-          population.replace((population.size()/2)+j,aux);          
+          population.replace((population.size()/2)+j,aux);
         }
       }
     }
@@ -51,31 +52,30 @@ public class DENSEA<V extends Variable>
 
   /* Execute the algorithm */
   public SolutionSet<V> execute() throws JMException {
-    int populationSize, maxEvaluations, evaluations               ;
+    int populationSize;
     SolutionSet<V> population                                        ;
 
     //Read the params
     populationSize    = getPopulationSize();
-    maxEvaluations    = getMaxEvaluations();                
 
     //Init the variables
-    population        = new SolutionSet<V>(populationSize);        
-    evaluations       = 0;                
+    population        = new SolutionSet<V>(populationSize);
 
     //-> Create the initial population
     Solution<V> newIndividual;
     for (int i = 0; i < populationSize; i++) {
-      newIndividual = new Solution<V>(problem_);                    
-      problem_.evaluate(newIndividual);            
+      newIndividual = new Solution<V>(problem_);
+      problem_.evaluate(newIndividual);
       problem_.evaluateConstraints(newIndividual);
-      evaluations++;
+      if(getTerminationCriterion() instanceof EvaluationTerminationCriterion)
+        	((EvaluationTerminationCriterion)getTerminationCriterion()).addEvaluations(1);
       population.add(newIndividual);
-    } //for       
+    } //for
     //<-
 
     Ranking<V> r;
 
-    while (evaluations < maxEvaluations) {
+    while (!getTerminationCriterion().isTerminated()) {
       SolutionSet<V> P3 = new SolutionSet<V>(populationSize);
       for (int i = 0; i < populationSize/2; i++) {
         Solution<V> [] offSpring;
@@ -85,11 +85,13 @@ public class DENSEA<V extends Variable>
         mutationOperator.execute(offSpring[0]);
         problem_.evaluate(offSpring[0]);
         problem_.evaluateConstraints(offSpring[0]);
-        evaluations++;
+        if(getTerminationCriterion() instanceof EvaluationTerminationCriterion)
+          	((EvaluationTerminationCriterion)getTerminationCriterion()).addEvaluations(1);
         mutationOperator.execute(offSpring[1]);
         problem_.evaluate(offSpring[1]);
         problem_.evaluateConstraints(offSpring[1]);
-        evaluations++;
+        if(getTerminationCriterion() instanceof EvaluationTerminationCriterion)
+          	((EvaluationTerminationCriterion)getTerminationCriterion()).addEvaluations(1);
         P3.add(offSpring[0]);
         P3.add(offSpring[1]);
       }

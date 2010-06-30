@@ -11,6 +11,7 @@ import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 
 import jmetal.base.Configuration;
+import jmetal.base.EvaluationTerminationCriterion;
 import jmetal.base.Problem;
 import jmetal.base.SolutionSet;
 import jmetal.base.operator.comparator.FitnessComparator;
@@ -65,7 +66,7 @@ public class IBEA_main {
     // Algorithm params
     algorithm.setPopulationSize(100);
     algorithm.setArchiveSize(100);
-    algorithm.setMaxEvaluations(25000);
+    algorithm.setTerminationCriterion(new EvaluationTerminationCriterion(25000));
 
     // Mutation and Crossover for Real codification
     crossover = (SBXCrossover) CrossoverFactory.getCrossoverOperator("SBXCrossover");

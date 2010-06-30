@@ -11,6 +11,7 @@ package jmetal.experiments.settings;
 import java.util.Properties;
 
 import jmetal.base.Algorithm;
+import jmetal.base.EvaluationTerminationCriterion;
 import jmetal.base.ProblemValue;
 import jmetal.base.operator.crossover.CrossoverFactory;
 import jmetal.base.operator.crossover.SBXCrossover;
@@ -66,7 +67,7 @@ public class AbYSS_Settings extends Settings {
     algorithm.setRefSet1Size(10);
     algorithm.setRefSet2Size(10);
     algorithm.setArchiveSize(100);
-    algorithm.setMaxEvaluations(25000);
+    algorithm.setTerminationCriterion(new EvaluationTerminationCriterion(25000));
 
     // STEP 4. Specify and configure the crossover operator, used in the
     //         solution combination method of the scatter search
@@ -82,7 +83,8 @@ public class AbYSS_Settings extends Settings {
 
 
     improvement = new MutationLocalSearch(problem_, mutation);
-    improvement.setImprovementRounds(improvementRounds_);
+    improvement.setTerminationCriterion(new EvaluationTerminationCriterion(improvementRounds_));
+    improvement.setAbsoluteTerminationCriterion(false);
 
     // STEP 6. Add the operators to the algorithm
     algorithm.setCrossover(crossover);

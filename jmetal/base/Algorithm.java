@@ -15,23 +15,23 @@ import jmetal.base.operator.selection.Selection;
 import jmetal.util.JMException;
 
 /** This class implements a generic template for the algorithms developed in
- *  jMetal. Every algorithm must have a mapping between the parameters and 
- *  and their names, and another mapping between the operators and their names. 
- *  The class declares an abstract method called <code>execute</code>, which 
+ *  jMetal. Every algorithm must have a mapping between the parameters and
+ *  and their names, and another mapping between the operators and their names.
+ *  The class declares an abstract method called <code>execute</code>, which
  *  defines the behavior of the algorithm.
  *  @param <V> the type of the variable
  *  @param <C> the type of the crossover operator
  *  @param <M> the type of the mutation operator
  *  @param <S> the type of the selection operator
  *  @param <I> the type of the improvement operator
- */ 
+ */
 public abstract class Algorithm<V extends Variable, C extends Crossover<V>, M extends Mutation<V>, S extends Selection<V,?>, I extends LocalSearch<V>> implements Serializable {
 
 	private static final long serialVersionUID = 170011594278842840L;
 
 	// input parameters
 	private int populationSize;
-	private int maxEvaluations;
+	private TerminationCriterion terminationCriterion;
 
 	public int getPopulationSize() {
 		return populationSize;
@@ -41,23 +41,12 @@ public abstract class Algorithm<V extends Variable, C extends Crossover<V>, M ex
 		this.populationSize = populationSize;
 	}
 
-	public int getMaxEvaluations() {
-		return maxEvaluations;
+	public TerminationCriterion getTerminationCriterion() {
+		return terminationCriterion;
 	}
 
-	public void setMaxEvaluations(int maxEvaluations) {
-		this.maxEvaluations = maxEvaluations;
-	}
-
-	// output parameters
-	private int evaluations = -1;
-
-	public void setEvaluations(int evaluations) {
-		this.evaluations = evaluations;
-	}
-
-	public int getEvaluations() {
-		return evaluations;
+	public void setTerminationCriterion(TerminationCriterion terminationCriterion) {
+		this.terminationCriterion = terminationCriterion;
 	}
 
 	// configuration
@@ -66,12 +55,12 @@ public abstract class Algorithm<V extends Variable, C extends Crossover<V>, M ex
 	protected S selectionOperator;
 	protected I improvement;
 
-	/**   
+	/**
 	 * Launches the execution of an specific algorithm.
 	 * @return a <code>SolutionSet</code> that is a set of non dominated solutions
-	 * as a result of the algorithm execution  
+	 * as a result of the algorithm execution
 	 */
-	public abstract SolutionSet<V> execute() throws JMException ;   
+	public abstract SolutionSet<V> execute() throws JMException ;
 
 	public void setCrossover(C crossover) {
 		this.crossoverOperator = crossover;

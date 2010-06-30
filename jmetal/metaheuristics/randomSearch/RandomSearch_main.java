@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 
+import jmetal.base.EvaluationTerminationCriterion;
 import jmetal.base.Problem;
 import jmetal.base.SolutionSet;
 import jmetal.base.variable.Real;
@@ -54,7 +55,7 @@ public class RandomSearch_main {
     algorithm = new RandomSearch<Real>(problem);
 
     // Algorithm parameters
-    algorithm.setMaxEvaluations(25000);
+    algorithm.setTerminationCriterion(new EvaluationTerminationCriterion(25000));
 
     // Execute the Algorithm
     long initTime = System.currentTimeMillis();

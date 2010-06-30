@@ -1,6 +1,6 @@
 /**
  * SMPSO.java
- * 
+ *
  * @author Juan J. Durillo
  * @author Antonio J. Nebro
  * @version 1.0
@@ -16,9 +16,11 @@ import java.util.logging.Logger;
 
 import jmetal.base.Algorithm;
 import jmetal.base.DecisionVariables;
+import jmetal.base.IterationTerminationCriterion;
 import jmetal.base.ProblemValue;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
+import jmetal.base.TerminationCriterion;
 import jmetal.base.archive.CrowdingArchive;
 import jmetal.base.operator.comparator.CrowdingDistanceComparator;
 import jmetal.base.operator.comparator.DominanceComparator;
@@ -52,10 +54,6 @@ public class SMPSO<V extends Real>
    * Stores the maximum size for the archive
    */
   private int archiveSize_;
-  /**
-   * Stores the current number of iteration_
-   */
-  private int iteration_;
   /**
    * Stores the perturbation used by the non-uniform mutation
    */
@@ -118,7 +116,7 @@ public class SMPSO<V extends Real>
   double ChVel1_;
   double ChVel2_;
 
-  /** 
+  /**
    * Constructor
    * @param problem Problem to solve
    */
@@ -171,7 +169,7 @@ public class SMPSO<V extends Real>
   private double deltaMin_[];
   boolean success_;
 
-  /** 
+  /**
    * Constructor
    * @param problem Problem to solve
    */
@@ -201,23 +199,23 @@ public class SMPSO<V extends Real>
     ChVel2_ = -1;
   } // Constructor
 
-  
+
 	public void setSwarmSize(int particlesSize) {
 		particlesSize_ = particlesSize;
 	}
-  
+
 	public void setArchiveSize(int archiveSize) {
 		archiveSize_ = archiveSize;
 	}
-	
+
 	public void setMutationDistributionIndex(double mutationDistributionIndex) {
 		mutationDistributionIndex_ = mutationDistributionIndex;
 	}
-	
+
 	public void setIndicators(QualityIndicator<V> indicators) {
 		indicators_ = indicators;
 	}
-	
+
   /**
    * Initialize all parameter of the algorithm
    */
@@ -226,8 +224,6 @@ public class SMPSO<V extends Real>
     //eta_           = ((Double)getInputParameter("eta")).doubleValue();
 
     requiredEvaluations_ = 0;
-
-    iteration_ = 0 ;
 
     success_ = false;
 
@@ -247,7 +243,7 @@ public class SMPSO<V extends Real>
     uniformMutation_.setProbability(1.0 / problem_.getNumberOfVariables());
     nonUniformMutation_ = new NonUniformMutation();
     nonUniformMutation_.setPerturbation(perturbation_);
-    nonUniformMutation_.setMaxIterations(getMaxEvaluations());
+    nonUniformMutation_.setMaxIterations(getTerminationCriterion().getTarget());
     nonUniformMutation_.setProbability(1.0 / problem_.getNumberOfVariables());
     polynomialMutation_ = new PolynomialMutation<V>() ;
     polynomialMutation_.setDistributionIndex(mutationDistributionIndex_);
@@ -261,10 +257,10 @@ public class SMPSO<V extends Real>
       deltaMin_[i] = -deltaMax_[i];
     }
 
-  } // initParams 
+  } // initParams
 
-  // Adaptive inertia 
-  private double inertiaWeight(int iter, int miter, double wma, double wmin) {
+  // Adaptive inertia
+  private double inertiaWeight(long iter, long miter, double wma, double wmin) {
     return wma; // - (((wma-wmin)*(double)iter)/(double)miter);
   } // inertiaWeight
 
@@ -307,9 +303,9 @@ public class SMPSO<V extends Real>
 
   /**
    * Update the speed of each particle
-   * @throws JMException 
+   * @throws JMException
    */
-  private void computeSpeed(int iter, int miter) throws JMException, IOException {
+  private void computeSpeed(long iter, long miter) throws JMException, IOException {
     double r1, r2, C1, C2;
     double wmax, wmin;
     DecisionVariables<V> bestGlobal;
@@ -340,7 +336,7 @@ public class SMPSO<V extends Real>
       wmin = WMin_;
 
       for (int var = 0; var < particle.size(); var++) {
-        //Computing the velocity of this particle 
+        //Computing the velocity of this particle
         speed_[i][var] = velocityConstriction(constrictionCoefficient(C1, C2) *
           (inertiaWeight(iter, miter, wmax, wmin) *
           speed_[i][var] +
@@ -348,7 +344,7 @@ public class SMPSO<V extends Real>
           particle.variables_.get(var).getValue()) +
           C2 * r2 * (bestGlobal.variables_.get(var).getValue() -
           particle.variables_.get(var).getValue())), deltaMax_, //[var],
-          deltaMin_, //[var], 
+          deltaMin_, //[var],
           var,
           i);
       }
@@ -357,7 +353,7 @@ public class SMPSO<V extends Real>
 
   /**
    * Update the position of each particle
-   * @throws JMException 
+   * @throws JMException
    */
   private void computeNewPositions() throws JMException {
     for (int i = 0; i < particlesSize_; i++) {
@@ -367,11 +363,11 @@ public class SMPSO<V extends Real>
         particle.variables_.get(var).setValue((particle.variables_.get(var).getValue() + speed_[i][var]));
         if (particle.variables_.get(var).getValue() < problem_.getLowerLimit(var)) {
           particle.variables_.get(var).setValue(problem_.getLowerLimit(var));
-          speed_[i][var] = speed_[i][var] * ChVel1_; //    
+          speed_[i][var] = speed_[i][var] * ChVel1_; //
         }
         if (particle.variables_.get(var).getValue() > problem_.getUpperLimit(var)) {
           particle.variables_.get(var).setValue(problem_.getUpperLimit(var));
-          speed_[i][var] = speed_[i][var] * ChVel2_; //   
+          speed_[i][var] = speed_[i][var] * ChVel2_; //
         }
       }
     }
@@ -379,11 +375,11 @@ public class SMPSO<V extends Real>
 
   /**
    * Apply a mutation operator to all particles in the swarm
-   * @throws JMException 
+   * @throws JMException
    */
-  private void mopsoMutation(int actualIteration, int totalIterations) throws JMException {
+  private void mopsoMutation(long actualIteration, long totalIterations) throws JMException {
     //There are three groups of particles_, the ones that are mutated with
-    //a non-uniform mutation operator, the ones that are mutated with a 
+    //a non-uniform mutation operator, the ones that are mutated with a
     //uniform mutation and the one that no are mutated
     nonUniformMutation_.setCurrentIteration(actualIteration);
     //*/
@@ -400,11 +396,11 @@ public class SMPSO<V extends Real>
     }
   } // mopsoMutation
 
-  /**   
+  /**
    * Runs of the SMPSO algorithm.
    * @return a <code>SolutionSet</code> that is a set of non dominated solutions
-   * as a result of the algorithm execution  
-   * @throws JMException 
+   * as a result of the algorithm execution
+   * @throws JMException
    */
   public SolutionSet<V> execute() throws JMException {
     initParams();
@@ -426,7 +422,7 @@ public class SMPSO<V extends Real>
     }
 
 
-    // Step4 and 5   
+    // Step4 and 5
     for (int i = 0; i < particles_.size(); i++) {
       Solution<V> particle = new Solution<V>(particles_.get(i));
       leaders_.add(particle);
@@ -441,20 +437,20 @@ public class SMPSO<V extends Real>
     //Crowding the leaders_
     Distance.crowdingDistanceAssignment(leaders_, problem_.getNumberOfObjectives());
 
-    //-> Step 7. Iterations ..        
-    while (iteration_ < getMaxEvaluations()) {
+    //-> Step 7. Iterations ..
+    while (!getTerminationCriterion().isTerminated()) {
       try {
         //Compute the speed_
-        computeSpeed(iteration_, getMaxEvaluations());
+        computeSpeed(getTerminationCriterion().getProgress(), getTerminationCriterion().getTarget());
       } catch (IOException ex) {
         Logger.getLogger(SMPSO.class.getName()).log(Level.SEVERE, null, ex);
       }
 
-      //Compute the new positions for the particles_            
+      //Compute the new positions for the particles_
       computeNewPositions();
 
-      //Mutate the particles_          
-      mopsoMutation(iteration_, getMaxEvaluations());
+      //Mutate the particles_
+      mopsoMutation(getTerminationCriterion().getProgress(), getTerminationCriterion().getTarget());
 
       //Evaluate the new particles_ in new positions
       for (int i = 0; i < particles_.size(); i++) {
@@ -462,7 +458,7 @@ public class SMPSO<V extends Real>
         problem_.evaluate(particle);
       }
 
-      //Actualize the archive          
+      //Actualize the archive
       for (int i = 0; i < particles_.size(); i++) {
         Solution<V> particle = new Solution<V>(particles_.get(i));
         leaders_.add(particle);
@@ -471,7 +467,7 @@ public class SMPSO<V extends Real>
       //Actualize the memory of this particle
       for (int i = 0; i < particles_.size(); i++) {
         int flag = dominance_.compare(particles_.get(i), best_[i]);
-        if (flag != 1) { // the new particle is best_ than the older remeber        
+        if (flag != 1) { // the new particle is best_ than the older remeber
           Solution<V> particle = new Solution<V>(particles_.get(i));
           //this.best_.reemplace(i,particle);
           best_[i] = particle;
@@ -481,15 +477,17 @@ public class SMPSO<V extends Real>
       //Crowding the leaders_
       Distance.crowdingDistanceAssignment(leaders_,
         problem_.getNumberOfObjectives());
-      iteration_++;
+
+      if(getTerminationCriterion() instanceof IterationTerminationCriterion)
+      	((IterationTerminationCriterion)getTerminationCriterion()).addIteration(1);
     }
     return this.leaders_;
   } // execute
 
-  /** 
+  /**
    * Gets the leaders of the SMPSO algorithm
    */
   public SolutionSet<V> getLeader() {
     return leaders_;
-  }  // getLeader   
+  }  // getLeader
 } // SMPSO

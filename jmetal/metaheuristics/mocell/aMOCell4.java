@@ -9,6 +9,7 @@ package jmetal.metaheuristics.mocell;
 import java.util.Comparator;
 
 import jmetal.base.Algorithm;
+import jmetal.base.EvaluationTerminationCriterion;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
@@ -25,7 +26,7 @@ import jmetal.util.JMException;
 import jmetal.util.Neighborhood;
 import jmetal.util.Ranking;
 
-/** 
+/**
  * Class representing de MoCell algorithm
  */
 public class aMOCell4<V extends Variable>
@@ -33,62 +34,61 @@ public class aMOCell4<V extends Variable>
 
   private static final long serialVersionUID = -912983109364330830L;
 	//->fields
-  private Problem<V> problem_;          //The problem to solve        
+  private Problem<V> problem_;          //The problem to solve
 
   public aMOCell4(Problem<V> problem){
     problem_ = problem;
   }
 
   private int archiveSize;
-  
+
 	public void setArchiveSize(int archiveSize) {
 		this.archiveSize = archiveSize;
 	}
 
-  /** Execute the algorithm 
+  /** Execute the algorithm
    * @throws JMException */
   @SuppressWarnings("unchecked")
 	public SolutionSet<V> execute() throws JMException {
     //Init the param
-    int populationSize, maxEvaluations, evaluations;
+    int populationSize;
     SolutionSet<V> currentPopulation;
     CrowdingArchive<V> archive;
-    SolutionSet<V> [] neighbors;    
+    SolutionSet<V> [] neighbors;
     Neighborhood<V> neighborhood;
-    Comparator<Solution<V>> dominance = new DominanceComparator<V>();  
+    Comparator<Solution<V>> dominance = new DominanceComparator<V>();
     Comparator<Solution<V>> crowdingComparator = new CrowdingComparator<V>();
 
     //Init the param
     //Read the params
     populationSize    = getPopulationSize();
-    maxEvaluations    = getMaxEvaluations();                                
 
-    //Init the variables    
-    currentPopulation  = new SolutionSet<V>(populationSize);        
-    archive            = new CrowdingArchive<V>(archiveSize,problem_.getNumberOfObjectives());                
-    evaluations        = 0;                        
+    //Init the variables
+    currentPopulation  = new SolutionSet<V>(populationSize);
+    archive            = new CrowdingArchive<V>(archiveSize,problem_.getNumberOfObjectives());
     neighborhood       = new Neighborhood<V>(populationSize);
     neighbors          = new SolutionSet[populationSize];
 
     //Create the initial population
     for (int i = 0; i < populationSize; i++){
       Solution<V> individual = new Solution<V>(problem_);
-      problem_.evaluate(individual);           
+      problem_.evaluate(individual);
       problem_.evaluateConstraints(individual);
       currentPopulation.add(individual);
       individual.setLocation(i);
-      evaluations++;
+      if(getTerminationCriterion() instanceof EvaluationTerminationCriterion)
+        	((EvaluationTerminationCriterion)getTerminationCriterion()).addEvaluations(1);
     }
 
 
-    while (evaluations < maxEvaluations){                                 
+    while (!getTerminationCriterion().isTerminated()){
       for (int ind = 0; ind < currentPopulation.size(); ind++){
         Solution<V> individual = new Solution<V>(currentPopulation.get(ind));
 
         Solution<V> [] offSpring;
 
         //neighbors[ind] = neighborhood.getFourNeighbors(currentPopulation,ind);
-        neighbors[ind] = neighborhood.getEightNeighbors(currentPopulation,ind);                                                           
+        neighbors[ind] = neighborhood.getEightNeighbors(currentPopulation,ind);
         neighbors[ind].add(individual);
 
         // parents
@@ -96,34 +96,35 @@ public class aMOCell4<V extends Variable>
         Solution<V> parent2;
         if (archive.size() > 0) {
           parent2 = selectionOperator.execute(archive);
-        } else {                   
+        } else {
           parent2 = selectionOperator.execute(neighbors[ind]);
         }
 
         // Create a new individual, using genetic operators mutation and crossover
-        offSpring = crossoverOperator.execute(parent1, parent2);               
+        offSpring = crossoverOperator.execute(parent1, parent2);
         mutationOperator.execute(offSpring[0]);
 
         // Evaluate individual an his constraints
         problem_.evaluate(offSpring[0]);
         problem_.evaluateConstraints(offSpring[0]);
-        evaluations++;
+        if(getTerminationCriterion() instanceof EvaluationTerminationCriterion)
+          	((EvaluationTerminationCriterion)getTerminationCriterion()).addEvaluations(1);
 
         int flag = dominance.compare(individual,offSpring[0]);
 
         if (flag == 1) { //The new individual dominates
-          offSpring[0].setLocation(individual.getLocation());                                      
+          offSpring[0].setLocation(individual.getLocation());
           currentPopulation.replace(offSpring[0].getLocation(),offSpring[0]);
-          archive.add(new Solution<V>(offSpring[0]));                   
-        } else if (flag == 0) { //The new individual is non-dominated               
-          neighbors[ind].add(offSpring[0]);               
+          archive.add(new Solution<V>(offSpring[0]));
+        } else if (flag == 0) { //The new individual is non-dominated
+          neighbors[ind].add(offSpring[0]);
           offSpring[0].setLocation(-1);
           Ranking<V> rank = new Ranking<V>(neighbors[ind]);
           for (int j = 0; j < rank.getNumberOfSubfronts(); j++) {
             Distance.crowdingDistanceAssignment(rank.getSubfront(j),
                                                 problem_.getNumberOfObjectives());
           }
-          neighbors[ind].sort(crowdingComparator); 
+          neighbors[ind].sort(crowdingComparator);
           Solution<V> worst = neighbors[ind].get(neighbors[ind].size()-1);
 
           if (worst.getLocation() == -1) { //The worst is the offspring
@@ -132,12 +133,12 @@ public class aMOCell4<V extends Variable>
             offSpring[0].setLocation(worst.getLocation());
             currentPopulation.replace(offSpring[0].getLocation(),offSpring[0]);
             archive.add(new Solution<V>(offSpring[0]));
-          }                                          
+          }
         }
-      }                                 
+      }
     }
     //System.out.println(evaluations);
     return archive;
-  }        
+  }
 }
 

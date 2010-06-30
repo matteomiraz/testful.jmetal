@@ -6,27 +6,37 @@
 package jmetal.base.operator.localSearch;
 
 import jmetal.base.Solution;
+import jmetal.base.TerminationCriterion;
 import jmetal.base.Variable;
 import jmetal.util.JMException;
 
 /**
  * Abstract class representing a generic local search operator
  */
-public abstract class LocalSearch<T extends Variable> { 
-  private static final long serialVersionUID = -3243846293089587688L;
+public abstract class LocalSearch<T extends Variable> {
+	private static final long serialVersionUID = -3243846293089587688L;
 
-  protected int improvementRounds;
-  
-  
-	public void setImprovementRounds(int improvementRounds) {
-		this.improvementRounds = improvementRounds;
+	/** if true, the termination criterion is absolute; otherwise, it is related to each iteration */
+	protected boolean absoluteTerminationCriterion;
+
+	protected TerminationCriterion terminationCriterion;
+
+	public TerminationCriterion getTerminationCriterion() {
+		return terminationCriterion;
 	}
-  
-	/**
-   * Returns the number of evaluations made by the local search operator
-   */
-  public abstract int getEvaluations();
+
+	public void setTerminationCriterion(TerminationCriterion terminationCriterion) {
+		this.terminationCriterion = terminationCriterion;
+	}
+
+	public boolean isAbsoluteTerminationCriterion() {
+		return absoluteTerminationCriterion;
+	}
+
+	public void setAbsoluteTerminationCriterion(boolean absoluteTerminationCriterion) {
+		this.absoluteTerminationCriterion = absoluteTerminationCriterion;
+	}
 
 	public abstract Solution<T> execute(Solution<T> solution) throws JMException;
-	
+
 } // LocalSearch

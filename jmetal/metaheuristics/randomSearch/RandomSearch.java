@@ -6,6 +6,7 @@
 package jmetal.metaheuristics.randomSearch;
 
 import jmetal.base.Algorithm;
+import jmetal.base.EvaluationTerminationCriterion;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
@@ -44,23 +45,17 @@ public class RandomSearch<V extends Variable>
    * @throws JMException
   */
   public SolutionSet<V> execute() throws JMException {
-    int maxEvaluations ;
-    int evaluations    ;
 
-    maxEvaluations    = getMaxEvaluations();
-
-    //Initialize the variables
-    evaluations = 0;
-
-    NonDominatedSolutionList<V> ndl = new NonDominatedSolutionList<V>();
+	  NonDominatedSolutionList<V> ndl = new NonDominatedSolutionList<V>();
 
     // Create the initial solutionSet
     Solution<V> newSolution;
-    for (int i = 0; i < maxEvaluations; i++) {
+    while(!getTerminationCriterion().isTerminated()) {
       newSolution = new Solution<V>(problem_);
       problem_.evaluate(newSolution);
       problem_.evaluateConstraints(newSolution);
-      evaluations++;
+      if(getTerminationCriterion() instanceof EvaluationTerminationCriterion)
+      	((EvaluationTerminationCriterion)getTerminationCriterion()).addEvaluations(1);
       ndl.add(newSolution);
     } //for
 

@@ -8,6 +8,7 @@ package jmetal.metaheuristics.mocell;
 import java.util.Comparator;
 
 import jmetal.base.Algorithm;
+import jmetal.base.EvaluationTerminationCriterion;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
@@ -27,7 +28,7 @@ import jmetal.util.Ranking;
 
 /**
  * This class representing the original synchronous MOCell algorithm
- * A description of MOCell can be consulted in 
+ * A description of MOCell can be consulted in
  * Nebro A. J., Durillo J.J, Luna F., Dorronsoro B., Alba E. :
  * "A cellular genetic algorithm for multiobjective optimization"
  */
@@ -40,7 +41,7 @@ public class sMOCell1<V extends Variable>
    */
   private Problem<V> problem_;
 
-  /** 
+  /**
    * Constructor
    * @param problem Problem to solve
    */
@@ -49,7 +50,7 @@ public class sMOCell1<V extends Variable>
   } // sMOCell1
 
   private int archiveSize;
-  
+
 	public void setArchiveSize(int archiveSize) {
 		this.archiveSize = archiveSize;
 	}
@@ -60,45 +61,44 @@ public class sMOCell1<V extends Variable>
 		this.feedBack = feedBack;
 	}
 
-  /**   
+  /**
    * Runs of the sMOCell1 algorithm.
    * @return a <code>SolutionSet</code> that is a set of non dominated solutions
-   * as a result of the algorithm execution  
-   * @throws JMException 
-   */ 
+   * as a result of the algorithm execution
+   * @throws JMException
+   */
   @SuppressWarnings("unchecked")
 	public SolutionSet<V> execute() throws JMException {
-    int populationSize, maxEvaluations, evaluations;
+    int populationSize;
     SolutionSet<V> currentSolutionSet, newSolutionSet;
     CrowdingArchive<V> archive;
-    SolutionSet<V> [] neighbors;    
+    SolutionSet<V> [] neighbors;
     Neighborhood<V> neighborhood;
     Comparator<Solution<V>> dominance = new DominanceComparator<V>(),
-    crowding  = new CrowdingComparator<V>();  
+    crowding  = new CrowdingComparator<V>();
 
     //Read the params
     populationSize    = getPopulationSize();
-    maxEvaluations    = getMaxEvaluations();                
 
-    //Initialize the variables    
-    currentSolutionSet  = new SolutionSet<V>(populationSize);        
+    //Initialize the variables
+    currentSolutionSet  = new SolutionSet<V>(populationSize);
     newSolutionSet      = new SolutionSet<V>(populationSize);
-    archive            = new CrowdingArchive<V>(archiveSize,problem_.getNumberOfObjectives());                
-    evaluations        = 0;                        
+    archive            = new CrowdingArchive<V>(archiveSize,problem_.getNumberOfObjectives());
     neighborhood       = new Neighborhood<V>(populationSize);
     neighbors          = new SolutionSet[populationSize];
 
     //Create the initial population
     for (int i = 0; i < populationSize; i++){
       Solution<V> solution = new Solution<V>(problem_);
-      problem_.evaluate(solution);           
+      problem_.evaluate(solution);
       problem_.evaluateConstraints(solution);
       currentSolutionSet.add(solution);
       solution.setLocation(i);
-      evaluations++;
-    }         
+      if(getTerminationCriterion() instanceof EvaluationTerminationCriterion)
+      	((EvaluationTerminationCriterion)getTerminationCriterion()).addEvaluations(1);
+    }
 
-    while (evaluations < maxEvaluations){                 
+    while (!getTerminationCriterion().isTerminated()){
       newSolutionSet = new SolutionSet<V>(populationSize);
       for (int ind = 0; ind < currentSolutionSet.size(); ind++){
         Solution<V> individual = new Solution<V>(currentSolutionSet.get(ind));
@@ -106,7 +106,7 @@ public class sMOCell1<V extends Variable>
         Solution<V> [] offSpring;
 
         //neighbors[ind] = neighborhood.getFourNeighbors(currentSolutionSet,ind);
-        neighbors[ind] = neighborhood.getEightNeighbors(currentSolutionSet,ind);                                                           
+        neighbors[ind] = neighborhood.getEightNeighbors(currentSolutionSet,ind);
         neighbors[ind].add(individual);
 
         //parents
@@ -114,13 +114,14 @@ public class sMOCell1<V extends Variable>
         Solution<V> parent2 = selectionOperator.execute(neighbors[ind]);
 
         //Create a new solution, using genetic operators mutation and crossover
-        offSpring = crossoverOperator.execute(parent1, parent2);               
+        offSpring = crossoverOperator.execute(parent1, parent2);
         mutationOperator.execute(offSpring[0]);
 
         //->Evaluate offspring and constraints
         problem_.evaluate(offSpring[0]);
         problem_.evaluateConstraints(offSpring[0]);
-        evaluations++;
+        if(getTerminationCriterion() instanceof EvaluationTerminationCriterion)
+        	((EvaluationTerminationCriterion)getTerminationCriterion()).addEvaluations(1);
 
         int flag = dominance.compare(individual,offSpring[0]);
 
@@ -128,20 +129,20 @@ public class sMOCell1<V extends Variable>
           newSolutionSet.add(new Solution<V>(currentSolutionSet.get(ind)));
 
         if (flag == 1){ //The offSpring dominates
-          offSpring[0].setLocation(individual.getLocation());                                      
+          offSpring[0].setLocation(individual.getLocation());
           //currentSolutionSet.reemplace(offSpring[0].getLocation(),offSpring[0]);
           newSolutionSet.add(offSpring[0]);
-          archive.add(new Solution<V>(offSpring[0]));                   
+          archive.add(new Solution<V>(offSpring[0]));
         } else if (flag == 0) { //Both two are non-dominates
           neighbors[ind].add(offSpring[0]);
-          //(new Spea2Fitness(neighbors[ind])).fitnessAssign();                   
+          //(new Spea2Fitness(neighbors[ind])).fitnessAssign();
           //neighbors[ind].sort(new FitnessAndCrowdingDistanceComparator()); //Create a new comparator;
           Ranking<V> rank = new Ranking<V>(neighbors[ind]);
           for (int j = 0; j < rank.getNumberOfSubfronts(); j++){
             Distance.crowdingDistanceAssignment(rank.getSubfront(j),problem_.getNumberOfObjectives());
           }
 
-          boolean deleteMutant = true;          
+          boolean deleteMutant = true;
           int compareResult = crowding.compare(individual,offSpring[0]);
           if (compareResult == 1) {//The offSpring[0] is better
             deleteMutant = false;
@@ -154,26 +155,26 @@ public class sMOCell1<V extends Variable>
             archive.add(new Solution<V>(offSpring[0]));
           }else{
             newSolutionSet.add(new Solution<V>(currentSolutionSet.get(ind)));
-            archive.add(new Solution<V>(offSpring[0]));    
+            archive.add(new Solution<V>(offSpring[0]));
           }
-        }                              
-      }                     
+        }
+      }
       //Store a portion of the archive into the population
-      Distance.crowdingDistanceAssignment(archive,problem_.getNumberOfObjectives());                      
+      Distance.crowdingDistanceAssignment(archive,problem_.getNumberOfObjectives());
       for (int j = 0; j < feedBack; j++){
         if (archive.size() > j){
           int r = PseudoRandom.randInt(0,currentSolutionSet.size()-1);
           if (r < currentSolutionSet.size()){
             Solution<V> individual = archive.get(j);
-            individual.setLocation(r);            
+            individual.setLocation(r);
             newSolutionSet.replace(r,new Solution<V>(individual));
           }
         }
-      }           
+      }
 
       currentSolutionSet = newSolutionSet;
     }
     return archive;
-  } // execute        
+  } // execute
 } // sMOCell1
 

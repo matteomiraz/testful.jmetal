@@ -8,6 +8,7 @@ package jmetal.metaheuristics.mocell;
 import java.util.Comparator;
 
 import jmetal.base.Algorithm;
+import jmetal.base.EvaluationTerminationCriterion;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
@@ -28,18 +29,18 @@ import jmetal.util.Ranking;
  * This class representing a sychronous version of MOCell algorithm
  * In this version the feedback take places through parents selections
  * from the archive
- * 
+ *
  */
 public class sMOCell2<V extends Variable>
 	extends Algorithm<V, Crossover<V>, Mutation<V>, Selection<V, Solution<V>>, LocalSearch<V>> {
 
   private static final long serialVersionUID = 5155649352719225604L;
 	/**
-   * Stores the problem to solve 
+   * Stores the problem to solve
    */
   private Problem<V> problem_;
 
-  /** 
+  /**
    * Constructor
    * @param problem Problem to solve
    */
@@ -48,50 +49,49 @@ public class sMOCell2<V extends Variable>
   } //sMOCell2
 
   private int archiveSize;
-  
+
 	public void setArchiveSize(int archiveSize) {
 		this.archiveSize = archiveSize;
 	}
-  
-  /**   
+
+  /**
    * Runs of the sMOCell2 algorithm.
    * @return a <code>SolutionSet</code> that is a set of non dominated solutions
-   * as a result of the algorithm execution  
-   * @throws JMException 
-   */   
+   * as a result of the algorithm execution
+   * @throws JMException
+   */
   @SuppressWarnings("unchecked")
 	public SolutionSet<V> execute() throws JMException {
-    int populationSize, maxEvaluations, evaluations;
+    int populationSize;
     SolutionSet<V> currentSolutionSet, newSolutionSet;
     CrowdingArchive<V> archive;
-    SolutionSet<V> [] neighbors;    
+    SolutionSet<V> [] neighbors;
     Neighborhood<V> neighborhood;
     Comparator<Solution<V>> dominance = new DominanceComparator<V>(),
-    crowding  = new CrowdingComparator<V>();  
+    crowding  = new CrowdingComparator<V>();
 
     //Read the params
     populationSize    = getPopulationSize();
-    maxEvaluations    = getMaxEvaluations();                                
 
-    //Initialize the variables    
-    currentSolutionSet  = new SolutionSet<V>(populationSize);        
+    //Initialize the variables
+    currentSolutionSet  = new SolutionSet<V>(populationSize);
     newSolutionSet     = new SolutionSet<V>(populationSize);
-    archive            = new CrowdingArchive<V>(archiveSize,problem_.getNumberOfObjectives());                
-    evaluations        = 0;                        
+    archive            = new CrowdingArchive<V>(archiveSize,problem_.getNumberOfObjectives());
     neighborhood       = new Neighborhood<V>(populationSize);
     neighbors          = new SolutionSet[populationSize];
 
     //Create the initial population
     for (int i = 0; i < populationSize; i++){
       Solution<V> solution = new Solution<V>(problem_);
-      problem_.evaluate(solution);           
+      problem_.evaluate(solution);
       problem_.evaluateConstraints(solution);
       currentSolutionSet.add(solution);
       solution.setLocation(i);
-      evaluations++;
-    }       
+      if(getTerminationCriterion() instanceof EvaluationTerminationCriterion)
+      	((EvaluationTerminationCriterion)getTerminationCriterion()).addEvaluations(1);
+    }
 
-    while (evaluations < maxEvaluations){                 
+    while (!getTerminationCriterion().isTerminated()){
       newSolutionSet = new SolutionSet<V>(populationSize);
       for (int ind = 0; ind < currentSolutionSet.size(); ind++){
         Solution<V> individual = new Solution<V>(currentSolutionSet.get(ind));
@@ -99,7 +99,7 @@ public class sMOCell2<V extends Variable>
         Solution<V> [] offSpring;
 
         //neighbors[ind] = neighborhood.getFourNeighbors(currentSolutionSet,ind);
-        neighbors[ind] = neighborhood.getEightNeighbors(currentSolutionSet,ind);                                                           
+        neighbors[ind] = neighborhood.getEightNeighbors(currentSolutionSet,ind);
         neighbors[ind].add(individual);
 
         //parents
@@ -112,13 +112,14 @@ public class sMOCell2<V extends Variable>
         }
 
         //Create a new solution, using genetic operators mutation and crossover
-        offSpring = crossoverOperator.execute(parent1, parent2);               
+        offSpring = crossoverOperator.execute(parent1, parent2);
         mutationOperator.execute(offSpring[0]);
 
         //->Evaluate solution an his constraints
         problem_.evaluate(offSpring[0]);
         problem_.evaluateConstraints(offSpring[0]);
-        evaluations++;
+        if(getTerminationCriterion() instanceof EvaluationTerminationCriterion)
+        	((EvaluationTerminationCriterion)getTerminationCriterion()).addEvaluations(1);
         //<-Individual evaluated
 
         int flag = dominance.compare(individual,offSpring[0]);
@@ -128,13 +129,13 @@ public class sMOCell2<V extends Variable>
         }
 
         if (flag == 1) {//The new indivudlas dominate
-          offSpring[0].setLocation(individual.getLocation());                                      
+          offSpring[0].setLocation(individual.getLocation());
           //currentSolutionSet.reemplace(offSpring[0].getLocation(),offSpring[0]);
           newSolutionSet.add(offSpring[0]);
-          archive.add(new Solution<V>(offSpring[0]));                   
+          archive.add(new Solution<V>(offSpring[0]));
         } else if (flag == 0) { //The individuals are non-dominates
           neighbors[ind].add(offSpring[0]);
-          //(new Spea2Fitness(neighbors[ind])).fitnessAssign();                   
+          //(new Spea2Fitness(neighbors[ind])).fitnessAssign();
           //neighbors[ind].sort(new FitnessAndCrowdingDistanceComparator()); //Create a new comparator;
           Ranking<V> rank = new Ranking<V>(neighbors[ind]);
           for (int j = 0; j < rank.getNumberOfSubfronts(); j++){
@@ -154,15 +155,15 @@ public class sMOCell2<V extends Variable>
             archive.add(new Solution<V>(offSpring[0]));
           }else{
             newSolutionSet.add(new Solution<V>(currentSolutionSet.get(ind)));
-            archive.add(new Solution<V>(offSpring[0]));    
+            archive.add(new Solution<V>(offSpring[0]));
           }
-        }                              
-      }           
+        }
+      }
 
 
       currentSolutionSet = newSolutionSet;
     }
     return archive;
-  } // execute       
+  } // execute
 } // sMOCell2
 

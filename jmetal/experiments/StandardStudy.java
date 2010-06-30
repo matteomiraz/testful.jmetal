@@ -17,7 +17,6 @@ import jmetal.base.ProblemValue;
 import jmetal.experiments.settings.GDE3_Settings;
 import jmetal.experiments.settings.MOCell_Settings;
 import jmetal.experiments.settings.NSGAII_Settings;
-import jmetal.experiments.settings.SMPSO_Settings;
 import jmetal.experiments.settings.SPEA2_Settings;
 import jmetal.util.JMException;
 
@@ -51,7 +50,6 @@ public class StandardStudy extends Experiment {
         algorithm[0] = new NSGAII_Settings(problem).configure(parameters[0]);
         algorithm[1] = new SPEA2_Settings(problem).configure(parameters[1]);
         algorithm[2] = new MOCell_Settings(problem).configure(parameters[2]);
-        algorithm[3] = new SMPSO_Settings(problem).configure(parameters[3]);
         algorithm[4] = new GDE3_Settings(problem).configure(parameters[4]);
       } catch  (JMException ex) {
       Logger.getLogger(StandardStudy.class.getName()).log(Level.SEVERE, null, ex);

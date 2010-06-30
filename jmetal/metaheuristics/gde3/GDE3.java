@@ -1,13 +1,15 @@
 /**
 a * GDE3.java
  * @author Antonio J. Nebro
- * @version 1.0  
+ * @version 1.0
  */
 package jmetal.metaheuristics.gde3;
 
 import java.util.Comparator;
 
 import jmetal.base.Algorithm;
+import jmetal.base.EvaluationTerminationCriterion;
+import jmetal.base.IterationTerminationCriterion;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
@@ -22,84 +24,80 @@ import jmetal.util.JMException;
 import jmetal.util.Ranking;
 
 /**
- * This class implements the NSGA-II algorithm. 
+ * This class implements the NSGA-II algorithm.
  */
 public class GDE3<V extends Real>
 	extends Algorithm<V, Crossover<V>, Mutation<V>, DifferentialEvolutionSelection<V>, LocalSearch<V>> {
-  
+
   private static final long serialVersionUID = 7776463559880778310L;
 	/**
    * stores the problem  to solve
    */
-  private Problem<V>  problem_;        
-  
+  private Problem<V>  problem_;
+
   /**
   * Constructor
   * @param problem Problem to solve
   */
   public GDE3(Problem<V> problem){
-    this.problem_ = problem;                        
+    this.problem_ = problem;
   } // GDE3
-  
-  /**   
+
+  /**
   * Runs of the NSGA-II algorithm.
   * @return a <code>SolutionSet</code> that is a set of non dominated solutions
-  * as a result of the algorithm execution  
-   * @throws JMException 
-  */  
+  * as a result of the algorithm execution
+   * @throws JMException
+  */
   public SolutionSet<V> execute() throws JMException {
     int populationSize ;
-    int maxIterations  ;
-    int evaluations    ;
-    int iterations     ;
-    
+
     SolutionSet<V> population          ;
     SolutionSet<V> offspringPopulation ;
-    
+
     Comparator<Solution<V>> dominance ;
-    dominance = new jmetal.base.operator.comparator.DominanceComparator<V>(); 
-    
+    dominance = new jmetal.base.operator.comparator.DominanceComparator<V>();
+
     Solution<V> parent[] ;
-    
+
     //Read the parameters
     populationSize = getPopulationSize();
-    maxIterations  = getMaxEvaluations();                             
-   
+
     //Initialize the variables
-    population  = new SolutionSet<V>(populationSize);        
-    evaluations = 0;                
-    iterations  = 0 ;
+    population  = new SolutionSet<V>(populationSize);
 
     // Create the initial solutionSet
     Solution<V> newSolution;
     for (int i = 0; i < populationSize; i++) {
-      newSolution = new Solution<V>(problem_);                    
-      problem_.evaluate(newSolution);            
+      newSolution = new Solution<V>(problem_);
+      problem_.evaluate(newSolution);
       problem_.evaluateConstraints(newSolution);
-      evaluations++;
+      if(getTerminationCriterion() instanceof EvaluationTerminationCriterion)
+        	((EvaluationTerminationCriterion)getTerminationCriterion()).addEvaluations(1);
       population.add(newSolution);
-    } //for       
-  
-    // Generations ...
-    while (iterations < maxIterations) {
-      // Create the offSpring solutionSet      
-      offspringPopulation  = new SolutionSet<V>(populationSize * 2);        
+    } //for
 
-      for (int i = 0; i < (populationSize); i++){   
-        // Obtain parents. Two parameters are required: the population and the 
+    // Generations ...
+    while (!getTerminationCriterion().isTerminated()) {
+      // Create the offSpring solutionSet
+      offspringPopulation  = new SolutionSet<V>(populationSize * 2);
+
+      for (int i = 0; i < (populationSize); i++){
+        // Obtain parents. Two parameters are required: the population and the
         //                 index of the current individual
       	selectionOperator.setIndex(i);
         parent = selectionOperator.execute(population);
 
         Solution<V> child ;
-        // Crossover. Two parameters are required: the current individual and the 
+        // Crossover. Two parameters are required: the current individual and the
         //            array of parents
         child = ((DifferentialCrossover<V>)crossoverOperator).execute(population.get(i), parent);
 
         problem_.evaluate(child) ;
         problem_.evaluateConstraints(child);
-        evaluations++ ;
-        
+        if(getTerminationCriterion() instanceof EvaluationTerminationCriterion)
+          	((EvaluationTerminationCriterion)getTerminationCriterion()).addEvaluations(1);
+
         // Dominance test
         int result  ;
         result = dominance.compare(population.get(i), child) ;
@@ -113,10 +111,10 @@ public class GDE3<V extends Real>
           offspringPopulation.add(child) ;
           offspringPopulation.add(population.get(i)) ;
         } // else
-      } // for           
+      } // for
 
       // Ranking the offspring population
-      Ranking<V> ranking = new Ranking<V>(offspringPopulation);                        
+      Ranking<V> ranking = new Ranking<V>(offspringPopulation);
 
       int remain = populationSize;
       int index  = 0;
@@ -126,9 +124,9 @@ public class GDE3<V extends Real>
       // Obtain the next front
       front = ranking.getSubfront(index);
 
-      while ((remain > 0) && (remain >= front.size())){                
+      while ((remain > 0) && (remain >= front.size())){
         //Assign crowding distance to individuals
-        Distance.crowdingDistanceAssignment(front,problem_.getNumberOfObjectives());                
+        Distance.crowdingDistanceAssignment(front,problem_.getNumberOfObjectives());
         //Add the individuals of this front
         for (int k = 0; k < front.size(); k++ ) {
           population.add(front.get(k));
@@ -141,11 +139,11 @@ public class GDE3<V extends Real>
         index++;
         if (remain > 0) {
           front = ranking.getSubfront(index);
-        } // if        
+        } // if
       } // while
-      
+
       // remain is less than front(index).size, insert only the best one
-      if (remain > 0) {  // front contains individuals to insert                        
+      if (remain > 0) {  // front contains individuals to insert
         //distance.crowdingDistanceAssignment(front,problem_.getNumberOfObjectives());
         //front.sort(new jmetal.base.operator.comparator.CrowdingComparator());
         //for (int k = 0; k < remain; k++) {
@@ -159,15 +157,16 @@ public class GDE3<V extends Real>
         for (int k = 0; k < front.size(); k++) {
           population.add(front.get(k));
         }
-        
-        remain = 0; 
-      } // if                   
-      
-      iterations ++ ;
+
+        remain = 0;
+      } // if
+
+      if(getTerminationCriterion() instanceof IterationTerminationCriterion)
+        	((IterationTerminationCriterion)getTerminationCriterion()).addIteration(1);
     } // while
-    
+
     // Return the first non-dominated front
-    Ranking<V> ranking = new Ranking<V>(population);        
+    Ranking<V> ranking = new Ranking<V>(population);
     return ranking.getSubfront(0);
   } // execute
 } // GDE3-II

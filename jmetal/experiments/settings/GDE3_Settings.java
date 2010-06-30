@@ -11,6 +11,7 @@ package jmetal.experiments.settings;
 import java.util.Properties;
 
 import jmetal.base.Algorithm;
+import jmetal.base.EvaluationTerminationCriterion;
 import jmetal.base.Problem;
 import jmetal.base.operator.crossover.CrossoverFactory;
 import jmetal.base.operator.crossover.DifferentialEvolutionCrossover;
@@ -56,9 +57,9 @@ public class GDE3_Settings extends Settings {
 
     // Algorithm parameters
     algorithm.setPopulationSize(populationSize_);
-    algorithm.setMaxEvaluations(maxIterations_);
+    algorithm.setTerminationCriterion(new EvaluationTerminationCriterion(maxIterations_));
 
-    // Crossover operator 
+    // Crossover operator
     crossover = (DifferentialEvolutionCrossover) CrossoverFactory.getCrossoverOperator("DifferentialEvolutionCrossover");
     crossover.setCR(CR_);
     crossover.setF(F_);

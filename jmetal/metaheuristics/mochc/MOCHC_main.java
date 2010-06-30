@@ -6,6 +6,7 @@
  */
 package jmetal.metaheuristics.mochc;
 
+import jmetal.base.EvaluationTerminationCriterion;
 import jmetal.base.Problem;
 import jmetal.base.SolutionSet;
 import jmetal.base.operator.crossover.CrossoverFactory;
@@ -22,43 +23,43 @@ public class MOCHC_main {
 
   @SuppressWarnings("unchecked")
 	public static void main(String [] args) {
-    try {                               
+    try {
       Problem<Binary> problem = new RadioNetworkDesign(149);
 
       MOCHC<Binary> algorithm = new MOCHC<Binary>(problem);
-      
+
       algorithm.setInitialConvergenceCount(0.25);
       algorithm.setPreservedPopulation(0.05);
       algorithm.setConvergenceValue(3);
       algorithm.setPopulationSize(100);
-      algorithm.setMaxEvaluations(60000);
-      
+      algorithm.setTerminationCriterion(new EvaluationTerminationCriterion(60000));
+
       HUXCrossover crossoverOperator      ;
       BitFlipMutationBinary mutationOperator       ;
       RandomSelection<Binary> parentsSelection       ;
       RankingAndCrowdingSelection<Binary> newGenerationSelection ;
-      
+
       // Crossover operator
       crossoverOperator = (HUXCrossover) CrossoverFactory.getCrossoverOperator("HUXCrossover");
       //crossoverOperator = CrossoverFactory.getCrossoverOperator("SinglePointCrossover");
       crossoverOperator.setProbability(1.0);
-     
+
       //parentsSelection = new RandomSelection();
       //newGenerationSelection = new RankingAndCrowdingSelection(problem);
-      parentsSelection = (RandomSelection<Binary>) SelectionFactory.getSelectionOperator("RandomSelection") ;     
-      newGenerationSelection = (RankingAndCrowdingSelection<Binary>) SelectionFactory.getSelectionOperator("RankingAndCrowdingSelection") ;   
-      newGenerationSelection.setProblem(problem) ;          
-     
+      parentsSelection = (RandomSelection<Binary>) SelectionFactory.getSelectionOperator("RandomSelection") ;
+      newGenerationSelection = (RankingAndCrowdingSelection<Binary>) SelectionFactory.getSelectionOperator("RankingAndCrowdingSelection") ;
+      newGenerationSelection.setProblem(problem) ;
+
       // Mutation operator
-      mutationOperator = (BitFlipMutationBinary) MutationFactory.getMutationOperator("BitFlipMutationBinary");                    
+      mutationOperator = (BitFlipMutationBinary) MutationFactory.getMutationOperator("BitFlipMutationBinary");
       mutationOperator.setProbability(0.35);
-      
+
       algorithm.setCrossover(crossoverOperator);
       algorithm.setMutation(mutationOperator);
       algorithm.setSelection(parentsSelection);
       algorithm.setNewGenerationSelection(newGenerationSelection);
-      
-      // Execute the Algorithm 
+
+      // Execute the Algorithm
       long initTime = System.currentTimeMillis();
       SolutionSet<Binary> population = algorithm.execute();
       long estimatedTime = System.currentTimeMillis() - initTime;
@@ -67,10 +68,10 @@ public class MOCHC_main {
       // Print results
       population.printVariablesToFile("VAR");
       population.printObjectivesToFile("FUN");
-    } //try           
+    } //try
     catch (Exception e) {
       System.err.println(e);
       e.printStackTrace();
-    } //catch    
+    } //catch
   }//main
 }

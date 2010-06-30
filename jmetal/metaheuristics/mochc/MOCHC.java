@@ -9,6 +9,7 @@ package jmetal.metaheuristics.mochc;
 import java.util.Comparator;
 
 import jmetal.base.Algorithm;
+import jmetal.base.EvaluationTerminationCriterion;
 import jmetal.base.Problem;
 import jmetal.base.Solution;
 import jmetal.base.SolutionSet;
@@ -36,20 +37,20 @@ public class MOCHC <V extends Variable>
   */
   private Problem<V> Problem_;
   private RankingAndCrowdingSelection<V> newGenerationSelection;
-  
+
   /**
   * Constructor
-  * Creates a new instance of MOCHC 
+  * Creates a new instance of MOCHC
   */
   public MOCHC(Problem<V> Problem) {
     Problem_ = Problem;
   }
-  
+
 	public void setNewGenerationSelection(RankingAndCrowdingSelection<V> newGenerationSelection) {
 		this.newGenerationSelection = newGenerationSelection;
 	}
-  
-  /** 
+
+  /**
   * Compares two SolutionSet<V>s to determine if both are equals
   * @param SolutionSet<V> A <code>SolutionSet<V></code>
   * @param newSolutionSet<V> A <code>SolutionSet<V></code>
@@ -84,13 +85,13 @@ public class MOCHC <V extends Variable>
   public int hammingDistance(Solution<V> SolutionOne, Solution<V> SolutionTwo) {
     int distance = 0;
     for (int i = 0; i < Problem_.getNumberOfVariables(); i++) {
-      distance += 
+      distance +=
         ((Binary)SolutionOne.getDecisionVariables().variables_.get(i)).
         hammingDistance((Binary)SolutionTwo.getDecisionVariables().variables_.get(i));
     }
-    
+
     return distance;
-  } // hammingDistance 
+  } // hammingDistance
 
   private int convergenceValue ;
   private double preservedPopulation;
@@ -99,39 +100,35 @@ public class MOCHC <V extends Variable>
 	public void setConvergenceValue(int convergenceValue) {
 		this.convergenceValue = convergenceValue;
 	}
-	
+
 	public void setPreservedPopulation(double preservedPopulation) {
 		this.preservedPopulation = preservedPopulation;
 	}
-	
+
 	public void setInitialConvergenceCount(double initialConvergenceCount) {
 		this.initialConvergenceCount = initialConvergenceCount;
 	}
-  
-  /**   
+
+  /**
   * Runs of the MOCHC algorithm.
   * @return a <code>SolutionSet<V></code> that is a set of non dominated Solution<V>s
-  * as a result of the algorithm execution  
-  */  
+  * as a result of the algorithm execution
+  */
   public SolutionSet<V> execute() throws JMException {
     int iterations       ;
     int populationSize   ;
-    int maxEvaluations   ;
     int minimumDistance  ;
-    int evaluations      ;
-    
+
     Comparator<Solution<V>> crowdingComparator = new CrowdingComparator<V>();
-    
+
     boolean condition = false;
     SolutionSet<V> SolutionSet, offspringPopulation,newPopulation;
 
     // Read parameters
     populationSize          = getPopulationSize();
-    maxEvaluations          = getMaxEvaluations(); 
 
     iterations  = 0 ;
-    evaluations = 0 ;
-    
+
     //Calculate the maximum Problem<V> sizes
     Solution<V> aux = new Solution<V>(Problem_);
     int size = 0;
@@ -145,14 +142,15 @@ public class MOCHC <V extends Variable>
       Solution<V> Solution = new Solution<V>(Problem_);
       Problem_.evaluate(Solution);
       Problem_.evaluateConstraints(Solution);
-      evaluations++;        
+      if(getTerminationCriterion() instanceof EvaluationTerminationCriterion)
+      	((EvaluationTerminationCriterion)getTerminationCriterion()).addEvaluations(1);
       SolutionSet.add(Solution);
-    }      
+    }
 
     while (!condition) {
       offspringPopulation = new SolutionSet<V>(populationSize);
       for (int i = 0; i < SolutionSet.size()/2; i++) {
-        Solution<V> [] parents   = selectionOperator.execute(SolutionSet);         
+        Solution<V> [] parents   = selectionOperator.execute(SolutionSet);
 
         //Equality condition between Solution<V>s
         if (hammingDistance(parents[0],parents[1]) >= (minimumDistance)) {
@@ -161,7 +159,8 @@ public class MOCHC <V extends Variable>
           Problem_.evaluateConstraints(offspring[0]);
           Problem_.evaluate(offspring[1]);
           Problem_.evaluateConstraints(offspring[1]);
-          evaluations += 2;
+          if(getTerminationCriterion() instanceof EvaluationTerminationCriterion)
+          	((EvaluationTerminationCriterion)getTerminationCriterion()).addEvaluations(2);
           offspringPopulation.add(offspring[0]);
           offspringPopulation.add(offspring[1]);
         }
@@ -190,17 +189,17 @@ public class MOCHC <V extends Variable>
           Problem_.evaluate(Solution);
           Problem_.evaluateConstraints(Solution);
           newPopulation.add(Solution);
-        }                        
+        }
       }
       iterations++;
 
       SolutionSet = newPopulation;
-      if (evaluations >= maxEvaluations) {
+      if (getTerminationCriterion().isTerminated()) {
         condition = true;
       }
     }
-    
-    
+
+
     CrowdingArchive<V> archive;
     archive = new CrowdingArchive<V>(populationSize,Problem_.getNumberOfObjectives()) ;
     for (int i = 0; i < SolutionSet.size(); i++) {
